@@ -31,8 +31,10 @@ await build({
   logLevel: "warn",
 });
 
+// an inline SVG icon, so no page asks the server for /favicon.ico
+const ICON = "data:image/svg+xml," + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#1a1a1a"/></svg>');
 const head = (title, css) =>
-  `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${esc(title)}</title>\n<link rel="stylesheet" href="${css}">\n</head>\n`;
+  `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>${esc(title)}</title>\n<link rel="icon" href="${ICON}">\n<link rel="stylesheet" href="${css}">\n</head>\n`;
 const footer = `<footer><p>${esc(site.footer)}</p></footer>`;
 
 for (const p of site.pages) {

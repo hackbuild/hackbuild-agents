@@ -49,8 +49,19 @@ function body(id: string, x: number, z: number, radius: number, goals: [number, 
   return b;
 }
 
-function setup(s: Scene) {
+/** Frees the geometries and materials under the scene root, then empties it. */
+function clearRoot() {
+  root.traverse((o) => {
+    const m = o as THREE.Mesh;
+    if (!m.isMesh) return;
+    m.geometry.dispose();
+    for (const mat of Array.isArray(m.material) ? m.material : [m.material]) mat.dispose();
+  });
   root.clear();
+}
+
+function setup(s: Scene) {
+  clearRoot();
   bodies = [];
   obstacles = [];
   minGap = Infinity;
