@@ -69,6 +69,15 @@ export async function open(o: OpenOptions): Promise<Opened> {
     args: [...DEFAULT_ARGS, ...((o.gpu ?? "swiftshader") === "swiftshader" ? SWIFTSHADER_ARGS : []), ...(o.args ?? [])],
     defaultViewport: { width: o.width ?? 420, height: o.height ?? 280 },
   });
+  try {
+    return await prepare(browser, o);
+  } catch (e) {
+    await browser.close().catch(() => undefined);
+    throw e;
+  }
+}
+
+async function prepare(browser: Browser, o: OpenOptions): Promise<Opened> {
   const page = await browser.newPage();
   const log: PageLog = { errors: [], warnings: [], blocked: [], served: [], version: await browser.version() };
   page.on("pageerror", (e) => log.errors.push(`pageerror: ${String((e as Error).message ?? e).slice(0, 400)}`));

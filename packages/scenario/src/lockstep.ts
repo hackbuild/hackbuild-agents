@@ -169,10 +169,15 @@ export async function runSuite(o: SuiteOptions): Promise<Report & { traces: Reco
   const one = async (sc: Scenario) => {
     const oo: OpenOptions = { url: o.file, hash: `#test&seed=${sc.seed}${sc.hash ? `&${sc.hash}` : ""}`, routes: o.routes ?? [], offline: o.offline ?? false, width: o.width ?? 420, height: o.height ?? 280 };
     if (o.chrome) oo.chrome = o.chrome;
-    const { page, log, close } = await open(oo);
-    chrome = log.version;
-    const res: ScenarioResult = { name: sc.name, seed: sc.seed, checks: [], errors: log.errors, blocked: log.blocked };
+    const res: ScenarioResult = { name: sc.name, seed: sc.seed, checks: [], errors: [], blocked: [] };
+    let close: (() => Promise<void>) | null = null;
     try {
+      const opened = await open(oo);
+      close = opened.close;
+      const { page, log } = opened;
+      chrome = log.version;
+      res.errors = log.errors;
+      res.blocked = log.blocked;
       const ok = await waitFor(page, `!!(${api})`, o.readyMs ?? 240000);
       if (!ok) throw new Error(`no ${api} after ${(o.readyMs ?? 240000) / 1000} s`);
       const tr = await runLockstep(page, sc, o);
@@ -194,7 +199,7 @@ export async function runSuite(o: SuiteOptions): Promise<Report & { traces: Reco
     } catch (e) {
       res.errors.push(`runner: ${(e as Error).message}`);
     } finally {
-      await close();
+      if (close) await close();
     }
     results.push(res);
   };

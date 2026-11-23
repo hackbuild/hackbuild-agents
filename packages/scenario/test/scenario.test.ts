@@ -177,6 +177,26 @@ describe.skipIf(!chrome)("in chrome", () => {
     expect(off.results[0]?.blocked.some((u) => u.includes("cdn.jsdelivr.net"))).toBe(true);
   }, 120000);
 
+  it("closes the browser when anything after launch fails", async () => {
+    // before: a missing file threw from goto with the browser still running
+    let browser: import("puppeteer-core").Browser | null = null;
+    const missing = join(tmp, "no-such-page.html");
+    await expect(
+      open({
+        url: missing,
+        beforeGoto: async (p) => {
+          browser = p.browser();
+        },
+      }),
+    ).rejects.toThrow();
+    expect(browser).not.toBeNull();
+    expect((browser as unknown as import("puppeteer-core").Browser).connected).toBe(false);
+    const r = await runSuite({ file: missing, scenarios: [{ ...walk, seconds: 1 }, { ...walk, name: "walk-2", seconds: 1 }], mode: "check" });
+    expect(r.results.map((x) => x.name)).toEqual(["walk", "walk-2"]);
+    expect(r.results.every((x) => x.errors.some((e) => e.startsWith("runner:")))).toBe(true);
+    expect(reportPasses(r)).toBe(false);
+  }, 60000);
+
   it("samples frames at real rate with the raf sampler", async () => {
     const { page, close } = await open({ url: fixture, hash: "#seed=2", routes: [npmCdn(nm)], beforeGoto: installRafSampler, gpu: "default" });
     try {
