@@ -19,7 +19,7 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: npm install -g npm@11.21.0
-      - run: rustup target add wasm32-unknown-unknown
+      - run: rustup toolchain install && rustc --version
       - run: cargo install wasm-pack --version 0.13.1 --locked
       - run: npm ci
       - run: npm run build

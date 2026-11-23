@@ -13,3 +13,18 @@
 
 Before you open a PR, run `npm test` and, when `crates/` changed,
 `cargo test --workspace`. A harness that did not run is reported as not run.
+
+## Toolchain
+
+| tool | version | how |
+|---|---|---|
+| Node | 22.18.0 (`.nvmrc`) | `nvm use`, then `npx -y npm@11.21.0 ci` |
+| Rust | 1.95.0 with the `wasm32-unknown-unknown` target, clippy and rustfmt | `rust-toolchain.toml`; rustup installs it on first use, or run `rustup toolchain install` |
+| wasm-pack | 0.13.1 | `cargo install wasm-pack --version 0.13.1 --locked` |
+| Chrome | any current stable | the browser tests find it as `findChrome()` does (`HB_CHROME`, the macOS app, `/usr/bin/google-chrome`); without one they skip |
+
+`tools/build-wasm.mjs` puts `~/.cargo/bin` first on PATH, so the wasm
+builds use the rustup toolchain from `rust-toolchain.toml` even when a
+Homebrew Rust comes first in your shell. Keep a Homebrew Rust at the
+same version, or native `cargo test` and the wasm build can disagree on
+lints.

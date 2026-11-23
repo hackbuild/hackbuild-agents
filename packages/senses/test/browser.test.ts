@@ -1,15 +1,16 @@
 // The eye in the system Chrome (headless, swiftshader): ID and depth renders,
-// readback, grid integration and saliency on a colour frame. Skipped when
-// Chrome is missing; the README says when it last ran.
-import { existsSync } from "node:fs";
+// readback, grid integration and saliency on a colour frame. Chrome is
+// found as the scenario runner finds it (HB_CHROME, macOS, Linux paths);
+// skipped when none is found, and the README says when it last ran.
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import puppeteer from "puppeteer-core";
 import { describe, expect, it } from "vitest";
+import { findChrome } from "../../scenario/src/chrome.js";
 
-const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+const CHROME = findChrome() ?? "";
 
-describe.skipIf(!existsSync(CHROME))("eye in chrome", () => {
+describe.skipIf(!CHROME)("eye in chrome", () => {
   it("sees the tracked box at its distance and maps the wall", async () => {
     const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--allow-file-access-from-files"] });
     try {

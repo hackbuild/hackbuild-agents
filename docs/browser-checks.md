@@ -41,4 +41,4 @@ Rerun: `npm run build && npm run examples && npm run examples:check`.
 | 22 | tunables | `tunables.iife.js` from a file:// page | pass | 2026-11-23, the same fixture: a registry defines, sets and reads a value (measured) |
 | 23 | tunables | import through the file input | not run | no scripted file pick in this pass |
 | 24 | scenario | WebGPU in headless Chrome | not run | this pass ran headful; headful Chrome found the adapter above |
-| 25 | scenario | Chrome on the ubuntu-24.04 CI image | not run | not checked |
+| 25 | scenario | Chrome on the ubuntu-24.04 CI image | pass | the CI unit job runs the scenario Chrome tests with the runner's `/usr/bin/google-chrome` (the 2026-11-23 log: "scenario report 2026-11-23, Chrome/157.0.8103.78"); the senses eye test now finds the same Chrome instead of skipping |

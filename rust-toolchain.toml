@@ -1,0 +1,8 @@
+# One Rust for every build: CI took the runner's newest stable and failed
+# on a clippy lint 1.95 does not have. rustup reads this file; a Homebrew
+# cargo earlier on PATH ignores it, so keep that at 1.95 too.
+[toolchain]
+channel = "1.95.0"
+targets = ["wasm32-unknown-unknown"]
+components = ["clippy", "rustfmt"]
+profile = "minimal"

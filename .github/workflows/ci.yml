@@ -31,7 +31,8 @@ jobs:
         with:
           node-version-file: .nvmrc
       - run: npm install -g npm@11.21.0
-      - run: rustup target add wasm32-unknown-unknown
+      # rust-toolchain.toml pins 1.95.0 with the wasm32 target
+      - run: rustup toolchain install && rustc --version
       - run: cargo install wasm-pack --version 0.13.1 --locked
       - run: npm ci
       - run: npm run build --if-present
@@ -42,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: test -f Cargo.toml || exit 0
-      - run: rustup target add wasm32-unknown-unknown
+      - run: rustup toolchain install && rustc --version
         if: hashFiles('Cargo.toml') != ''
       - run: cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace
         if: hashFiles('Cargo.toml') != ''
