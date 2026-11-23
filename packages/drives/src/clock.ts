@@ -1,7 +1,9 @@
 // The body clock in plain TypeScript with Math.exp, for apps that hash
-// JavaScript state: it is bit identical to a JavaScript implementation of
-// the same formula, and within 2.3e-16 of the wasm `bodyClock`, which uses
-// libm so the native and wasm builds agree. No load() needed.
+// JavaScript state: on one engine and platform it is bit identical to a
+// JavaScript implementation of the same formula. Math.exp is not the same
+// on every platform (V8 on macOS arm64 and on Linux x64 differ by one ulp
+// for some arguments, measured), so it is within 2.3e-16 of the wasm
+// `bodyClock` and of other platforms. No load() needed.
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 const smoothstep = (a: number, b: number, x: number) => {

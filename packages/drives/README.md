@@ -113,9 +113,11 @@ The body clock goes through libm `exp` so native and wasm agree; V8's
 JavaScript engine the wasm `bodyClock` is within 2.3e-16 absolute
 (measured), not bit identical. An app that hashes JavaScript state can
 use `bodyClockJs`, plain TypeScript with `Math.exp` that needs no
-`load()`: it is bit identical to the legacy JavaScript on all 1,126
-fixture hours, the 126 that differ from the wasm included (measured),
-and so not bit identical to the native crate.
+`load()`: on the same engine and platform it is bit identical to the
+legacy JavaScript (all 1,126 fixture hours on V8, macOS arm64,
+measured). `Math.exp` itself differs across platforms: on V8 under Linux
+x64 (CI) the 126 hours gave the libm values instead (measured), so a
+JavaScript hash holds only on one platform.
 
 The learner drops one random draw the legacy brain made in its ignore
 test (an always true condition), so cue responses do not replay the

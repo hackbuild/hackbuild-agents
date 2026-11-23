@@ -233,10 +233,15 @@ describe("parity with fixtures from the running legacy code", () => {
     expect(worst).toBeLessThanOrEqual(2.3e-16);
   });
 
-  it("bodyClockJs is bit identical to the legacy JavaScript", () => {
-    const off = ref.clock.filter(([k, v]) => bodyClockJs(clockHour(k)) !== v);
-    expect(off).toEqual([]);
+  it("bodyClockJs is within one ulp of the legacy JavaScript on any engine", () => {
+    // the fixture was made by V8 on macOS arm64, where bodyClockJs matched
+    // it on all 1,126 hours; V8 on Linux x64 (CI) gave the libm values on
+    // the 126 differing hours instead, so Math.exp itself differs between
+    // platforms and only the tolerance holds everywhere (measured)
+    let worst = 0;
+    for (const [k, v] of ref.clock) worst = Math.max(worst, Math.abs(bodyClockJs(clockHour(k)) - v));
     expect(ref.clock.length).toBe(1126);
+    expect(worst).toBeLessThanOrEqual(2.3e-16);
   });
 });
 
