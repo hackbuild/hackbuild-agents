@@ -100,6 +100,8 @@ export interface SteerOptions {
   stallWindow?: number;
   /** side waypoint offset when a stall fires (m) */
   sideStep?: number;
+  /** stalls on one goal before `unreachable` turns true */
+  maxStalls?: number;
   /** a yield lasts at most this long (s), then the agent goes regardless */
   yieldTimeout?: number;
   /** after a timed out yield, no new yield for this long (s) */
@@ -125,6 +127,7 @@ const D = {
   stallDist: 0.2,
   stallWindow: 2,
   sideStep: 1,
+  maxStalls: 8,
   yieldTimeout: 1.5,
   yieldCooldown: 2,
 };
@@ -138,6 +141,8 @@ export class Steerer {
   private yieldUntil = -Infinity;
   private noYieldUntil = -Infinity;
   private yieldFrom: string | null = null;
+  private sideWp: { x: number; z: number } | null = null;
+  private goalStalls = 0;
   stalls = 0;
 
   constructor(
@@ -152,11 +157,19 @@ export class Steerer {
     this.goal = { x, z };
     this.waypoints = [];
     this.hist = [];
+    this.sideWp = null;
+    this.goalStalls = 0;
   }
   clearGoal(): void {
     this.goal = null;
     this.waypoints = [];
     this.hist = [];
+    this.sideWp = null;
+    this.goalStalls = 0;
+  }
+  /** True once the current goal has stalled `maxStalls` times; a new goal resets it. */
+  get unreachable(): boolean {
+    return this.goalStalls >= this.o.maxStalls;
   }
   get target(): { x: number; z: number } | null {
     return this.waypoints[0] ?? this.goal;
@@ -371,10 +384,14 @@ export class Steerer {
     if (first && now - first.t >= o.stallWindow - 1e-9 && Math.hypot(self.x - first.x, self.z - first.z) < o.stallDist) {
       const held = [...this.sides.values()].find((s) => s.until > now)?.side ?? 1;
       sideWaypoint = { x: self.x - gz * held * o.sideStep + gx * 0.3, z: self.z + gx * held * o.sideStep + gz * 0.3 };
-      this.waypoints.unshift(sideWaypoint);
+      // one side waypoint at a time: a new stall replaces the previous one
+      if (this.sideWp && this.waypoints[0] === this.sideWp) this.waypoints[0] = sideWaypoint;
+      else this.waypoints.unshift(sideWaypoint);
+      this.sideWp = sideWaypoint;
       this.hist = [];
       this.stalls++;
-      why = `${self.id}: stalled under ${o.stallDist} m in ${o.stallWindow} s, side waypoint inserted`;
+      this.goalStalls++;
+      why = this.unreachable ? `${self.id}: stalled ${this.goalStalls} times on this goal, unreachable` : `${self.id}: stalled under ${o.stallDist} m in ${o.stallWindow} s, side waypoint inserted`;
     }
     return { vx: dx * v, vz: dz * v, mode, sideWaypoint, why };
   }

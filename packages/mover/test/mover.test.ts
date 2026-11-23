@@ -279,6 +279,20 @@ describe("footprints and stalls", () => {
     expect(worst).toBeGreaterThan(-0.05);
   });
 
+  it("a goal in a closed pocket holds one side waypoint and turns unreachable", () => {
+    // before: every stall added a waypoint and kept the old ones, 117
+    // after 20 minutes (measured in the audit), with no unreachable signal
+    const world = new World([wallBox(0, 2, 3, 0.2, 0, 2), wallBox(-1.5, 3, 0.2, 2, 0, 2), wallBox(1.5, 3, 0.2, 2, 0, 2), wallBox(0, 4, 3, 0.2, 0, 2)]);
+    const a = body("a", 0, -2, 0.3);
+    a.steer.setGoal(0, 3);
+    run([a], 120, [], world);
+    expect(a.steer.stalls).toBeGreaterThan(8);
+    expect((a.steer as unknown as { waypoints: unknown[] }).waypoints.length).toBeLessThanOrEqual(1);
+    expect(a.steer.unreachable).toBe(true);
+    a.steer.setGoal(0, -3);
+    expect(a.steer.unreachable).toBe(false);
+  });
+
   it("a stall against a wall inserts a side waypoint", () => {
     const world = new World([wallBox(0, 0, 4, 0.2, 0, 2)]);
     const a = body("a", 0.3, -1, 0.3);

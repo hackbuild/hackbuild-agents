@@ -29,7 +29,9 @@ What is in it:
     times out (1.5 s) and then cools down, so two yielders cannot wait
     on each other;
   - a stall detector: with a goal and under 0.2 m in 2 s, a side
-    waypoint is inserted on the held side;
+    waypoint is inserted on the held side, replacing the previous one;
+    after 8 stalls on one goal (`maxStalls`) `unreachable` is true until
+    the next `setGoal`;
   - `follow: id` names a leader; a target within 1.3 m of it switches
     off the leader's bend (the follow spot beside a leader);
   - footprints of several circles or capsules per object (a bench with
@@ -74,13 +76,15 @@ defines `HackbuildMover`.
 ### Verified on this machine
 
 - 2026-11-23, after the passing side fix: `npx vitest run
-  packages/mover` passed 14 of 14 tests (counted), adding 1,000 seeded
+  packages/mover` passed 15 of 15 tests (counted), adding 1,000 seeded
   two agent crossings at 20 to 180 degrees with lateral and timing
   offsets, and 200 seeded layouts of 2 to 6 agents crossing a 10 m ring,
   all at 60 Hz: every agent arrived and none overlapped (closest gap
   0.166 m and 0.165 m, measured). The same layouts at 20, 30, 144 and
   240 Hz: no overlap, every agent arrived (measured, 500 and 100 layouts
-  per rate). Before, 164 of the 1,000 and 61 of the 200 overlapped by
+  per rate). A goal in a closed pocket holds at most one side waypoint
+  over 120 s and turns unreachable (before: one more waypoint per stall,
+  11 after 120 s, measured). Before, 164 of the 1,000 and 61 of the 200 overlapped by
   more than 5 cm, worst 0.639 m (measured). A yielding dog beside a
   bench ends touching its surface, 0 m inside (before: 0.397 m inside, measured).
 - 2026-11-23: `npx vitest run packages/mover` passed 10 of 10 tests
