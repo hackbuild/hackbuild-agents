@@ -22,6 +22,12 @@ export interface PanelOptions {
   onImport?: (skipped: string[], error: Error | null) => void;
   /** the location to sync, default `globalThis.location` */
   location?: { hash: string };
+  /**
+   * history used to write the hash without a new entry per slider step,
+   * default `globalThis.history` when `location` is the page's own; without
+   * one the hash is assigned
+   */
+  history?: { readonly state: unknown; replaceState(data: unknown, unused: string, url?: string): void };
 }
 
 export interface Panel {
@@ -45,6 +51,7 @@ export function bindPanel(host: HTMLElement, reg: Registry, opts: PanelOptions =
   const layerSet = new Set(reg.layers());
   const root = el("div", "panel");
   const loc = opts.location ?? (globalThis as { location?: { hash: string } }).location;
+  const hist = opts.history ?? (opts.location ? undefined : (globalThis as { history?: PanelOptions["history"] }).history);
 
   for (const { group, keys } of reg.groups()) {
     const det = el("details", "group");
@@ -156,7 +163,8 @@ export function bindPanel(host: HTMLElement, reg: Registry, opts: PanelOptions =
       const h = loc.hash.replace(/^#/, "").split("&").filter((p) => p && !p.startsWith("tune="));
       const t = reg.toUrlHash();
       if (t) h.push(t);
-      loc.hash = h.join("&");
+      if (hist) hist.replaceState(hist.state, "", `#${h.join("&")}`);
+      else loc.hash = h.join("&");
     }
   });
   host.append(root);

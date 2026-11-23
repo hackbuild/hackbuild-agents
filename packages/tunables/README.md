@@ -15,7 +15,8 @@ What is in it:
   `layer` (master and layer both on), `reset`, `groups`, `snapshot`.
 - a `unit` and a `source` per number (`measured`, `computed`, `vendor`,
   `inferred`, `unknown`) with an optional `cite`, shown beside the value.
-- a default and a range per number; `set` clamps into the range.
+- a default and a range per number; `set` clamps into the range and
+  ignores NaN and the infinities.
 - presets: `definePreset`, `applyPreset`, `presets`.
 - sharing: `toUrlHash` writes only values that differ from their defaults
   as one `tune=` field, so it sits beside other hash fields
@@ -56,6 +57,7 @@ tune.defineLayer("L.plume", "sniffing in a turbulent plume");
 tune.define({ key: "Se.fix", group: "senses", label: "fixation median", unit: "s", def: 0.83, min: 0.2, max: 2, step: 0.01, source: "measured", cite: "Barber 2016" });
 tune.restore();
 tune.fromUrlHash(location.hash);
+// the hash is written with history.replaceState: no history entry per slider step
 bindPanel(document.querySelector("#tune")!, tune, { syncHash: true });
 
 if (tune.layer("L.plume")) plumeTick(dt);

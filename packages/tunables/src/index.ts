@@ -70,6 +70,7 @@ export interface Registry {
   def(key: string): ParamDef;
   get(key: string): number;
   /** clamps into the defined range; unknown keys throw */
+  /** clamps into the defined range; unknown keys throw; NaN and the infinities are ignored */
   set(key: string, value: number): void;
   /** master switch and layer switch both on */
   layer(key: string): boolean;
@@ -140,6 +141,9 @@ export function createRegistry(opts: RegistryOptions = {}): Registry {
   };
   const write = (key: string, v: number, save: boolean) => {
     const d = need(key);
+    // NaN and the infinities are ignored: they would save as null and
+    // write "NaN" into the URL hash
+    if (!Number.isFinite(v)) return;
     const nv = clamp(d, v);
     if (values.get(key) === nv) return;
     values.set(key, nv);

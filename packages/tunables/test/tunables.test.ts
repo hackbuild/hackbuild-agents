@@ -37,6 +37,16 @@ describe("registry", () => {
     expect(() => r.define({ key: "bad", group: "g", label: "x", def: 2, min: 0, max: 1, step: 1 })).toThrow(/outside/);
   });
 
+  it("ignores NaN and the infinities", () => {
+    // before: set(key, NaN) stored NaN, saved null and wrote a:NaN into the hash
+    const r = legacyRegistry();
+    r.set("Br.temp", 0.1);
+    for (const v of [Number.NaN, Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]) r.set("Br.temp", v);
+    expect(r.get("Br.temp")).toBe(0.1);
+    expect(r.toUrlHash()).toBe("tune=2|Br.temp:0.1");
+    expect(r.toJSON()).toEqual({ ver: 2, d: { "Br.temp": 0.1 } });
+  });
+
   it("gates every layer behind the master switch", () => {
     const r = legacyRegistry();
     expect(r.layer("L.plume")).toBe(true);
@@ -196,5 +206,32 @@ describe("panel", () => {
     p.dispose();
     p2.dispose();
     expect(host.children.length).toBe(0);
+  });
+
+  it("replaces the history entry instead of adding one per slider step", () => {
+    // before: every input event assigned location.hash, one history entry per step
+    const win = new Window();
+    const doc = win.document as unknown as Document;
+    const host = doc.createElement("div");
+    const r = legacyRegistry();
+    let assigned = 0;
+    const loc = {
+      get hash() {
+        return "#test&seed=3";
+      },
+      set hash(_v: string) {
+        assigned++;
+      },
+    };
+    const urls: string[] = [];
+    const history = { state: null, replaceState: (_d: unknown, _u: string, url?: string) => void urls.push(url ?? "") };
+    bindPanel(host, r, { document: doc, syncHash: true, location: loc, history });
+    const range = host.querySelector('input[data-key="Br.temp"]') as HTMLInputElement;
+    for (const v of ["0.1", "0.11", "0.12"]) {
+      range.value = v;
+      range.dispatchEvent(new win.Event("input") as unknown as Event);
+    }
+    expect(assigned).toBe(0);
+    expect(urls.at(-1)).toBe("#test&seed=3&tune=2|Br.temp:0.12");
   });
 });
