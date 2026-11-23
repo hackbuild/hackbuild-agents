@@ -107,8 +107,12 @@ direction across a head turn), not against the original projection.
 - 2026-11-22: the eye in headless Chrome 150 with swiftshader
   (`test/browser.test.ts`): the tracked box is seen at 276 pixels and
   1.90 m (computed 1.9 m), four wall cells are marked from depth, the
-  async pass returns the same sighting, and materials are restored. CI
-  has no Chrome at that path and skips it.
+  async pass returns the same sighting, and materials are restored.
+- 2026-11-23: the same test with an instanced box and a skinned box posed
+  by its bone: 131 pixels at 2.93 m and 48 pixels at 3.54 m (measured;
+  computed about 2.9 m and 3.5 m). Before the depth pass applied
+  instancing and skinning, the instanced box read 4.12 m (measured), the
+  depth behind it.
 
 ### Not verified by anything
 

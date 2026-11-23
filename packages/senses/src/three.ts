@@ -59,7 +59,25 @@ export interface EyePass {
   camera: CameraArray;
 }
 
-const DEPTH_VERT = "varying vec3 vP; void main() { vec4 mv = modelViewMatrix * vec4(position, 1.0); vP = mv.xyz; gl_Position = projectionMatrix * mv; }";
+// Built from three's own chunks so instanced, batched, skinned and morphed
+// meshes land where the ID pass draws them.
+const DEPTH_VERT = [
+  "#include <common>",
+  "#include <batching_pars_vertex>",
+  "#include <morphtarget_pars_vertex>",
+  "#include <skinning_pars_vertex>",
+  "varying vec3 vP;",
+  "void main() {",
+  "#include <batching_vertex>",
+  "#include <skinbase_vertex>",
+  "#include <morphinstance_vertex>",
+  "#include <begin_vertex>",
+  "#include <morphtarget_vertex>",
+  "#include <skinning_vertex>",
+  "#include <project_vertex>",
+  "vP = mvPosition.xyz;",
+  "}",
+].join("\n");
 const DEPTH_FRAG = "uniform float far; varying vec3 vP; void main() { float v = clamp(length(vP) / far, 0.0, 0.9999) * 255.0; gl_FragColor = vec4(floor(v) / 255.0, fract(v), 0.0, 1.0); }";
 
 /** Decodes the RG packed depth of a bottom up readback into metres, row 0 at the top. */

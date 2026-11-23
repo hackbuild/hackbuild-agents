@@ -26,11 +26,21 @@ describe.skipIf(!existsSync(CHROME))("eye in chrome", () => {
       // eye at (0, 0.6, 0), box face nearest the eye about 1.9 m away (computed)
       expect(box?.dist).toBeGreaterThan(1.6);
       expect(box?.dist).toBeLessThan(2.3);
+      // instanced box at (-0.8, 0.2, 3), near face about 2.9 m away; skinned
+      // box posed by its bone at (1.2, 0.2, 3.5), near face about 3.5 m away
+      // (computed). A depth pass without instancing or skinning reads the
+      // 12 m background or the bind pose instead.
+      const inst = r.seen.find((s) => s.label === "instanced");
+      const skin = r.seen.find((s) => s.label === "skinned");
+      expect(inst?.dist).toBeGreaterThan(2.5);
+      expect(inst?.dist).toBeLessThan(3.3);
+      expect(skin?.dist).toBeGreaterThan(3.1);
+      expect(skin?.dist).toBeLessThan(4.0);
       expect(r.wallCells).toBeGreaterThanOrEqual(2);
       expect(r.free).toBeGreaterThan(1);
       expect(r.asyncSeen).toBe(1);
       expect(r.materialsRestored).toBe(true);
-      console.log(`eye in chrome: box ${box?.pixels} px at ${box?.dist.toFixed(2)} m, wall cells ${r.wallCells}, fixation ${JSON.stringify(r.fixation)} (measured)`);
+      console.log(`eye in chrome: box ${box?.pixels} px at ${box?.dist.toFixed(2)} m, instanced ${inst?.pixels} px at ${inst?.dist.toFixed(2)} m, skinned ${skin?.pixels} px at ${skin?.dist.toFixed(2)} m, wall cells ${r.wallCells}, fixation ${JSON.stringify(r.fixation)} (measured)`);
     } finally {
       await browser.close();
     }
