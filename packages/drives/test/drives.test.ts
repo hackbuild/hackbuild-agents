@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  bodyClock,
   Chooser,
   Completion,
   CueLearner,
@@ -16,6 +17,8 @@ import {
   settled,
   Sleep,
 } from "../src/index.js";
+
+import { ACTS, clockHour, DECISIONS, decision, REACTIVE_ACTS, REWARD_STATES, rewardState, SCALES, WEIGHTS } from "./parity-inputs.js";
 
 const here = import.meta.dirname;
 
@@ -115,7 +118,7 @@ function legacyChoose(U: Record<B, number>, rng: () => number): B {
 }
 
 describe("choice parity with the HACKLE brain on recorded drive states", () => {
-  const fx = JSON.parse(readFileSync(join(here, "fixtures/hackle-drive-states.json"), "utf8")) as { states: number[][] };
+  const fx = JSON.parse(readFileSync(join(here, "fixtures/recorded-drive-states.json"), "utf8")) as { states: number[][] };
   const states = fx.states.map(([hunger, fatigue, play, social]) => ({ hunger, fatigue, play, social, curiosity: 0.5, prey: 0 }) as Record<K, number>);
 
   it("rewards match the original arithmetic", () => {
@@ -160,6 +163,72 @@ describe("choice parity with the HACKLE brain on recorded drive states", () => {
     expect(agree / n).toBeGreaterThanOrEqual(0.995);
     expect(tvd).toBeLessThan(0.01);
     console.log(`choice parity: ${agree}/${n} same act, total variation ${tvd.toFixed(4)}, ours ${JSON.stringify(ours)} (measured)`);
+  });
+});
+
+// Fixtures from the legacy code itself: fixtures/legacy-brain.json holds
+// the numbers the legacy dog simulator's JavaScript (legacy/det in the
+// public dog-simulator repository, commit in the file) produced on the
+// seeded inputs in parity-inputs.ts. Only the numbers are committed.
+describe("parity with fixtures from the running legacy code", () => {
+  const ref = JSON.parse(readFileSync(join(here, "fixtures/legacy-brain.json"), "utf8")) as {
+    effects: string[];
+    effectTable: Record<string, Record<string, number>>;
+    rewards: number[][];
+    choices: [number, number | null][];
+    clock: [number, number][];
+  };
+
+  it("rewards match brain.gain for every legacy effect and scale", () => {
+    const dr = new Drives(WEIGHTS);
+    let d = 0;
+    for (let k = 0; k < REWARD_STATES; k++) {
+      dr.set(rewardState(k));
+      const row = ref.rewards[k] as number[];
+      let j = 0;
+      for (const e of ref.effects) for (const sc of SCALES) d = Math.max(d, Math.abs(dr.rewardOf(ref.effectTable[e] as Record<string, number>, sc) - (row[j++] as number)));
+    }
+    // libm pow against Math.pow, and the fixture keeps 15 significant digits
+    console.log(`legacy reward parity: max difference ${d.toExponential(2)} (measured)`);
+    expect(d).toBeLessThan(1e-13);
+  });
+
+  it("choose picks the same act and latency on every path", () => {
+    const paths: Record<string, [number, number]> = {};
+    let maxLat = 0;
+    for (let k = 0; k < DECISIONS; k++) {
+      const q = decision(k);
+      const c = new Chooser({ rng: () => q.seed / 4294967296, options: ACTS, start: q.current });
+      if (q.done) c.markDone();
+      const d = c.update(q.now, q.utilities, [...REACTIVE_ACTS]);
+      const [act, lat] = ref.choices[k] as [number, number | null];
+      const path = `${q.done ? "done" : "not done"}, ${q.now ? "dwell out" : "in dwell"}`;
+      const p = (paths[path] ??= [0, 0]);
+      p[1]++;
+      const pick = d.pending?.id ?? d.current;
+      if (pick === ACTS[act] && (lat === null) === (d.pending === null)) {
+        p[0]++;
+        if (lat !== null && d.pending) maxLat = Math.max(maxLat, Math.abs(d.pending.at - q.now - lat));
+      }
+    }
+    for (const [path, [ok, n]] of Object.entries(paths)) expect(ok, path).toBe(n);
+    expect(Object.keys(paths).length).toBe(4);
+    // the fixture keeps the latency to 13 significant digits
+    expect(maxLat).toBeLessThan(1e-11);
+    console.log(`legacy choice parity: ${DECISIONS} decisions ${JSON.stringify(paths)}, max latency difference ${maxLat.toExponential(2)} s (measured)`);
+  });
+
+  it("the wasm body clock is within 2.3e-16 of the legacy JavaScript", () => {
+    let worst = 0;
+    let differ = 0;
+    for (const [k, v] of ref.clock) {
+      const d = Math.abs(bodyClock(clockHour(k)) - v);
+      if (d > 0) differ++;
+      worst = Math.max(worst, d);
+    }
+    // the fixture keeps 1,000 hours and every one of 2,000,000 scanned where libm exp and V8 Math.exp differed
+    expect(differ).toBe(126);
+    expect(worst).toBeLessThanOrEqual(2.3e-16);
   });
 });
 

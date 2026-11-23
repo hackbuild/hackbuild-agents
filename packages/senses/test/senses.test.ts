@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
@@ -21,6 +22,7 @@ import {
 } from "../src/index.js";
 import { countIds, decodeDepth } from "../src/three.js";
 import { LegacyAttention } from "./legacy-ref.js";
+import { headPose, MAP_FRAMES, mapFrame, PLUME_RUNS, plumeDt, SEQUENCES, sequenceFrame } from "./parity-inputs.js";
 
 const here = import.meta.dirname;
 
@@ -174,6 +176,109 @@ describe("plume parity with the HACKLE nose", () => {
     // Math.exp, log and cos against libm can differ in the last bit; recorded tolerance 1e-9 m
     expect(d).toBeLessThan(1e-9);
     console.log(`plume parity: ${puffs.length} puffs, max position difference ${d.toExponential(2)} m (measured)`);
+  });
+});
+
+// Fixtures from the legacy code itself: fixtures/legacy-*.json hold the
+// numbers the legacy dog simulator's JavaScript (legacy/det in the public
+// dog-simulator repository, commit in each file) produced on the seeded
+// inputs in parity-inputs.ts. Only the numbers are committed.
+const legacySal = JSON.parse(readFileSync(join(here, "fixtures/legacy-saliency.json"), "utf8"));
+const legacyPlume = JSON.parse(readFileSync(join(here, "fixtures/legacy-plume.json"), "utf8"));
+const f32hash = (m: Float32Array) => createHash("sha256").update(Buffer.from(m.buffer, m.byteOffset, m.byteLength)).digest("hex").slice(0, 16);
+
+describe("parity with fixtures from the running legacy code", () => {
+  it("saliency maps are bit identical on 300 frames of five sizes, flat frames included", () => {
+    const cam = cameraLook({ x: 0, y: 0.5, z: 0 }, 0, 0, 74, 2, 0.05, 50);
+    const sal = new Saliency({ rng: seededRng(1) });
+    let winners = 0;
+    let maps = 0;
+    for (let k = 0; k < MAP_FRAMES; k++) {
+      const { img, w, h } = mapFrame(k);
+      const m = sal.update(img, w, h, k, cam);
+      const [wi, hash] = legacySal.map.frames[k] as [number, string];
+      if ((sal.winner()?.index ?? -1) === wi) winners++;
+      if (f32hash(m) === hash) maps++;
+    }
+    expect([winners, maps]).toEqual([MAP_FRAMES, MAP_FRAMES]);
+  });
+
+  it("fixation sequences with top down bias, inhibition of return and head turns agree", () => {
+    let frames = 0;
+    let winners = 0;
+    let shifts = 0;
+    let maxRel = 0;
+    let maxPoint = 0;
+    SEQUENCES.forEach((s, si) => {
+      const ref = legacySal.sequences[si] as { seed: number; weights: number[]; rows: { k: number; winner: number; sum: number; sq: number; ior: number; shift?: { point: number[] | null; object: number | null } }[] };
+      expect(ref.seed).toBe(s.seed);
+      const sal = new Saliency({ rng: () => s.seed / 4294967296 });
+      const objects = s.percepts.map((p) => ({ x: p.x, y: p.y, z: p.z }));
+      for (const row of ref.rows) {
+        const p = headPose(s, row.k);
+        const cam = cameraLook({ x: p.x, y: p.y, z: p.z }, p.yaw, p.pitch, 74, s.w / s.h, 0.05, 50);
+        objects.forEach((o, i) => sal.biasPoint(o, ref.weights[i] as number));
+        const t = row.k * s.dt;
+        const m = sal.update(sequenceFrame(s, row.k), s.w, s.h, t, cam);
+        let sum = 0;
+        let sq = 0;
+        for (const v of m) {
+          sum += v;
+          sq += v * v;
+        }
+        maxRel = Math.max(maxRel, Math.abs(sum - row.sum) / Math.max(1, Math.abs(row.sum)), Math.abs(sq - row.sq) / Math.max(1, row.sq));
+        frames++;
+        if ((sal.winner()?.index ?? -1) === row.winner) winners++;
+        const ready = sal.ready(t);
+        expect(ready, `sequence ${s.seed} frame ${row.k}: shift due`).toBe(row.shift !== undefined);
+        if (ready) {
+          const f = sal.shift(t, cam, objects, s.arousal);
+          shifts++;
+          const lp = row.shift?.point ?? null;
+          expect(f === null, `sequence ${s.seed} frame ${row.k}: fixation`).toBe(lp === null);
+          if (f && lp) {
+            maxPoint = Math.max(maxPoint, Math.abs(f.point.x - (lp[0] as number)), Math.abs(f.point.y - (lp[1] as number)), Math.abs(f.point.z - (lp[2] as number)));
+            expect(f.object).toBe(row.shift?.object);
+          }
+        }
+        expect(sal.inhibited, `sequence ${s.seed} frame ${row.k}: inhibited directions`).toBe(row.ior);
+      }
+    });
+    // the camera math is three's matrices on one side and the crate's on
+    // the other, so the projected blobs and rays agree to rounding only
+    expect(winners).toBe(frames);
+    expect(maxRel).toBeLessThan(1e-6);
+    expect(maxPoint).toBeLessThan(1e-9);
+    expect(shifts).toBe(36);
+    console.log(`legacy fixation parity: ${frames} frames, ${shifts} shifts, max relative map sum difference ${maxRel.toExponential(2)}, max fixation point difference ${maxPoint.toExponential(2)} m (measured)`);
+  });
+
+  it("plume puffs follow the legacy runs, the 600 puff cap included", () => {
+    let maxD = 0;
+    PLUME_RUNS.forEach((run, ri) => {
+      const ref = legacyPlume.runs[ri] as { seed: number; maxPuffs: number; counts: string; sums: number[][]; last: number[] };
+      expect(ref.seed).toBe(run.seed);
+      const counts = ref.counts.split(",").map(Number);
+      const field = new OdourField({ rng: () => run.seed / 4294967296 });
+      let si = 0;
+      for (let k = 0; k < run.steps; k++) {
+        field.step(plumeDt(k), run.sources);
+        const g = field.puffs();
+        expect(g.length / 4, `run ${run.seed} step ${k}: puffs`).toBe(counts[k]);
+        if (k % 10 === 9) {
+          const t = [0, 0, 0, 0];
+          for (let i = 0; i < g.length; i++) t[i % 4] = (t[i % 4] as number) + (g[i] as number);
+          const r = ref.sums[si++] as number[];
+          for (let j = 0; j < 4; j++) maxD = Math.max(maxD, Math.abs((t[j] as number) - (r[j] as number)) / Math.max(1, counts[k] as number));
+        }
+      }
+      const g = field.puffs();
+      for (let i = 0; i < g.length; i++) maxD = Math.max(maxD, Math.abs((g[i] as number) - (ref.last[i] as number)));
+    });
+    expect(Math.max(...legacyPlume.runs.map((r: { maxPuffs: number }) => r.maxPuffs))).toBe(600);
+    // libm against V8 for exp, log and cos: last bit differences only
+    expect(maxD).toBeLessThan(1e-9);
+    console.log(`legacy plume parity: ${PLUME_RUNS.length} runs, max per puff difference ${maxD.toExponential(2)} (measured)`);
   });
 });
 

@@ -80,27 +80,41 @@ file://.
     cargo test -p hackbuild-drives
     HB_REGEN_GOLDEN=1 cargo test -p hackbuild-drives   # after a deliberate numeric change
 
-## Parity with HACKLE
+## Parity with the legacy dog simulator
 
-The legacy code was read, never run. The test carries a hand
-transcription of `driveD`, `gain` and `choose` and feeds both it and the
-wasm build the same inputs. The inputs are 339 drive states (hunger,
-fatigue, play, social) recorded in the dog-simulator golden traces of the
-seeded HACKLE build, every 3 sim s of 18 scenarios (`test/fixtures`), with
-curiosity 0.5 and prey 0, scored for a yard with food out, a ball in view
-and the human near. Each state is decided from idle with the act done,
-30 seeds per state.
+The drives and chooser follow the brain of the earlier dog simulator
+whose code is public in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy)
+(MIT parts only). Two kinds of test compare the wasm build with it:
 
-| check | tolerance | measured 2026-11-22 |
+- fixtures from the running legacy code: `test/fixtures/legacy-brain.json`
+  holds the numbers the legacy JavaScript itself produced (legacy/det at
+  commit bc2cf6c, `brain.gain`, `brain.choose` and `brain.bodyClock` run
+  in a Node vm with stubs for the page globals) on the seeded inputs in
+  `test/parity-inputs.ts`. Only the numbers are committed;
+- a hand transcription of `driveD`, `gain` and `choose`, fed 339 drive
+  states recorded in the dog-simulator golden traces
+  (`test/fixtures/recorded-drive-states.json`, curiosity 0.5, prey 0),
+  each decided from idle with the act done, 30 seeds per state.
+
+| check | tolerance | measured 2026-11-23 |
 |---|---|---|
-| reward per act, max difference | under 1e-12 | passes |
-| same act from the same seeded stream | at least 99.5 percent | 10,170 of 10,170 |
-| choice distribution, total variation | under 0.01 | 0.0000 |
+| reward for all 13 legacy effects at scales 1, 0.35 and 1.25, 150 random states (fixture) | under 1e-13 | 4.4e-15, including the 15 digit rounding of the fixture |
+| act and reaction latency on every choice path: done or not, dwell out or not, any current act, 6,000 decisions (fixture) | same act; latency within 1e-11 s | 6,000 of 6,000, latency within 5.0e-13 s |
+| body clock, 1,000 hours and every hour of 2,000,000 scanned where it differs (fixture) | under 2.3e-16 absolute | 126 of 2,000,000 hours differ, each by one ulp, at most 2.22e-16 |
+| reward per act on the recorded states (transcription) | under 1e-12 | passes |
+| same act from the same seeded stream (transcription) | at least 99.5 percent | 10,170 of 10,170 |
+| choice distribution, total variation (transcription) | under 0.01 | 0.0000 |
 
-The learner drops one random draw HACKLE made in its ignore test (an
-always true condition, defect 17 of the plan), so cue responses do not
-replay HACKLE's stream; the learner was checked against conditioning
-results instead.
+The body clock goes through libm `exp` so native and wasm agree; V8's
+`Math.exp` differs from it by one ulp for some arguments, so against a
+JavaScript engine the wasm `bodyClock` is within 2.3e-16 absolute
+(measured), not bit identical.
+
+The learner drops one random draw the legacy brain made in its ignore
+test (an always true condition), so cue responses do not replay the
+legacy stream; the learner was checked against conditioning results
+instead.
 
 ## What is verified, and what is not
 

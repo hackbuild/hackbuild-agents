@@ -79,23 +79,28 @@ that page has to set `window.THREE` from a module first.
     cargo test -p hackbuild-senses
     HB_REGEN_GOLDEN=1 cargo test -p hackbuild-senses   # after a deliberate numeric change
 
-## Parity with HACKLE
+## Parity with the legacy dog simulator
 
-The legacy code was read, never run. The tests carry hand transcriptions
-of the HACKLE arithmetic (`test/legacy-ref.ts` for the attention update,
-an inline one for `plumeTick`) and compare the wasm build to them on the
-same inputs. The inputs are 240 synthetic seeded eye frames at 320 by 160
-(sky, ground, noise, up to three moving coloured patches, a top down blob
-on every third frame); no eye frames were recorded from a HACKLE run.
+The senses follow the attention, nose and hearing of the earlier dog
+simulator whose code is public in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy)
+(MIT parts only). Two kinds of test compare the wasm build with it:
 
-| check | tolerance | measured 2026-11-22 |
+- fixtures from the running legacy code: `test/fixtures/legacy-*.json`
+  hold the numbers the legacy JavaScript itself produced (legacy/det at
+  commit bc2cf6c, run in a Node vm with stubs for the page globals) on
+  the seeded inputs in `test/parity-inputs.ts`. Only the numbers are
+  committed;
+- hand transcriptions (`test/legacy-ref.ts`, an inline plume) on 240
+  synthetic eye frames, kept as a second check.
+
+| check | tolerance | measured 2026-11-23 |
 |---|---|---|
-| saliency winner cell, frame by frame | at least 99 percent agree | 240 of 240 |
-| saliency map, max difference over max value | under 1e-6 | 0 (bit identical f32 maps) |
-| plume puff positions after 10 s, same seeded stream | under 1e-9 m | 8.9e-16 m, 50 of 50 puffs |
-
-Inhibition of return is checked for behaviour (it follows the world
-direction across a head turn), not against the original projection.
+| saliency map and winner, 300 frames at 320x160, 640x320, 200x100, 321x163 and 97x61, flat frames included (fixture) | bit identical | 300 of 300 maps and winners |
+| three fixation sequences, 360 frames: top down bias from percepts, inhibition of return across head turns, shifts, dwell and snapping (fixture) | winner equal, map sums within 1e-6, fixation within 1e-9 m | 360 of 360 winners, 36 of 36 shifts at the same frames, map sums equal, fixation points within 1.2e-14 m |
+| plume, three runs of 2,400 to 3,000 steps, 1 to 12 sources, mixed 1/60 and 1/30 s steps, one at the 600 puff cap (fixture) | puff count equal every step, values within 1e-9 | counts equal, 3.6e-15 |
+| saliency on 240 frames with top down blobs (transcription) | winner 99 percent, map 1e-6 of max | 240 of 240, 0 |
+| plume after 10 s, one source (transcription) | under 1e-9 m | 8.9e-16 m |
 
 ## What is verified, and what is not
 
