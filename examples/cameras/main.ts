@@ -7,9 +7,9 @@ const r = result("cameras");
 const MODES = ["follow", "group", "orbit", "first person", "split"] as const;
 type Mode = (typeof MODES)[number];
 $("#controls").innerHTML = `
-<label>camera <select id="mode">${MODES.map((m) => `<option>${m}</option>`).join("")}</select></label>
-<button id="shake" type="button">shake</button>
-<span>orbit: arrow keys rotate, + and - zoom</span>`;
+<label class="hb-ctl">camera <select class="hb-select" id="mode">${MODES.map((m) => `<option>${m}</option>`).join("")}</select></label>
+<button class="hb-btn" id="shake" type="button">shake</button>
+<span class="pg-note">orbit: drag or arrow keys rotate, pinch or + and - zoom</span>`;
 const modeIn = $("#mode") as HTMLSelectElement;
 
 const { renderer, scene, camera, controls } = stage([0, 0.5, 0], 6);
@@ -55,6 +55,39 @@ addEventListener("keydown", (e) => {
   if (e.key === "+" || e.key === "=") orbit.zoom(0.9);
   if (e.key === "-") orbit.zoom(1.1);
 });
+// touch and mouse: one pointer drags the orbit, two pinch the zoom; the same
+// steps the keys take, so the numbers the checks read do not move
+const held = new Map<number, { x: number; y: number }>();
+let pinch = 0;
+const cv = renderer.domElement;
+cv.addEventListener("pointerdown", (e) => {
+  cv.setPointerCapture(e.pointerId);
+  held.set(e.pointerId, { x: e.clientX, y: e.clientY });
+});
+cv.addEventListener("pointermove", (e) => {
+  const p = held.get(e.pointerId);
+  if (!p || modeIn.value !== "orbit") return;
+  if (held.size === 1) orbit.rotate((e.clientX - p.x) * 0.005, (p.y - e.clientY) * 0.003);
+  p.x = e.clientX;
+  p.y = e.clientY;
+  if (held.size === 2) {
+    const [a, b] = [...held.values()];
+    const d = Math.hypot(a!.x - b!.x, a!.y - b!.y);
+    if (pinch) orbit.zoom(pinch / Math.max(1, d));
+    pinch = d;
+  }
+});
+const lift = (e: PointerEvent) => {
+  held.delete(e.pointerId);
+  pinch = 0;
+};
+cv.addEventListener("pointerup", lift);
+cv.addEventListener("pointercancel", lift);
+cv.addEventListener("wheel", (e) => {
+  if (modeIn.value !== "orbit") return;
+  e.preventDefault();
+  orbit.zoom(e.deltaY > 0 ? 1.1 : 0.9);
+}, { passive: false });
 // one camera per split view, each with its own controller
 const splitCams = [0, 1, 2, 3].map(() => new THREE.PerspectiveCamera(50, 1, 0.05, 100));
 const splitFollow = new Follow(splitCams[0]!, { distance: 4, clear });

@@ -3,12 +3,14 @@ import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } fr
 
 const r = result("drives");
 $("#controls").innerHTML = `
-<label>sim speed <select id="speed"><option>1</option><option selected>4</option><option>16</option></select></label>
-<button id="ball" type="button">throw the ball</button>
-<button id="feed" type="button">fill the bowl</button>`;
+<label class="hb-ctl">sim speed <select class="hb-select" id="speed"><option>1</option><option selected>4</option><option>16</option></select></label>
+<button class="hb-btn" id="ball" type="button">throw the ball</button>
+<button class="hb-btn hb-btn-2" id="feed" type="button">fill the bowl</button>`;
 const speedIn = $("#speed") as HTMLSelectElement;
+// why the chooser switched, newest first, in the hackbuild-ui console
 const log = document.createElement("ol");
-log.style.cssText = "margin:0 0 24px;padding-left:20px;color:var(--dim);max-height:220px;overflow:auto";
+log.className = "hb-console pg-log";
+log.setAttribute("aria-label", "why log");
 $("#readout").after(log);
 
 status("loading the drives wasm.");
@@ -17,8 +19,9 @@ await load();
 type K = "hunger" | "fatigue" | "play" | "social";
 type B = "idle" | "eat" | "fetch" | "rest" | "greet";
 const KEYS: K[] = ["hunger", "fatigue", "play", "social"];
-const COLORS: Record<K, string> = { hunger: "#d03030", fatigue: "#2f80ed", play: "#e0b020", social: "#1a7f37" };
-const ACT_COLOR: Record<B, string> = { idle: "#888", eat: "#d03030", fetch: "#e0b020", rest: "#2f80ed", greet: "#1a7f37" };
+// data on the void takes the hackbuild-ui lit set: --hb-lit-err, --hb-lit-info, --hb-lit-warn, --hb-slime, --hb-lit-label
+const COLORS: Record<K, string> = { hunger: "#ff5c4d", fatigue: "#58a6ff", play: "#ffb020", social: "#a6e22e" };
+const ACT_COLOR: Record<B, string> = { idle: "#9a9184", eat: "#ff5c4d", fetch: "#ffb020", rest: "#58a6ff", greet: "#a6e22e" };
 // what each act does to the drives per second while it runs, and how long it runs (inferred starting values)
 const EFFECT: Record<B, Partial<Record<K, number>>> = { idle: {}, eat: { hunger: -0.5 }, fetch: { play: -0.4, fatigue: 0.05 }, rest: { fatigue: -0.25 }, greet: { social: -0.3 } };
 const LENGTH: Record<B, number> = { idle: 3, eat: 4, fetch: 6, rest: 10, greet: 3 };
@@ -93,18 +96,19 @@ function step(dt: number) {
 }
 
 function draw() {
-  const w = (canvas.width = canvas.clientWidth * devicePixelRatio);
-  const h = (canvas.height = canvas.clientHeight * devicePixelRatio);
-  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
-  ctx.fillStyle = dark ? "#1b1d20" : "#fff";
+  // drawn at the device pixel ratio capped at 2, resized every frame, so a rotation never stretches it
+  const dpr = Math.min(devicePixelRatio, 2);
+  const w = (canvas.width = Math.round(canvas.clientWidth * dpr));
+  const h = (canvas.height = Math.round(canvas.clientHeight * dpr));
+  ctx.fillStyle = "#0a0a0a";
   ctx.fillRect(0, 0, w, h);
   const x = (t: number) => ((t - (simT - 120)) / 120) * w;
-  const band = 18 * devicePixelRatio;
+  const band = 18 * dpr;
   for (let i = 1; i < history.length; i++) {
     ctx.fillStyle = ACT_COLOR[history[i]!.act];
     ctx.fillRect(x(history[i - 1]!.t), h - band, x(history[i]!.t) - x(history[i - 1]!.t) + 1, band);
   }
-  ctx.lineWidth = 2 * devicePixelRatio;
+  ctx.lineWidth = 2 * dpr;
   for (const k of KEYS) {
     ctx.strokeStyle = COLORS[k];
     ctx.beginPath();
@@ -115,13 +119,13 @@ function draw() {
     });
     ctx.stroke();
   }
-  ctx.font = `${12 * devicePixelRatio}px ui-monospace, Menlo, monospace`;
+  ctx.font = `${16 * dpr}px VT323, ui-monospace, monospace`;
   KEYS.forEach((k, i) => {
     ctx.fillStyle = COLORS[k];
-    ctx.fillText(k, 10 * devicePixelRatio, (18 + i * 16) * devicePixelRatio);
+    ctx.fillText(k, 10 * dpr, (18 + i * 16) * dpr);
   });
-  ctx.fillStyle = dark ? "#e8e6e1" : "#1c1d1f";
-  ctx.fillText(`last 120 sim s; band is the current act: ${choose.current}`, 90 * devicePixelRatio, 18 * devicePixelRatio);
+  ctx.fillStyle = "#f5f0e6";
+  ctx.fillText(`last 120 sim s; band is the current act: ${choose.current}`, 90 * dpr, 18 * dpr);
 }
 
 function frame(now: number) {

@@ -22,6 +22,7 @@
   "devDependencies": {
     "@types/node": "22.20.5",
     "@types/three": "0.186.0",
+    "@virgilvox/hackbuild-ui": "file:tools/vendor/hackbuild-ui-0.4.3-692e0a4.tgz",
     "fast-check": "4.10.2",
     "happy-dom": "21.0.4",
     "puppeteer-core": "25.18.1",

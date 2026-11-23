@@ -43,3 +43,26 @@ Rerun: `npm run build && npm run examples && npm run examples:check`.
 | 23 | tunables | import through the file input | not run | no scripted file pick in this pass |
 | 24 | scenario | WebGPU in headless Chrome | not run | this pass ran headful; headful Chrome found the adapter above |
 | 25 | scenario | Chrome on the ubuntu-24.04 CI image | pass | the CI unit job runs the scenario Chrome tests with the runner's `/usr/bin/google-chrome` (the 2026-11-23 log: "scenario report 2026-11-23, Chrome/157.0.8103.78"); the senses eye test now finds the same Chrome instead of skipping |
+
+## Layout and mobile, 2026-11-23
+
+The example pages moved onto the hackbuild-ui 0.4.3 class layer, mobile
+first; the tunables panel on the mover page is styled by the page in the
+same idiom (the package still ships no stylesheet). Chrome 150 on the
+Apple M1, puppeteer-core, the index and the four pages at 320 px (touch),
+360 px (Galaxy S9+ profile, touch), 390 px (iPhone 13 profile, touch),
+768 px (touch), 1024, 1280 and 1440 px, full page screenshots in
+`.local/layout/` (gitignored). At every width: no sideways scroll against
+the device width; on the touch profiles every control is at least 44 px
+tall and fields are 16 px (measured by the layout script). On phones the
+3D view sits above the controls; from 641 px the controls go back under
+the header. The cameras page orbit now also takes a one finger drag, a
+two finger pinch and the wheel, the same steps the keys take. Looked at
+in the screenshots by the builder; the owner has not, and no real phone
+has opened the pages.
+
+The `?auto` checks after the restyle: senses, drives, mover and cameras
+pass. Senses figures move a lot between runs of the same code (the
+unchanged pages gave 18 and 10 fixations, 16.35 and 9.4 s to the bowl
+on two runs; the restyled page 7 and 14 fixations), so they are not
+compared to the rows above.

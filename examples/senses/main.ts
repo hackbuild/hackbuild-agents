@@ -6,21 +6,20 @@ import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } fr
 
 const r = result("senses");
 $("#controls").innerHTML = `
-<label>wind m/s <input id="wind" type="range" min="0.2" max="2" step="0.1" value="0.7"><span id="windv">0.7</span></label>
-<label>arousal <input id="arousal" type="range" min="0" max="1" step="0.05" value="0.5"></label>
-<button id="reset" type="button">restart the sniffer</button>`;
+<label class="hb-ctl">wind m/s <input class="hb-range" id="wind" type="range" min="0.2" max="2" step="0.1" value="0.7"><span class="hb-readout" id="windv">0.7</span></label>
+<label class="hb-ctl">arousal <input class="hb-range" id="arousal" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+<button class="hb-btn" id="reset" type="button">restart the sniffer</button>`;
+// the sense canvases as hackbuild-ui feeds: small multiples, pixel art kept square
 const panels = document.createElement("div");
-panels.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px";
+panels.className = "hb-feeds";
 const mk = (label: string, w: number, h: number) => {
   const f = document.createElement("figure");
-  f.style.margin = "0";
+  f.className = "hb-feed is-pixel";
   const c = document.createElement("canvas");
   c.width = w;
   c.height = h;
-  c.style.cssText = "width:100%;image-rendering:pixelated;border:1px solid var(--line);border-radius:4px;background:#000";
   const cap = document.createElement("figcaption");
   cap.textContent = label;
-  cap.style.color = "var(--dim)";
   f.append(c, cap);
   panels.append(f);
   return c;

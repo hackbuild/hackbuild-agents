@@ -9,14 +9,16 @@ const r = result("mover");
 const SCENES = ["corridor pass", "parked in path", "bench", "four way cross"] as const;
 type Scene = (typeof SCENES)[number];
 $("#controls").innerHTML = `
-<label>scene <select id="scene">${SCENES.map((s) => `<option>${s}</option>`).join("")}</select></label>
-<button id="restart" type="button">restart</button>`;
+<label class="hb-ctl">scene <select class="hb-select" id="scene">${SCENES.map((s) => `<option>${s}</option>`).join("")}</select></label>
+<button class="hb-btn" id="restart" type="button">restart</button>`;
 const sceneIn = $("#scene") as HTMLSelectElement;
 const whyLine = document.createElement("p");
+whyLine.className = "pg-what";
 $("#readout").after(whyLine);
 // steering values on a @hackbuild/tunables panel; a change applies on restart and is kept in the url hash
 const tuneHost = document.createElement("div");
 tuneHost.id = "tune";
+tuneHost.className = "pg-tune";
 whyLine.after(tuneHost);
 const tune = createRegistry({ version: 1 });
 tune.define({ key: "St.speed", group: "steer", label: "walk speed", unit: "m/s", def: 1.2, min: 0.4, max: 2.5, step: 0.05, source: "inferred" });

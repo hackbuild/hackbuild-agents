@@ -64,3 +64,4 @@ Versions follow semver per package. Nothing is published to npm yet.
   the crownfall camera (https://github.com/virgilvox/crownfall), free
   orbit, a first person eye that hides the
   head for its render, seeded shake and split viewports.
+- examples on the hack.build design system: the pages load the hackbuild-ui 0.4.3 class layer and its inlined fonts from the vendored tarball (`tools/vendor`, sha-256 checked in CI) in place of their own theme, mobile first from a 360 px phone; the drive plot draws in the lit set on the void, the why log is a console, the senses canvases are feeds, the tunables panel is styled by the page, and the cameras orbit takes a drag, a pinch and the wheel.

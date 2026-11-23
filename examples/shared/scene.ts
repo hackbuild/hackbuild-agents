@@ -16,19 +16,21 @@ export function stage(target: [number, number, number] = [0, 0.4, 0], distance =
   const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   host.append(renderer.domElement);
-  const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+  // the scene orbits with a finger: OrbitControls reads pointer events, the canvas takes touch-action none
+  host.classList.add("is-orbit");
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(dark ? 0x1b1d20 : 0xffffff);
+  // the light scene the checks were measured on; the dark branch went with the dark palette
+  scene.background = new THREE.Color(0xffffff);
   const camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.01, 200);
   camera.position.set(target[0] + distance * 0.8, target[1] + distance * 0.45, target[2] + distance);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(...target);
   controls.update();
-  scene.add(new THREE.HemisphereLight(0xffffff, dark ? 0x30343a : 0xb0aca0, 2.2));
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb0aca0, 2.2));
   const sun = new THREE.DirectionalLight(0xffffff, 1.6);
   sun.position.set(2, 4, 3);
   scene.add(sun);
-  const grid = new THREE.GridHelper(40, 80, dark ? 0x4a4f57 : 0xb8b5ac, dark ? 0x2a2d32 : 0xdedbd2);
+  const grid = new THREE.GridHelper(40, 80, 0xb8b5ac, 0xdedbd2);
   scene.add(grid);
   const fit = () => {
     const w = host.clientWidth;
