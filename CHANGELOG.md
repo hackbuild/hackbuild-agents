@@ -28,3 +28,9 @@ Versions follow semver per package. Nothing is published to npm yet.
   traces, motion metrics (jerk, sliding, toggles, stalls, frame
   percentiles), a rAF sampler, a per system profiler, reports in the check
   message form, and the `hb-scenario` command.
+- `@hackbuild/mover`: kinematic capsule mover with step up and platform
+  carry, and steering with a passing side held for a second, tangential
+  bends, timed yields by priority, multi part footprints with per agent
+  filters, and a stall detector that inserts a side waypoint.
+- `crates/senses`: wasm surface written without `chunks_exact`, which the
+  newer clippy on CI rejects.

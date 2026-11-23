@@ -1,4 +1,4 @@
 {
   "files": [],
-  "references": [{ "path": "packages/tunables" }, { "path": "packages/senses" }, { "path": "packages/drives" }, { "path": "packages/scenario" }]
+  "references": [{ "path": "packages/tunables" }, { "path": "packages/senses" }, { "path": "packages/drives" }, { "path": "packages/scenario" }, { "path": "packages/mover" }]
 }
