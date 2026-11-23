@@ -119,11 +119,111 @@ describe("passing and yielding (hackle-plan 5.4 item 3)", () => {
   });
 
   it("a follow spot beside the leader is exempt from its push", () => {
-    const s = new Steerer("dog");
+    const s = new Steerer("dog", { follow: "human" });
     s.setGoal(0.9, 0.2);
     const out = s.update(0, { id: "dog", x: 3, z: 0.2, vx: 0, vz: 0, radius: 0.35 }, [{ id: "human", x: 0, z: 0, vx: 0, vz: 0, radius: 0.3, priority: 1, moving: false }]);
     expect(out.mode).toBe("go");
     expect(out.vx).toBeLessThan(-0.5);
+  });
+});
+
+/** Mulberry32, for seeded layouts in the property tests. */
+function mulberry(seed: number): () => number {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+type Walker = Body & { goal: [number, number] };
+
+/** Steps walkers with a 1 - exp(-dt / 0.15) velocity lag; returns the closest surface gap and whether all arrived within 0.5 m. */
+function walk(bodies: Walker[], seconds: number, hz: number): { minGap: number; arrived: boolean } {
+  for (const b of bodies) b.steer.setGoal(...b.goal);
+  const dt = 1 / hz;
+  const k = 1 - Math.exp(-dt / 0.15);
+  let minGap = Infinity;
+  for (let s = 0; s < seconds * hz; s++) {
+    const outs = bodies.map((b) => b.steer.update(s * dt, b, bodies));
+    bodies.forEach((b, i) => {
+      const o = outs[i] as ReturnType<Steerer["update"]>;
+      b.vx += (o.vx - b.vx) * k;
+      b.vz += (o.vz - b.vz) * k;
+      b.x += b.vx * dt;
+      b.z += b.vz * dt;
+    });
+    for (let i = 0; i < bodies.length; i++)
+      for (let j = i + 1; j < bodies.length; j++) {
+        const p = bodies[i] as Walker;
+        const q = bodies[j] as Walker;
+        minGap = Math.min(minGap, Math.hypot(p.x - q.x, p.z - q.z) - p.radius - q.radius);
+      }
+  }
+  return { minGap, arrived: bodies.every((b) => Math.hypot(b.x - b.goal[0], b.z - b.goal[1]) < 0.5) };
+}
+
+const walker = (id: string, x: number, z: number, radius: number, priority: number, goal: [number, number]): Walker => ({ ...body(id, x, z, radius, priority), goal });
+
+describe("random crossings (property)", () => {
+  // Before the side was kept relative to the neighbour and dropped once the
+  // closest approach was behind, 164 of these 1,000 two agent layouts
+  // overlapped by more than 5 cm (worst 0.639 m) and 61 of 200 many agent
+  // layouts did (measured).
+  it("two agents crossing at 20 to 180 degrees never overlap by more than 5 cm", () => {
+    let runs = 0;
+    let worst = Infinity;
+    for (let seed = 1; runs < 1000; seed++) {
+      const r = mulberry(seed);
+      const ang = ((20 + r() * 160) * Math.PI) / 180;
+      const off = r() - 0.5;
+      const tOff = (r() - 0.5) * 2;
+      const ux = Math.cos(ang);
+      const uz = Math.sin(ang);
+      const a = walker("a", -5, 0, 0.3, (r() * 2) | 0, [5, 0]);
+      const b = walker("b", -ux * (5 + tOff) - uz * off, -uz * (5 + tOff) + ux * off, 0.35, (r() * 2) | 0, [ux * 5 - uz * off, uz * 5 + ux * off]);
+      const far = (p: [number, number], x: number, z: number) => Math.hypot(p[0] - x, p[1] - z) >= 1.5;
+      if (!far(a.goal, b.x, b.z) || !far(b.goal, a.x, a.z) || !far(a.goal, ...b.goal)) continue;
+      runs++;
+      const res = walk([a, b], 20, 60);
+      expect(res.arrived, `seed ${seed}`).toBe(true);
+      worst = Math.min(worst, res.minGap);
+    }
+    expect(worst).toBeGreaterThan(-0.05);
+  });
+
+  it("two to six agents crossing a 10 m ring never overlap by more than 5 cm", () => {
+    let runs = 0;
+    let worst = Infinity;
+    for (let seed = 1; runs < 200; seed++) {
+      const r = mulberry(100000 + seed);
+      const n = 2 + ((r() * 5) | 0);
+      const bodies: Walker[] = [];
+      for (let i = 0; i < n; i++) {
+        const a = r() * Math.PI * 2;
+        const g = a + Math.PI + (r() - 0.5) * 1.5;
+        bodies.push(walker(`n${i}`, 5 * Math.cos(a), 5 * Math.sin(a), 0.3 + r() * 0.1, (r() * 2) | 0, [5 * Math.cos(g), 5 * Math.sin(g)]));
+      }
+      const near = bodies.some((p, i) => bodies.some((q, j) => j > i && (Math.hypot(p.x - q.x, p.z - q.z) < 1.5 || Math.hypot(p.goal[0] - q.goal[0], p.goal[1] - q.goal[1]) < 1.5 || Math.hypot(p.goal[0] - q.x, p.goal[1] - q.z) < 1.5 || Math.hypot(q.goal[0] - p.x, q.goal[1] - p.z) < 1.5)));
+      if (near) continue;
+      runs++;
+      const res = walk(bodies, 25, 60);
+      expect(res.arrived, `seed ${seed}`).toBe(true);
+      worst = Math.min(worst, res.minGap);
+    }
+    expect(worst).toBeGreaterThan(-0.05);
+  });
+
+  it("a goal beside a standing agent that is not the leader keeps the contact push", () => {
+    // the exemption is for a named leader only; a sitter near the goal
+    // keeps its bend and the contact constraint
+    const w = walker("walker", 0, -4, 0.3, 1, [0, 0]);
+    const s = walker("sitter", 0.5, 0, 0.35, 0, [0.5, 0]);
+    s.steer = new Steerer("sitter");
+    const res = walk([w, s], 10, 60);
+    expect(res.minGap).toBeGreaterThan(-0.05);
   });
 });
 
@@ -151,6 +251,32 @@ describe("footprints and stalls", () => {
     b.setGoal(0, 0.3);
     const o = b.update(0, { id: "b", x: 0, z: -2, vx: 0, vz: 0, radius: 0.3 }, [], [bench], new Set(["bench"]));
     expect(o.vz).toBeGreaterThan(1);
+  });
+
+  it("a yielding agent does not step into a footprint", () => {
+    // before: the yield velocity skipped the footprint loop and the dog
+    // ended 0.397 m inside the bench (measured in the audit)
+    const side: Footprint = { id: "bench", parts: [{ ax: 0.6, az: -1, bx: 0.6, bz: 1, r: 0.25 }] };
+    const h = body("human", 0, -4, 0.3, 1);
+    const d = body("dog", 0, 0, 0.35);
+    h.steer.setGoal(0, 4);
+    const dt = 1 / 60;
+    let worst = Infinity;
+    let yielded = false;
+    for (let k = 0; k < 8 * 60; k++) {
+      const outs = [h, d].map((b) => b.steer.update(k * dt, b, [h, d], [side]));
+      [h, d].forEach((b, i) => {
+        const o = outs[i] as ReturnType<Steerer["update"]>;
+        if (b === d && o.mode === "yield") yielded = true;
+        b.vx += (o.vx - b.vx) * (1 - Math.exp(-dt / 0.15));
+        b.vz += (o.vz - b.vz) * (1 - Math.exp(-dt / 0.15));
+        b.x += b.vx * dt;
+        b.z += b.vz * dt;
+      });
+      worst = Math.min(worst, nearest(side, d.x, d.z).dist - d.radius);
+    }
+    expect(yielded).toBe(true);
+    expect(worst).toBeGreaterThan(-0.05);
   });
 
   it("a stall against a wall inserts a side waypoint", () => {

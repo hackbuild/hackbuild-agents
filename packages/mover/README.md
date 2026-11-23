@@ -13,19 +13,25 @@ What is in it:
   distance, wall only colliders, and moving platform carry
   (`moveCollider`, then `endFrame`).
 - `Steerer`, one per agent:
-  - a passing side per neighbour, chosen from where the other stands
-    (head on, each keeps right) and held at least 1 s;
-  - neighbours bend the heading tangentially; the radial push only acts
-    inside the clearance and the goal always keeps a share of the
-    heading, so the push never turns the agent away and stops it;
+  - a passing side per neighbour, chosen from where the other will stand
+    at closest approach (head on, each keeps right), held at least 1 s,
+    renewed only while that approach is ahead and dropped once it is
+    behind;
+  - neighbours bend the heading along a tangent round the neighbour on
+    the held side; the goal always keeps a share of the heading, so the
+    bend never turns the agent away and stops it;
+  - contact as a constraint: inside the clearance (0.25 m) of a
+    neighbour the part of the heading toward it is removed and an
+    outward push added, for every neighbour, the leader included;
   - yields: an agent with no goal, or a lower priority (ties by id),
     steps off the path of an agent whose closest approach comes within
-    reach; a yield times out (1.5 s) and then cools down, so two
-    yielders cannot wait on each other;
+    reach, under the same contact and footprint constraints; a yield
+    times out (1.5 s) and then cools down, so two yielders cannot wait
+    on each other;
   - a stall detector: with a goal and under 0.2 m in 2 s, a side
     waypoint is inserted on the held side;
-  - a target within 1.3 m of a neighbour switches off its push (the
-    follow spot beside a leader);
+  - `follow: id` names a leader; a target within 1.3 m of it switches
+    off the leader's bend (the follow spot beside a leader);
   - footprints of several circles or capsules per object (a bench with
     two ends), handled as constraints: the inward part of the heading
     goes and a tangent on the held side comes in;
@@ -67,6 +73,16 @@ defines `HackbuildMover`.
 
 ### Verified on this machine
 
+- 2026-11-23, after the passing side fix: `npx vitest run
+  packages/mover` passed 14 of 14 tests (counted), adding 1,000 seeded
+  two agent crossings at 20 to 180 degrees with lateral and timing
+  offsets, and 200 seeded layouts of 2 to 6 agents crossing a 10 m ring,
+  all at 60 Hz: every agent arrived and none overlapped (closest gap
+  0.166 m and 0.165 m, measured). The same layouts at 20, 30, 144 and
+  240 Hz: no overlap, every agent arrived (measured, 500 and 100 layouts
+  per rate). Before, 164 of the 1,000 and 61 of the 200 overlapped by
+  more than 5 cm, worst 0.639 m (measured). A yielding dog beside a
+  bench ends touching its surface, 0 m inside (before: 0.397 m inside, measured).
 - 2026-11-23: `npx vitest run packages/mover` passed 10 of 10 tests
   (counted), the 9 below and four agents crossing at right angles with
   no overlap (closest gap 0.47 m at 60 Hz, measured; before the passing
