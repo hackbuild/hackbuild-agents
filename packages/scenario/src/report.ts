@@ -15,6 +15,8 @@ export interface Check {
   fix?: string;
   /** where the number comes from (RULES: measured, computed, inferred) */
   kind?: "measured" | "computed" | "inferred";
+  /** a check that may not run without failing the report (it still prints as not run) */
+  optional?: boolean;
 }
 
 export type Verdict = "pass" | "fail" | "not run";
@@ -82,7 +84,20 @@ export function formatReport(r: Report): string {
   return lines.join("\n");
 }
 
-/** True when nothing failed, no page error, no blocked request, and every golden matched. */
+/**
+ * True when nothing failed, every check that is not `optional` ran, no
+ * page error, no blocked request, and every golden matched. A check that
+ * did not run is never a pass.
+ */
 export function reportPasses(r: Report): boolean {
-  return r.results.every((s) => s.errors.length === 0 && s.blocked.length === 0 && (s.golden === undefined || s.golden === "identical" || s.golden === "recorded") && s.checks.every((c) => verdict(c) !== "fail"));
+  return r.results.every(
+    (s) =>
+      s.errors.length === 0 &&
+      s.blocked.length === 0 &&
+      (s.golden === undefined || s.golden === "identical" || s.golden === "recorded") &&
+      s.checks.every((c) => {
+        const v = verdict(c);
+        return v === "pass" || (v === "not run" && c.optional === true);
+      }),
+  );
 }

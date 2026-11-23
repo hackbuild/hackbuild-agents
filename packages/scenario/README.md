@@ -33,7 +33,9 @@ What is in it:
 - `checkMessage`, `formatReport`, `reportPasses`: "stall 4.75 s
   (measured), legal at most 1 s, set by the stall detector, 0.2 m in 2 s.
   fix: insert a side waypoint". A check with no measurement is reported as
-  not run.
+  not run, and `reportPasses` (so the `hb-scenario` exit code) fails on
+  it unless the check sets `optional: true`. `runSuite` refuses `compare`
+  and `record` without a `goldenDir`.
 - `hb-scenario record|compare|check --file F --list L`: the same from the
   command line; the list module exports `scenarios`, `routes` and
   `options`.

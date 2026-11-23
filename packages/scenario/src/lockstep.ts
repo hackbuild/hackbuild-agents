@@ -161,6 +161,7 @@ export interface SuiteOptions extends LockstepOptions {
 
 /** Runs a scenario list, records or compares goldens, returns a report. */
 export async function runSuite(o: SuiteOptions): Promise<Report & { traces: Record<string, Trace> }> {
+  if ((o.mode === "compare" || o.mode === "record") && !o.goldenDir) throw new Error(`${o.mode} needs goldenDir: without it nothing is ${o.mode === "compare" ? "compared" : "recorded"}`);
   const api = o.api ?? "window.__sim";
   const results: ScenarioResult[] = [];
   const traces: Record<string, Trace> = {};

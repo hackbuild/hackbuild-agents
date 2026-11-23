@@ -76,6 +76,19 @@ describe("reports in the check message form", () => {
     expect(formatReport(rep).split("\n")[2]).toMatch(/^ {2}fail: stall 4.75 s/);
     expect(reportPasses(rep)).toBe(false);
   });
+
+  it("does not pass a report whose checks did not run", () => {
+    const c = { what: "stall", measured: null, unit: "s", legal: { max: 1 }, constraint: "set by the stall detector" };
+    const rep = (checks: object[]) => ({ date: "2026-11-23", chrome: "Chrome/150", results: [{ name: "a", seed: 1, checks: checks as never[], errors: [], blocked: [] }] });
+    expect(reportPasses(rep([c, { ...c, measured: Number.NaN }]))).toBe(false);
+    expect(reportPasses(rep([{ ...c, measured: 0.5 }, { ...c, optional: true }]))).toBe(true);
+    expect(formatReport(rep([{ ...c, optional: true }]))).toMatch(/not run/);
+  });
+
+  it("refuses compare or record without a golden directory", async () => {
+    await expect(runSuite({ file: fixture, scenarios: [], mode: "compare" })).rejects.toThrow(/goldenDir/);
+    await expect(runSuite({ file: fixture, scenarios: [], mode: "record" })).rejects.toThrow(/goldenDir/);
+  });
 });
 
 describe("profiler", () => {
