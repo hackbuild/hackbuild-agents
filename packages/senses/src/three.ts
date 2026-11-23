@@ -119,6 +119,8 @@ export class Eye {
   private black = new THREE.MeshBasicMaterial({ color: 0x000000 });
   private idMats: THREE.MeshBasicMaterial[] = [];
   private depthMat: THREE.ShaderMaterial;
+  private colorTarget: THREE.WebGLRenderTarget | null = null;
+  private colorTmp = new Uint8Array(0);
   private busy = false;
 
   constructor(
@@ -186,17 +188,8 @@ export class Eye {
     const prevTarget = r.getRenderTarget();
     const prevClear = r.getClearColor(new THREE.Color());
     const prevAlpha = r.getClearAlpha();
-    r.setRenderTarget(this.idTarget);
-    r.setClearColor(0x000000, 1);
-    r.clear();
-    r.render(scene, this.camera);
-    scene.overrideMaterial = this.depthMat;
-    r.setRenderTarget(this.depthTarget);
-    r.setClearColor(0xffffff, 1);
-    r.clear();
-    r.render(scene, this.camera);
-    scene.overrideMaterial = null;
-    return () => {
+    const restore = () => {
+      scene.overrideMaterial = null;
       r.setRenderTarget(prevTarget);
       r.setClearColor(prevClear, prevAlpha);
       for (const [o, mat, vis] of saved) {
@@ -207,6 +200,23 @@ export class Eye {
       scene.background = bg;
       scene.fog = fog;
     };
+    // a throw mid render must not leave the scene in ID materials
+    try {
+      r.setRenderTarget(this.idTarget);
+      r.setClearColor(0x000000, 1);
+      r.clear();
+      r.render(scene, this.camera);
+      scene.overrideMaterial = this.depthMat;
+      r.setRenderTarget(this.depthTarget);
+      r.setClearColor(0xffffff, 1);
+      r.clear();
+      r.render(scene, this.camera);
+      scene.overrideMaterial = null;
+    } catch (e) {
+      restore();
+      throw e;
+    }
+    return restore;
   }
 
   private finish(tracked: Tracked[]): EyePass {
@@ -252,16 +262,31 @@ export class Eye {
     }
   }
 
-  /** A colour frame for saliency (RGBA, row 0 at the top) of `w` by `h`. */
+  /**
+   * A colour frame for saliency (RGBA, row 0 at the top) of `w` by `h`.
+   * Without `target` the eye keeps one render target and one readback
+   * buffer for the size and reuses them; `dispose` frees them.
+   */
   colorFrame(w: number, h: number, target?: THREE.WebGLRenderTarget, out = new Uint8Array(w * h * 4)): Uint8Array {
-    const rt = target ?? new THREE.WebGLRenderTarget(w, h);
+    let rt = target;
+    if (!rt) {
+      const c = this.colorTarget;
+      if (!c || c.width !== w || c.height !== h) {
+        c?.dispose();
+        this.colorTarget = new THREE.WebGLRenderTarget(w, h);
+      }
+      rt = this.colorTarget as THREE.WebGLRenderTarget;
+    }
+    if (this.colorTmp.length !== w * h * 4) this.colorTmp = new Uint8Array(w * h * 4);
+    const tmp = this.colorTmp;
     const prev = this.renderer.getRenderTarget();
-    this.renderer.setRenderTarget(rt);
-    this.renderer.render(this.scene, this.camera);
-    const tmp = new Uint8Array(w * h * 4);
-    this.renderer.readRenderTargetPixels(rt, 0, 0, w, h, tmp);
-    this.renderer.setRenderTarget(prev);
-    if (!target) rt.dispose();
+    try {
+      this.renderer.setRenderTarget(rt);
+      this.renderer.render(this.scene, this.camera);
+      this.renderer.readRenderTargetPixels(rt, 0, 0, w, h, tmp);
+    } finally {
+      this.renderer.setRenderTarget(prev);
+    }
     for (let y = 0; y < h; y++) out.set(tmp.subarray((h - 1 - y) * w * 4, (h - y) * w * 4), y * w * 4);
     return out;
   }
@@ -269,6 +294,8 @@ export class Eye {
   dispose(): void {
     this.idTarget.dispose();
     this.depthTarget.dispose();
+    this.colorTarget?.dispose();
+    this.colorTarget = null;
     this.depthMat.dispose();
     this.black.dispose();
     for (const m of this.idMats) m.dispose();

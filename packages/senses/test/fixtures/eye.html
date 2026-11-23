@@ -56,6 +56,20 @@ add("../../dist/senses.iife.js").then(() => add("../../dist/senses-three.iife.js
     sal.update(color, 160, 80, 0, pass.camera);
     const fix = sal.shift(0, pass.camera, [box.position], 0.5);
     const asyncPass = await eye.passAsync([{ object: box, label: "box" }]);
+    // colour frames reuse one render target: count disposals over three calls
+    let disposed = 0;
+    const realDispose = THREE.WebGLRenderTarget.prototype.dispose;
+    THREE.WebGLRenderTarget.prototype.dispose = function () { disposed++; return realDispose.call(this); };
+    for (let k = 0; k < 3; k++) eye.colorFrame(160, 80);
+    THREE.WebGLRenderTarget.prototype.dispose = realDispose;
+    // a throw mid render restores the materials
+    const bomb = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.1, 0.1), new THREE.MeshStandardMaterial());
+    bomb.position.set(0, 0.6, 1);
+    bomb.onBeforeRender = () => { throw new Error("render failed"); };
+    scene.add(bomb);
+    let threw = false;
+    try { eye.pass([{ object: box, label: "box" }]); } catch { threw = true; }
+    scene.remove(bomb);
     window.__result = {
       seen: pass.visible,
       wallCells,
@@ -64,6 +78,9 @@ add("../../dist/senses.iife.js").then(() => add("../../dist/senses-three.iife.js
       fixation: fix,
       asyncSeen: asyncPass ? asyncPass.visible.length : -1,
       materialsRestored: box.material.isMeshStandardMaterial === true,
+      colorDisposals: disposed,
+      threw,
+      restoredAfterThrow: box.material.isMeshStandardMaterial === true && bomb.material.isMeshStandardMaterial === true && scene.overrideMaterial === null,
     };
   } catch (e) {
     window.__result = { error: String(e && e.stack || e) };

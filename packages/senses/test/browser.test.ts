@@ -41,6 +41,12 @@ describe.skipIf(!CHROME)("eye in chrome", () => {
       expect(r.free).toBeGreaterThan(1);
       expect(r.asyncSeen).toBe(1);
       expect(r.materialsRestored).toBe(true);
+      // before: each colorFrame made and disposed a render target (3 over
+      // three calls), and a throw during the pass left the ID materials on
+      // the scene
+      expect(r.colorDisposals).toBe(0);
+      expect(r.threw).toBe(true);
+      expect(r.restoredAfterThrow).toBe(true);
       console.log(`eye in chrome: box ${box?.pixels} px at ${box?.dist.toFixed(2)} m, instanced ${inst?.pixels} px at ${inst?.dist.toFixed(2)} m, skinned ${skin?.pixels} px at ${skin?.dist.toFixed(2)} m, wall cells ${r.wallCells}, fixation ${JSON.stringify(r.fixation)} (measured)`);
     } finally {
       await browser.close();
