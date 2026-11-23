@@ -104,6 +104,19 @@ describe("routes", () => {
     expect(r(new URL(`https://unpkg.com/three@${v}/package.json`))?.file).toBe(join(nm, "three/package.json"));
   });
 
+  it("refuses an npm CDN path that climbs out of the package", () => {
+    // before: the encoded slashes decoded after the URL parser had
+    // normalized the path, and this URL resolved to /etc/hosts
+    const v = JSON.parse(readFileSync(join(nm, "three/package.json"), "utf8")).version;
+    const r = npmCdn(nm);
+    const up = "..%2f".repeat(12);
+    expect(r(new URL(`https://cdn.jsdelivr.net/npm/three@${v}/${up}etc%2fhosts`))).toBeNull();
+    expect(r(new URL(`https://unpkg.com/three@${v}/${up}etc%2fhosts`))).toBeNull();
+    expect(r(new URL(`https://cdn.jsdelivr.net/npm/three@${v}/..%5c..%5cpackage.json`))).toBeNull();
+    expect(r(new URL(`https://cdn.jsdelivr.net/npm/three@${v}/%2e%2e/%2e%2e/package.json`))).toBeNull();
+    expect(r(new URL(`https://cdn.jsdelivr.net/npm/three@${v}/build/%E0%A4%A`))).toBeNull();
+  });
+
   it("refuses a pinned file whose hash changed", () => {
     const f = join(tmp, "w.bin");
     writeFileSync(f, "weights");
