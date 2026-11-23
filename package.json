@@ -14,8 +14,10 @@
     "prepare": "git config core.hooksPath .githooks || true",
     "build": "if ls packages/*/package.json >/dev/null 2>&1; then npm run build --workspaces --if-present; else echo 'build: no workspace packages yet'; fi",
     "test": "vitest run --passWithNoTests && node --test tools/test/*.test.mjs",
-    "typecheck": "tsc -b && tsc -p tsconfig.tests.json",
-    "lint:voice": "git ls-files | grep -Ev '\\.(png|jpe?g|glb|bin|wasm|wav)$|^(LICENSES/|RULES.md|CLAUDE.md|tools/)|package-lock.json|Cargo.lock' | xargs node tools/lint-voice.mjs"
+    "typecheck": "tsc -b && tsc -p tsconfig.tests.json && tsc -p examples",
+    "lint:voice": "git ls-files | grep -Ev '\\.(png|jpe?g|glb|bin|wasm|wav)$|^(LICENSES/|RULES.md|CLAUDE.md|tools/)|package-lock.json|Cargo.lock' | xargs node tools/lint-voice.mjs",
+    "examples": "node tools/build-examples.mjs",
+    "examples:check": "node tools/check-examples.mjs"
   },
   "devDependencies": {
     "@types/node": "22.20.5",

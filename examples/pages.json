@@ -1,0 +1,28 @@
+{
+  "repo": "hackbuild-agents",
+  "intro": "one page per package. every shape is built in code; no model, asset or weight file is loaded.",
+  "footer": "code mit. pages built from github.com/hackbuild/hackbuild-agents. no weights or model files are hosted here.",
+  "source": "https://github.com/hackbuild/hackbuild-agents",
+  "pages": [
+    {
+      "name": "senses",
+      "what": "saliency map on a rendered view, eye depth to an occupancy grid, percept memory, an odour plume and a scent tracker.",
+      "timeoutS": 70
+    },
+    {
+      "name": "drives",
+      "what": "drives grow over time; the chooser picks an act by drive reduction and logs why. throw the ball to make fetch reactive.",
+      "timeoutS": 45
+    },
+    {
+      "name": "mover",
+      "what": "capsule movers: steering with a held passing side, timed yields, a bench of several parts and a stall detector.",
+      "timeoutS": 80
+    },
+    {
+      "name": "cameras",
+      "what": "follow with occlusion pull in, group framing, orbit, first person with the head hidden, shake and split views.",
+      "timeoutS": 60
+    }
+  ]
+}
