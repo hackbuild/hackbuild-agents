@@ -34,3 +34,6 @@ Versions follow semver per package. Nothing is published to npm yet.
   filters, and a stall detector that inserts a side waypoint.
 - `crates/senses`: wasm surface written without `chunks_exact`, which the
   newer clippy on CI rejects.
+- `@hackbuild/cameras`: follow with occlusion pull in, group framing from
+  the crownfall camera, free orbit, a first person eye that hides the
+  head for its render, seeded shake and split viewports.
