@@ -6,6 +6,7 @@
 import { assertReady, loadWasm, loadWasmSync, type WasmSource } from "./load.js";
 import * as w from "./wasm/drives.js";
 
+export * from "./clock.js";
 export * from "./schedule.js";
 export * from "./task.js";
 export type { WasmSource } from "./load.js";

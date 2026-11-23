@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 import {
   bodyClock,
+  bodyClockJs,
   Chooser,
   Completion,
   CueLearner,
@@ -229,6 +230,12 @@ describe("parity with fixtures from the running legacy code", () => {
     // the fixture keeps 1,000 hours and every one of 2,000,000 scanned where libm exp and V8 Math.exp differed
     expect(differ).toBe(126);
     expect(worst).toBeLessThanOrEqual(2.3e-16);
+  });
+
+  it("bodyClockJs is bit identical to the legacy JavaScript", () => {
+    const off = ref.clock.filter(([k, v]) => bodyClockJs(clockHour(k)) !== v);
+    expect(off).toEqual([]);
+    expect(ref.clock.length).toBe(1126);
   });
 });
 
