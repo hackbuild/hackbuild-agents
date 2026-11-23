@@ -38,10 +38,12 @@ impl Drives {
     /// The reward of an act with expected `effect` per deficit: the drop in
     /// drive, times the gain. Reductions are scaled by `scale`, increases
     /// are not (the legacy simulator's secure base and nearness scaling).
+    /// A zero effect leaves its deficit as it is, unclamped, as the legacy
+    /// `gain` does for a drive its effect does not name.
     pub fn reward_of(&self, effect: &[f64], scale: f64) -> f64 {
         let mut h = self.values.clone();
         for (i, &k) in effect.iter().enumerate() {
-            if i < h.len() {
+            if i < h.len() && k != 0.0 {
                 h[i] = (h[i] + k * if k < 0.0 { scale } else { 1.0 }).clamp(0.0, 1.0);
             }
         }
@@ -58,6 +60,20 @@ impl Drives {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn zero_effects_leave_out_of_range_deficits_alone() {
+        // a deficit above 1 that the effect does not touch is not clamped,
+        // as in the legacy gain: play 1.3 and eat gives 0.0477 (computed);
+        // clamping the untouched play to 1 gave 0.539 (computed)
+        let mut d = Drives::new(vec![1.0, 1.0, 0.8], 3.0, 4.0, 2.4);
+        d.values = vec![0.5, 0.2, 1.3];
+        let r = d.reward_of(&[-0.5, 0.0, 0.0], 1.0);
+        let h = [0.0, 0.2, 1.3];
+        let legacy = 2.4 * (d.distance(&d.values) - d.distance(&h));
+        assert_eq!(r, legacy);
+        assert!((r - 0.0477).abs() < 1e-4);
+    }
 
     #[test]
     fn reward_is_larger_for_the_bigger_need() {
