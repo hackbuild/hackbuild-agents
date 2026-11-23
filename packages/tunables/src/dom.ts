@@ -15,6 +15,11 @@ export interface PanelOptions {
   syncHash?: boolean;
   /** the document to build in, for tests or iframes */
   document?: Document;
+  /** receives the export text; without it the panel downloads `fileName` */
+  onExport?: (json: string) => void;
+  fileName?: string;
+  /** called after an import with the skipped keys, or the read error */
+  onImport?: (skipped: string[], error: Error | null) => void;
   /** the location to sync, default `globalThis.location` */
   location?: { hash: string };
 }
@@ -69,8 +74,20 @@ export function bindPanel(host: HTMLElement, reg: Registry, opts: PanelOptions =
         inp.addEventListener("input", () => reg.set(key, Number(inp.value)));
         const out = el("output", "value", formatValue(d, reg.get(key)));
         outs.set(key, out);
-        row.append(el("span", "label", d.label), inp, out, el("span", "source", d.source ?? "unknown"));
+        row.append(el("span", "label", d.label), inp, out);
+        if (d.unit) row.append(el("span", "unit", d.unit));
+        row.append(el("span", "source", d.source ?? "unknown"));
         if (d.cite) row.append(el("span", "cite", d.cite));
+      }
+      if (!layerSet.has(key)) {
+        const rb = el("button", "reset-one", "reset");
+        rb.type = "button";
+        rb.dataset.reset = key;
+        rb.addEventListener("click", (ev) => {
+          ev.preventDefault();
+          reg.reset(key);
+        });
+        row.append(rb);
       }
       inputs.set(key, inp);
       det.append(row);
@@ -90,10 +107,39 @@ export function bindPanel(host: HTMLElement, reg: Registry, opts: PanelOptions =
     }
     root.prepend(bar);
   }
+  const bar = el("div", "actions");
   const reset = el("button", "reset", "reset all");
   reset.type = "button";
   reset.addEventListener("click", () => reg.reset());
-  root.append(reset);
+  const exp = el("button", "export", "export");
+  exp.type = "button";
+  exp.addEventListener("click", () => {
+    const text = JSON.stringify(reg.toJSON(), null, 1);
+    if (opts.onExport) return opts.onExport(text);
+    const a = el("a");
+    a.href = URL.createObjectURL(new Blob([text], { type: "application/json" }));
+    a.download = opts.fileName ?? "tunables.json";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  });
+  const imp = el("input", "import");
+  imp.type = "file";
+  imp.accept = ".json,application/json";
+  imp.addEventListener("change", async () => {
+    const f = imp.files?.[0];
+    if (!f) return;
+    try {
+      const skipped = reg.fromJSON(JSON.parse(await f.text()));
+      opts.onImport?.(skipped, null);
+    } catch (e) {
+      opts.onImport?.([], e instanceof Error ? e : new Error(String(e)));
+    }
+    imp.value = "";
+  });
+  const impLabel = el("label", "import-label", "import");
+  impLabel.append(imp);
+  bar.append(reset, exp, impLabel);
+  root.append(bar);
 
   const show = (key: string) => {
     const inp = inputs.get(key);

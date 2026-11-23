@@ -12,19 +12,27 @@ What is in it:
 - `createRegistry({ master, storage, storageKey, version, renames })`
   with `define`, `defineLayer`, `get`, `set` (clamped to the range),
   `layer` (master and layer both on), `reset`, `groups`, `snapshot`.
-- a `source` per number (`measured`, `computed`, `vendor`, `inferred`,
-  `unknown`) and an optional `cite`, which the panel shows beside the value.
+- a `unit` and a `source` per number (`measured`, `computed`, `vendor`,
+  `inferred`, `unknown`) with an optional `cite`, shown beside the value.
+- a default and a range per number; `set` clamps into the range.
 - presets: `definePreset`, `applyPreset`, `presets`.
 - sharing: `toUrlHash` writes only values that differ from their defaults
   as one `tune=` field, so it sits beside other hash fields
   (`#test&seed=3&tune=2|L.plume:0`); `fromUrlHash` reads it back.
-- saves: `toJSON`, `fromJSON` (also reads the bare HACKLE export),
-  `restore` from storage, schema `version` and `renames` so old saves
-  survive renamed keys. Unknown keys are skipped and returned.
+- saves hold only the values that differ from their defaults, as
+  `{ ver, d }`, so a new build's defaults reach saved sessions (the HACKLE
+  bug where a first run snapshot of every value pinned old defaults).
+  `toJSON`, `fromJSON`, `restore` from storage. A save of another version
+  goes through an explicit `migrate[ver]` that returns what is safe to
+  keep; with no migration for that version nothing is kept. Version 0 is
+  the bare HACKLE export. Unknown keys are skipped and returned.
+- `renames` map old keys to new ones. A key never changes meaning: a new
+  meaning (wag rate in Hz becoming a multiplier) gets a new key.
 - `abPair(layer)`: two snapshots that differ in that one layer.
 - `@hackbuild/tunables/dom`: `bindPanel(host, registry, opts)` builds the
-  panel with DOM calls only (labels are text, never markup), follows the
-  registry both ways and can keep the URL hash in sync.
+  panel with DOM calls only (labels are text, never markup), a reset per
+  row, reset all, export and import, follows the registry both ways and
+  can keep the URL hash in sync.
 
 The definitions themselves (HACKLE has 71 parameters in 8 groups, vendor
 count) stay in the app.
@@ -44,7 +52,7 @@ import { bindPanel } from "@hackbuild/tunables/dom";
 const tune = createRegistry({ master: "L.organic", storage: localStorage, version: 1 });
 tune.defineLayer("L.organic", "organic (off is the canned build)");
 tune.defineLayer("L.plume", "sniffing in a turbulent plume");
-tune.define({ key: "Se.fix", group: "senses", label: "fixation median s", def: 0.83, min: 0.2, max: 2, step: 0.01, source: "measured", cite: "Barber 2016" });
+tune.define({ key: "Se.fix", group: "senses", label: "fixation median", unit: "s", def: 0.83, min: 0.2, max: 2, step: 0.01, source: "measured", cite: "Barber 2016" });
 tune.restore();
 tune.fromUrlHash(location.hash);
 bindPanel(document.querySelector("#tune")!, tune, { syncHash: true });
@@ -66,11 +74,15 @@ defines `HackbuildTunables` for pages opened from file://.
 
 ### Verified on this machine
 
-- 2026-11-22: `npx vitest run packages/tunables` passed 12 of 12 tests
+- 2026-11-22: `npx vitest run packages/tunables` passed 15 of 15 tests
   (counted), one of them a property test over fast-check (hash round trip
   of arbitrary in range values).
 - 2026-11-22: the panel test builds, updates and disposes the panel in
-  happy-dom 21.0.4, including the hash sync and a label holding markup.
+  happy-dom 21.0.4, including the hash sync, a row reset, export and a
+  label holding markup.
+- 2026-11-22: tests for the save rules: diffs only in `{ ver, d }`, a new
+  default reaching an old save, the version 0 migration keeping only the
+  personality, and an unmigrated version keeping nothing.
 
 ### Not verified by anything
 
@@ -78,6 +90,7 @@ defines `HackbuildTunables` for pages opened from file://.
   stylesheet.
 - The IIFE bundle on a page opened from file:// in a browser. It loads in
   a Node vm context and writes a hash (checked by hand, 2026-11-22).
+- Import through the file input: only the export button is tested.
 - Storage quota errors are swallowed and the values stay live; no test
   forces one.
 
@@ -85,7 +98,7 @@ defines `HackbuildTunables` for pages opened from file://.
 
 | file | raw | gzip |
 |---|---|---|
-| `tunables.iife.js` | 9,602 bytes | 3,316 bytes |
+| `tunables.iife.js` | 11,411 bytes | 3,855 bytes |
 
 Measured 2026-11-22 from the build log. Budget: under 16 KB raw.
 

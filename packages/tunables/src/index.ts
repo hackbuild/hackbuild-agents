@@ -14,6 +14,8 @@ export interface ParamDef {
   min: number;
   max: number;
   step: number;
+  /** unit shown beside the value: "s", "Hz", "m/s", "x" for a multiplier */
+  unit?: string;
   note?: string;
   source?: Source;
   /** a citation for the default, shown beside the source */
@@ -36,17 +38,28 @@ export interface RegistryOptions {
   master?: string;
   storage?: StorageLike;
   storageKey?: string;
-  /** schema version written with saved values; older saves go through `renames` */
+  /** schema version written with saved values (`{ ver, d }`) */
   version?: number;
-  /** old key to new key, applied when loading saves, URL hashes and JSON */
+  /**
+   * Explicit migrations by the saved version. A save of another version with
+   * no migration keeps nothing: its values go back to the current defaults.
+   * Version 0 is a bare values object with no `ver` (the HACKLE export).
+   */
+  migrate?: Record<number, (values: Record<string, number>) => Record<string, number>>;
+  /**
+   * Old key to new key, applied when loading saves, URL hashes and JSON.
+   * Never change what an existing key means; give the new meaning a new key
+   * and rename or drop the old one.
+   */
   renames?: Record<string, string>;
 }
 
 export type ChangeListener = (key: string, value: number) => void;
 
+/** Saved form: the schema version and only the values that differ from their defaults. */
 export interface Saved {
-  version: number;
-  values: Record<string, number>;
+  ver: number;
+  d: Record<string, number>;
 }
 
 export interface Registry {
@@ -65,9 +78,11 @@ export interface Registry {
   groups(): { group: string; keys: string[] }[];
   layers(): string[];
   snapshot(): Record<string, number>;
-  /** unknown keys are skipped and returned */
-  load(values: Record<string, number>, version?: number): string[];
+  /** current version values; unknown keys are skipped and returned */
+  load(values: Record<string, number>): string[];
+  /** only values that differ from their defaults, so new defaults reach old sessions */
   toJSON(): Saved;
+  /** `{ ver, d }`; another version goes through `migrate` or keeps nothing */
   fromJSON(saved: unknown): string[];
   /** only the values that differ from their defaults */
   toUrlHash(): string;
@@ -189,13 +204,30 @@ export function createRegistry(opts: RegistryOptions = {}): Registry {
     layers: () => [...layerKeys],
     snapshot: () => Object.fromEntries(values),
     load: (vals) => loadValues(vals),
-    toJSON: () => ({ version, values: Object.fromEntries(values) }),
+    toJSON() {
+      const d: Record<string, number> = {};
+      for (const def of defs.values()) {
+        const v = values.get(def.key) as number;
+        if (v !== def.def) d[def.key] = v;
+      }
+      return { ver: version, d };
+    },
     fromJSON(saved) {
       if (!saved || typeof saved !== "object") throw new Error("tunables: saved settings must be an object");
       const s = saved as Partial<Saved> & Record<string, unknown>;
-      // a bare values object (the HACKLE export) is accepted too
-      const vals = s.values && typeof s.values === "object" ? (s.values as Record<string, number>) : (s as Record<string, number>);
-      return loadValues(vals);
+      const versioned = typeof s.ver === "number" && !!s.d && typeof s.d === "object";
+      const ver = versioned ? (s.ver as number) : 0;
+      const vals = versioned ? (s.d as Record<string, number>) : (s as Record<string, number>);
+      if (ver === version) return loadValues(vals);
+      const m = opts.migrate?.[ver];
+      if (!m) {
+        // no explicit migration: nothing from that save is safe to keep
+        persist();
+        return Object.keys(vals);
+      }
+      const kept = m({ ...vals });
+      const dropped = Object.keys(vals).filter((k) => !(k in kept));
+      return [...dropped, ...loadValues(kept)];
     },
     toUrlHash() {
       const parts: string[] = [];

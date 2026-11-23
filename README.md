@@ -7,7 +7,7 @@ their tests; the table below grows with them.
 
 | package | lang | what | tests |
 |---|---|---|---|
-| [`@hackbuild/tunables`](packages/tunables) | TS | parameter registry, layer switches, presets, URL hash sharing, panel binding | 12 vitest |
+| [`@hackbuild/tunables`](packages/tunables) | TS | parameter registry, layer switches, presets, URL hash sharing, panel binding | 15 vitest |
 
 ## Develop
 
