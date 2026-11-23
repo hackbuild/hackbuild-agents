@@ -24,11 +24,19 @@ export interface CameraLike {
 export const damp = (from: number, to: number, rate: number, dt: number): number => to + (from - to) * Math.exp(-rate * dt);
 const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
 
-/** Shake: seeded value noise on three axes, amplitude decaying at `decay` per second. */
+/**
+ * Shake: seeded value noise on three axes, amplitude decaying at `decay`
+ * per second. It draws from its Rng only while shaking (three numbers per
+ * knot, `frequency` knots a second) and holds two knots. Give it an Rng
+ * stream of its own: how many draws fall before a given sim time depends
+ * on the frame steps, so sharing the sim's stream would tie the sim to the
+ * frame rate.
+ */
 export class Shake {
   private amp = 0;
   private t = 0;
-  private knots: number[][] = [];
+  private a: number[] | null = null;
+  private b: number[] = [0, 0, 0];
   constructor(
     private rng: Rng,
     readonly frequency = 18,
@@ -41,19 +49,34 @@ export class Shake {
   get amplitude(): number {
     return this.amp;
   }
+  private knot(): number[] {
+    return [this.rng() * 2 - 1, this.rng() * 2 - 1, this.rng() * 2 - 1];
+  }
   /** The offset for this frame. */
   step(dt: number): V3 {
+    if (this.amp === 0) return { x: 0, y: 0, z: 0 };
+    if (!this.a) {
+      this.a = this.knot();
+      this.b = this.knot();
+      this.t = 0;
+    }
     this.t += dt * this.frequency;
-    while (this.knots.length < Math.floor(this.t) + 2) this.knots.push([this.rng() * 2 - 1, this.rng() * 2 - 1, this.rng() * 2 - 1]);
-    const i = Math.floor(this.t);
-    const f = this.t - i;
+    while (this.t >= 1) {
+      this.a = this.b;
+      this.b = this.knot();
+      this.t -= 1;
+    }
+    const a = this.a;
+    const b = this.b;
+    const f = this.t;
     const s = f * f * (3 - 2 * f);
-    const a = this.knots[i] as number[];
-    const b = this.knots[i + 1] as number[];
     const v = (k: number) => ((a[k] as number) + ((b[k] as number) - (a[k] as number)) * s) * this.amp;
     const out = { x: v(0), y: v(1), z: v(2) };
     this.amp *= Math.exp(-this.decay * dt);
-    if (this.amp < 1e-4) this.amp = 0;
+    if (this.amp < 1e-4) {
+      this.amp = 0;
+      this.a = null;
+    }
     return out;
   }
 }

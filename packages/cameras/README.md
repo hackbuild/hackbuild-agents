@@ -21,7 +21,10 @@ What is in it:
 - `FirstPerson`: an eye on an agent's head that scales the head to 0.001
   for its render only (the HACKLE lesson: hiding the head object would
   hide the whole subtree).
-- `Shake`: seeded value noise with decaying trauma (`Rng` injected).
+- `Shake`: seeded value noise with decaying trauma (`Rng` injected). It
+  draws only while shaking and holds two knots. Give it an Rng stream of
+  its own, never the sim's: how many draws fall before a given sim time
+  depends on the frame steps.
 - `splitViewports`: one to four views, with the y flipped for three.
 - `damp`: frame rate independent exponential damping.
 
@@ -34,7 +37,7 @@ shared shadow maps for split views.
 import { Follow, Shake } from "@hackbuild/cameras";
 
 const follow = new Follow(camera, { distance: 4, clear: (from, dir, max) => raycast(from, dir, max) });
-const shake = new Shake(rng);
+const shake = new Shake(shakeRng); // a stream of its own, never the sim rng
 follow.update(dog.position, dog.yaw, dt);
 const s = shake.step(dt);
 camera.position.x += s.x;
@@ -51,7 +54,10 @@ defines `HackbuildCameras`.
   camera, six cameras (fov 40 to 70, aspect 9:16 to 21:9, centre pull 0
   to 0.3, groups up to 20 m from the origin, three yaw and pitch pairs),
   39,650 points projected with three.js, the worst at 0.876 of the half
-  screen (measured). Before the distance was solved from projected
+  screen (measured). Shake never kicked draws nothing over ten minutes
+  at 60 Hz (before: 32,403 draws and 10,801 knots held, measured); kicked
+  once at 0.5 it draws under 90 numbers (counted).
+  Before the distance was solved from projected
   corners, 379 of 13,414 points left the screen at fov 50 and 16:9 with
   no centre pull, worst 1.29 (measured in an audit).
 - 2026-11-22: `npx vitest run packages/cameras` passed 7 of 7 tests

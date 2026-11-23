@@ -103,6 +103,27 @@ describe("cameras", () => {
     expect(a.amplitude).toBeLessThan(0.01);
   });
 
+  it("shake draws nothing until kicked and holds two knots", () => {
+    // before: never kicked, ten minutes at 60 Hz drew 32,403 numbers and
+    // held 10,801 knots (measured)
+    let draws = 0;
+    const base = rng(9);
+    const counted = () => {
+      draws++;
+      return base();
+    };
+    const s = new Shake(counted);
+    for (let k = 0; k < 600 * 60; k++) s.step(1 / 60);
+    expect(draws).toBe(0);
+    s.kick(0.5);
+    for (let k = 0; k < 600 * 60; k++) s.step(1 / 60);
+    // 18 knots a second while the amplitude is above 1e-4: about 1.4 s at
+    // decay 6 from 0.5 (computed), so about 26 knots of 3 draws
+    expect(draws).toBeGreaterThan(0);
+    expect(draws).toBeLessThan(3 * 30);
+    expect(Object.values(s).filter(Array.isArray).length).toBeLessThanOrEqual(2);
+  });
+
   it("orbit pans to the right of the view", () => {
     const cam = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     const o = new Orbit(cam, 0, 0.5, 6, { x: 0, y: 0, z: 0 });
