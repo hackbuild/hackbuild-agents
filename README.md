@@ -11,7 +11,7 @@ their tests; the table below grows with them.
 | [`@hackbuild/senses`](packages/senses) | Rust + TS | Itti Koch saliency, looming, odour plume and trail tracking, hearing, field of view memory, eye renders to an occupancy grid | 18 cargo, 11 vitest |
 | [`@hackbuild/drives`](packages/drives) | Rust + TS | drive reduction reward, softmax choice with commitment and a why, cue learning, sleep and body clock, memory stream, task gating, inference scheduling | 12 cargo, 13 vitest |
 | [`@hackbuild/scenario`](packages/scenario) | Node TS | lockstep scenario runner on puppeteer-core and the system Chrome, routed pinned requests, goldens, motion metrics, frame sampler, profiler, check message reports | 11 vitest |
-| [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 9 vitest |
+| [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 10 vitest |
 | [`@hackbuild/cameras`](packages/cameras) | TS | follow with occlusion pull in, group framing, orbit, first person eye, seeded shake, split views | 7 vitest |
 
 ## Develop

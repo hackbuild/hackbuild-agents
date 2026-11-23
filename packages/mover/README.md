@@ -67,8 +67,11 @@ defines `HackbuildMover`.
 
 ### Verified on this machine
 
-- 2026-11-22: `npx vitest run packages/mover` passed 9 of 9 tests
-  (counted): a head on corridor pass and a dog parked in the walker's path
+- 2026-11-23: `npx vitest run packages/mover` passed 10 of 10 tests
+  (counted), the 9 below and four agents crossing at right angles with
+  no overlap (closest gap 0.47 m at 60 Hz, measured; before the passing
+  side was chosen at closest approach they overlapped by 0.13 m).
+- 2026-11-22: 9 of 9 tests (counted): a head on corridor pass and a dog parked in the walker's path
   both finish with 0 to 1 s of stall (bound 1 s) and no overlap; the
   passing side holds for a second while the other drifts across; a yield
   times out; the follow spot is exempt; a bench of three parts is passed

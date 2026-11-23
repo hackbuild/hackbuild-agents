@@ -78,6 +78,24 @@ describe("passing and yielding (hackle-plan 5.4 item 3)", () => {
     expect(r.minGap).toBeGreaterThan(-0.05);
   });
 
+  it("four agents crossing at right angles pass without overlap", () => {
+    // measured before the side was chosen at closest approach: two crossers
+    // each swerved in front of the other and overlapped by 0.13 m at 60 Hz
+    const a = body("a", -4, 0, 0.3, 1);
+    const b = body("b", 4, 0.1, 0.3);
+    const c = body("c", 0, -4, 0.3, 2);
+    const d = body("dog", 0.1, 4, 0.35);
+    a.steer.setGoal(4, 0);
+    b.steer.setGoal(-4, 0);
+    c.steer.setGoal(0, 4);
+    d.steer.setGoal(0, -4);
+    const r = run([a, b, c, d], 14);
+    expect(r.minGap).toBeGreaterThan(-0.05);
+    for (const x of [a, b, c, d]) expect(stallSeconds(r.tracks.get(x.id) ?? [])).toBeLessThanOrEqual(1);
+    expect(Math.hypot(a.x - 4, a.z)).toBeLessThan(0.4);
+    expect(Math.hypot(c.x, c.z - 4)).toBeLessThan(0.4);
+  });
+
   it("keeps a chosen passing side for at least one second", () => {
     const s = new Steerer("a");
     s.setGoal(0, 5);

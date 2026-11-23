@@ -238,9 +238,17 @@ export class Steerer {
       if (ahead < -0.2 && gap > o.clearance) continue;
       let side = this.sideFor(a.id, now);
       if (!side) {
-        // pass on the side away from where the other stands; head on, keep right (each agent's own right)
-        const cr = gx * oz - gz * ox;
-        side = Math.abs(cr) < 0.15 * centre ? 1 : cr < 0 ? 1 : -1;
+        // pass on the side away from where the other will stand at closest
+        // approach (up to 2.5 s ahead), so two crossing agents pick sides that
+        // send one behind the other; head on, keep right (each agent's own right)
+        const rvx = a.vx - self.vx;
+        const rvz = a.vz - self.vz;
+        const rv2 = rvx * rvx + rvz * rvz;
+        const tc = rv2 > 1e-6 ? Math.max(0, Math.min(2.5, -(ox * rvx + oz * rvz) / rv2)) : 0;
+        const qx = ox + rvx * tc;
+        const qz = oz + rvz * tc;
+        const cr = gx * qz - gz * qx;
+        side = Math.abs(cr) < 0.15 * Math.max(Math.hypot(qx, qz), 1e-6) ? 1 : cr < 0 ? 1 : -1;
         this.sides.set(a.id, { side, until: now + o.holdSide });
       } else if ((this.sides.get(a.id)?.until ?? 0) - now < 0.1) {
         this.sides.set(a.id, { side, until: now + o.holdSide });
