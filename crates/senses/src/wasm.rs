@@ -34,8 +34,8 @@ fn cam(c: &[f64]) -> Result<Camera, JsError> {
 }
 
 fn points(p: &[f64]) -> Vec<Vec3> {
-    p.chunks_exact(3)
-        .map(|c| Vec3::new(c[0], c[1], c[2]))
+    (0..p.len() / 3)
+        .map(|i| Vec3::new(p[i * 3], p[i * 3 + 1], p[i * 3 + 2]))
         .collect()
 }
 
@@ -237,13 +237,12 @@ impl OdourField {
     }
     /// `sources`: id, x, z, strength per source.
     pub fn step(&mut self, dt: f64, sources: &[f64]) {
-        let s: Vec<Source> = sources
-            .chunks_exact(4)
-            .map(|c| Source {
-                id: c[0] as usize,
-                x: c[1],
-                z: c[2],
-                strength: c[3],
+        let s: Vec<Source> = (0..sources.len() / 4)
+            .map(|i| Source {
+                id: sources[i * 4] as usize,
+                x: sources[i * 4 + 1],
+                z: sources[i * 4 + 2],
+                strength: sources[i * 4 + 3],
             })
             .collect();
         self.0.step(dt, &s);
