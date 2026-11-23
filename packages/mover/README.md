@@ -58,10 +58,14 @@ import { Steerer, World, box } from "@hackbuild/mover";
 const world = new World([box(0, 0, 0, 40, 40)]);
 const steer = new Steerer("human");
 steer.setGoal(0, 4);
+// the steerer reads flat agent states; the world moves a capsule actor
+const human = { id: "human", x: 0, z: -4, vx: 0, vz: 0, radius: 0.3, priority: 1 };
+const body = { pos: { x: 0, y: 0, z: -4 }, vel: { x: 0, y: 0, z: 0 }, radius: 0.3, height: 1.7, grounded: true };
 const out = steer.update(now, human, [human, dog], [benchFootprint], new Set(["ball"]));
-human.vel.x = out.vx;
-human.vel.z = out.vz;
-world.step(human, dt);
+body.vel.x = out.vx;
+body.vel.z = out.vz;
+world.step(body, dt);
+Object.assign(human, { x: body.pos.x, z: body.pos.z, vx: body.vel.x, vz: body.vel.z });
 ```
 
 `dist/mover.iife.js` is the single file build, a classic script that

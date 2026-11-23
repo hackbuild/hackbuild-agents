@@ -131,6 +131,7 @@ describe("choice parity with the legacy brain on recorded drive states", () => {
       d = Math.max(d, Math.abs(dr.rewardOf(EFFECT.greet as Partial<Record<K, number>>, 0.35) - gain(s, EFFECT.greet as Partial<Record<K, number>>, 0.35)));
     }
     // libm pow against Math.pow; recorded tolerance 1e-12
+    console.log(`reward parity on recorded states: max difference ${d.toExponential(2)} (measured)`);
     expect(d).toBeLessThan(1e-12);
   });
 

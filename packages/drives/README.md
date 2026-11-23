@@ -104,7 +104,7 @@ whose code is public in
 | reward for all 13 legacy effects at scales 1, 0.35 and 1.25, 150 random states (fixture) | under 1e-13 | 4.4e-15, including the 15 digit rounding of the fixture |
 | act and reaction latency on every choice path: done or not, dwell out or not, any current act, 6,000 decisions (fixture) | same act; latency within 1e-11 s | 6,000 of 6,000, latency within 5.0e-13 s |
 | body clock, 1,000 hours and every hour of 2,000,000 scanned where it differs (fixture) | under 2.3e-16 absolute | 126 of 2,000,000 hours differ, each by one ulp, at most 2.22e-16 |
-| reward per act on the recorded states (transcription) | under 1e-12 | passes |
+| reward per act on the recorded states (transcription) | under 1e-12 | 5.6e-16 |
 | same act from the same seeded stream (transcription) | at least 99.5 percent | 10,170 of 10,170 |
 | choice distribution, total variation (transcription) | under 0.01 | 0.0000 |
 
@@ -140,12 +140,15 @@ instead.
 
 ### Not verified by anything
 
-- Behaviour in a running sim: no scenario drives an animal with this
-  package yet.
+- Behaviour in a running sim beyond the example page: the drives example
+  drives an animal (docs/browser-checks.md row 9), but no lockstep
+  scenario does.
 - Blocking, which the plan lists among the conditioning results, is not
   modelled: each cue learns alone.
-- Choice parity covers decisions from a finished act; dwell timing and the
-  pending latency path are checked by unit tests, not against the legacy simulator.
+- Choice parity covers single decisions on every path (fixture); a
+  multi step replay against the legacy stream diverges after the first
+  switch, since the legacy `brain.set` draws one more number for a speech
+  line.
 
 ## Size budget
 
