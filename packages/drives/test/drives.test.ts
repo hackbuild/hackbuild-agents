@@ -240,6 +240,14 @@ describe("parity with fixtures from the running legacy code", () => {
   });
 });
 
+describe("wasm memory", () => {
+  it("every wasm backed class can be freed explicitly", () => {
+    const rng = seededRng(1);
+    const objs = [new Drives(WEIGHTS), new Chooser({ rng, options: ACTS }), new CueLearner({ rng, actions: ["sit"] }), new Sleep({ rng }), new MemoryStream()];
+    for (const o of objs) expect(() => o.free()).not.toThrow();
+  });
+});
+
 describe("chooser", () => {
   const opts = ["idle", "fetch", "rest"] as const;
   it("every decision carries a why and the utility vector", () => {

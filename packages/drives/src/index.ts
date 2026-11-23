@@ -82,6 +82,10 @@ export class Drives<K extends string> {
   setShape(n: number, m: number, gain: number): void {
     this.inner.setShape(n, m, gain);
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 export type Reason = "hold" | "top" | "sampled" | "reactive" | "forced" | "argmax" | "fired";
@@ -203,6 +207,10 @@ export class Chooser<B extends string> {
   setTemperature(t: number, commitment: number): void {
     this.inner.setTemperature(t, commitment);
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 export type CueResponse<A extends string> = { kind: "ignored"; latency: number } | { kind: "none"; latency: number } | { kind: "act"; action: A; offered: boolean; latency: number };
@@ -311,6 +319,10 @@ export class CueLearner<A extends string> {
     }
     this.actions.forEach((a, i) => this.inner.setOffer(i, s.offer[a] ?? 0.15));
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 export type SleepStage = "awake" | "onset" | "nrem" | "rem" | "wake";
@@ -360,6 +372,10 @@ export class Sleep {
   wakeThreshold(): number {
     return this.inner.wakeThreshold();
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 /** Memories ranked by recency, importance and relevance (Park et al. 2023). */
@@ -385,6 +401,10 @@ export class MemoryStream {
   }
   get length(): number {
     return this.inner.length;
+  }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
   }
 }
 

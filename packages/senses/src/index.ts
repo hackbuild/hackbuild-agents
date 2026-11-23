@@ -152,6 +152,10 @@ export class Looming {
   forget(id: number): void {
     this.inner.forget(id);
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 export interface OdourOptions {
@@ -258,6 +262,10 @@ export class Sniffer {
     const g = (i: number) => s[i] as number;
     return { left: g(0), right: g(1), conc: g(2), mean: g(3), whiffT: g(4) };
   }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
+  }
 }
 
 export type TrackMode = "decide" | "trail" | "surge" | "cast";
@@ -287,6 +295,10 @@ export class Tracker {
   /** Replaces the waypoint, for a caller that keeps it out of obstacles. */
   setWaypoint(x: number, z: number): void {
     this.inner.setWaypoint(x, z);
+  }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
   }
 }
 
@@ -342,6 +354,10 @@ export class PerceptMemory {
     if (!r.length) return null;
     const g = (i: number) => r[i] as number;
     return { pos: { x: g(0), y: g(1), z: g(2) }, confidence: g(3) };
+  }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
   }
 }
 
@@ -423,5 +439,9 @@ export class OccupancyGrid {
   }
   get revision(): number {
     return this.inner.revision;
+  }
+  /** Frees the wasm memory now, before the garbage collector would; the object is unusable after. */
+  free(): void {
+    this.inner.free();
   }
 }

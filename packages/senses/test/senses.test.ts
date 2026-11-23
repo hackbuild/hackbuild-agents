@@ -293,6 +293,14 @@ describe("parity with fixtures from the running legacy code", () => {
   });
 });
 
+describe("wasm memory", () => {
+  it("every wasm backed class can be freed explicitly", () => {
+    const rng = seededRng(1);
+    const objs = [new Saliency({ rng }), new Looming(), new OdourField({ rng }), new Sniffer({ rng }), new Tracker({ rng }), new PerceptMemory({ rng }), new OccupancyGrid()];
+    for (const o of objs) expect(() => o.free()).not.toThrow();
+  });
+});
+
 describe("senses", () => {
   it("looming startles on a fast approach and time to contact matches the TS helper", () => {
     const l = new Looming();
