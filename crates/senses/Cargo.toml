@@ -1,0 +1,21 @@
+[package]
+name = "hackbuild-senses"
+version = "0.1.0"
+description = "Perception for simulated animals: saliency, looming, odour plume and trail, hearing, field of view and an occupancy grid"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "senses"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+wasm = ["dep:wasm-bindgen"]
+
+[dependencies]
+agent_rng = { package = "hackbuild-agent-rng", path = "../rng" }
+libm = "0.2.16"
+wasm-bindgen = { version = "=0.2.129", optional = true }

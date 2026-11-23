@@ -1,0 +1,14 @@
+[package]
+name = "hackbuild-agent-rng"
+version = "0.1.0"
+description = "Seeded Mulberry32 stream and the samplers the agent crates share"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "agent_rng"
+
+[dependencies]
+libm = "0.2.16"

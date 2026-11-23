@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>senses eye check</title></head>
+<body>
+<canvas id="c" width="320" height="200"></canvas>
+<script type="module">
+// Browser check for the eye: a floor, a wall and a tracked box, seen from
+// 0.6 m. The test reads window.__result.
+import * as THREE from "../../../../node_modules/three/build/three.module.js";
+window.THREE = THREE;
+const s = document.createElement("script");
+s.src = "../../dist/senses.iife.js";
+s.onload = async () => {
+  try {
+    const S = window.HackbuildSenses;
+    await S.load();
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("c") });
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x8899aa);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), new THREE.MeshStandardMaterial({ color: 0x556644 }));
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
+    const wall = new THREE.Mesh(new THREE.BoxGeometry(6, 2, 0.2), new THREE.MeshStandardMaterial({ color: 0x777777 }));
+    wall.position.set(0, 1, 4.1);
+    scene.add(wall);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.4, 0.4), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
+    box.position.set(0.5, 0.2, 2);
+    scene.add(box);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 2));
+    const eye = new S.Eye(renderer, scene);
+    eye.place(new THREE.Vector3(0, 0.6, 0), 0, -0.25);
+    const pass = eye.pass([{ object: box, label: "box" }]);
+    const grid = new S.OccupancyGrid({ cells: 120 });
+    grid.integrate(pass.camera, pass.depth, pass.depthWidth, pass.depthHeight, 12, { x: 0, y: 0, z: 0 });
+    const wallCells = [-1, -0.5, 0, 0.5, 1].filter((x) => [3.95, 4.05].some((z) => grid.at(x, z) === S.OCCUPIED)).length;
+    const color = eye.colorFrame(160, 80);
+    const sal = new S.Saliency({ rng: S.seededRng(1) });
+    sal.update(color, 160, 80, 0, pass.camera);
+    const fix = sal.shift(0, pass.camera, [box.position], 0.5);
+    const asyncPass = await eye.passAsync([{ object: box, label: "box" }]);
+    window.__result = {
+      seen: pass.visible,
+      wallCells,
+      boxCell: grid.at(0.5, 1.85),
+      free: grid.known().free,
+      fixation: fix,
+      asyncSeen: asyncPass ? asyncPass.visible.length : -1,
+      materialsRestored: box.material.isMeshStandardMaterial === true,
+    };
+  } catch (e) {
+    window.__result = { error: String(e && e.stack || e) };
+  }
+};
+document.head.append(s);
+</script>
+</body>
+</html>

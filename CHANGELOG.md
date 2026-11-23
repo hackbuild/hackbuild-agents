@@ -10,3 +10,9 @@ Versions follow semver per package. Nothing is published to npm yet.
   of differences only as `{ ver, d }` with explicit migrations, renames,
   A/B pairs, and a DOM panel binding under `/dom` with reset, import and
   export.
+- `@hackbuild/senses` and `crates/senses`: Itti Koch saliency with world
+  space inhibition of return, looming, odour plume and trail grid with a
+  decide, trail, surge and cast tracker, sound localisation error, field
+  of view vision with percept memory, an occupancy grid with A* and
+  frontiers, and a three.js eye (ID and depth renders) under `/three`.
+- `crates/rng`: the shared seeded Mulberry32 and samplers.
