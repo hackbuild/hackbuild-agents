@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>single file builds from file://</title></head>
+<body>
+<!-- Classic scripts only, no THREE on the page: every core IIFE has to
+load and run from file://. The test reads window.__result. -->
+<script src="../../../tunables/dist/tunables.iife.js"></script>
+<script src="../../dist/senses.iife.js"></script>
+<script src="../../../drives/dist/drives.iife.js"></script>
+<script src="../../../mover/dist/mover.iife.js"></script>
+<script src="../../../cameras/dist/cameras.iife.js"></script>
+<script>
+(async () => {
+  const r = { three: typeof THREE };
+  try {
+    const T = window.HackbuildTunables;
+    const reg = T.createRegistry();
+    reg.define({ key: "a", group: "g", label: "a", def: 1, min: 0, max: 2, step: 0.1 });
+    reg.set("a", 1.5);
+    r.tunables = reg.get("a");
+    const S = window.HackbuildSenses;
+    await S.load();
+    r.senses = new S.Saliency({ rng: S.seededRng(1) }) ? "saliency" : null;
+    const D = window.HackbuildDrives;
+    await D.load();
+    r.drives = D.bodyClock(7);
+    r.mover = typeof window.HackbuildMover.Steerer;
+    r.cameras = typeof window.HackbuildCameras.Group;
+    r.sensesThree = typeof window.HackbuildSensesThree;
+  } catch (e) {
+    r.error = String((e && e.stack) || e);
+  }
+  window.__result = r;
+})();
+</script>
+</body>
+</html>

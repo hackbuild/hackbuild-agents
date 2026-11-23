@@ -45,4 +45,29 @@ describe.skipIf(!existsSync(CHROME))("eye in chrome", () => {
       await browser.close();
     }
   }, 60000);
+
+  it("loads every core single file build from file:// with no THREE on the page", async () => {
+    // before: senses.iife.js bundled the eye and ended in `})({}, THREE)`,
+    // so it threw ReferenceError on a page without THREE
+    const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ["--allow-file-access-from-files"] });
+    try {
+      const page = await browser.newPage();
+      const errors: string[] = [];
+      page.on("pageerror", (e) => errors.push(String(e)));
+      await page.goto(pathToFileURL(join(import.meta.dirname, "fixtures/iife.html")).href);
+      await page.waitForFunction("window.__result", { timeout: 20000 });
+      const r = (await page.evaluate("window.__result")) as Record<string, unknown>;
+      expect(errors).toEqual([]);
+      expect(r.error).toBeUndefined();
+      expect(r.three).toBe("undefined");
+      expect(r.tunables).toBe(1.5);
+      expect(r.senses).toBe("saliency");
+      expect(typeof r.drives).toBe("number");
+      expect(r.mover).toBe("function");
+      expect(r.cameras).toBe("function");
+      expect(r.sensesThree).toBe("undefined");
+    } finally {
+      await browser.close();
+    }
+  }, 60000);
 });

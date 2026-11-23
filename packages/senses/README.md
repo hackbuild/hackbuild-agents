@@ -64,7 +64,11 @@ field.step(dt, [{ id: 0, x: bowl.x, z: bowl.z, strength: 1 }]);
 
 `dist/senses.iife.js` is the single file build: a classic script that
 defines `HackbuildSenses` with the wasm inlined, for pages opened from
-file://. It reads `THREE` from the page.
+file://. It needs nothing on the page. The eye and `cameraFromThree` are
+a second classic script, `dist/senses-three.iife.js`
+(`@hackbuild/senses/three-iife`), that defines `HackbuildSensesThree`
+and reads `THREE` from the page; three 0.186 ships no classic script, so
+that page has to set `window.THREE` from a module first.
 
 ## Develop
 
@@ -113,6 +117,11 @@ direction across a head turn), not against the original projection.
   computed about 2.9 m and 3.5 m). Before the depth pass applied
   instancing and skinning, the instanced box read 4.12 m (measured), the
   depth behind it.
+- 2026-11-23: `test/fixtures/iife.html` from file:// in headless Chrome
+  with no `THREE` on the page: the tunables, senses (wasm inlined),
+  drives (wasm inlined), mover and cameras IIFEs all load and run.
+  Before the eye moved to its own IIFE, `senses.iife.js` threw
+  `ReferenceError: THREE is not defined` there.
 
 ### Not verified by anything
 
@@ -125,17 +134,18 @@ direction across a head turn), not against the original projection.
   scene, not the box; fixation quality on real scenes is unknown.
 - The WebGPU saliency path in the plan (pyramid from mip levels, no
   readback) is not written.
-- The IIFE bundle on a page opened from file:// outside the test fixture
-  (the fixture loads it from file:// with `--allow-file-access-from-files`).
+- The IIFE bundles on a page opened from file:// by double click: the
+  fixtures load them from file:// with `--allow-file-access-from-files`.
 
 ## Size budget
 
 | file | raw | gzip |
 |---|---|---|
-| `senses_bg.wasm` | 105,359 bytes | 45,699 bytes |
-| `senses.iife.js` (wasm inlined as base64) | 188,900 bytes | 73,245 bytes |
+| `senses_bg.wasm` | 105,324 bytes | 45,632 bytes |
+| `senses.iife.js` (wasm inlined as base64) | 179,891 bytes | 70,273 bytes |
+| `senses-three.iife.js` | 9,494 bytes | 3,339 bytes |
 
-Measured 2026-11-22 from the build log, wasm-opt from wasm-pack 0.13.1.
+Measured 2026-11-23 from the build log, wasm-opt from wasm-pack 0.13.1.
 Budget: wasm under 128 KB raw; a change that crosses it says why.
 
 ## Licence

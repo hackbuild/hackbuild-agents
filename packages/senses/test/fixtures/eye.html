@@ -8,11 +8,10 @@
 // 0.6 m. The test reads window.__result.
 import * as THREE from "../../../../node_modules/three/build/three.module.js";
 window.THREE = THREE;
-const s = document.createElement("script");
-s.src = "../../dist/senses.iife.js";
-s.onload = async () => {
+const add = (src) => new Promise((ok, fail) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = fail; document.head.append(s); });
+add("../../dist/senses.iife.js").then(() => add("../../dist/senses-three.iife.js")).then(async () => {
   try {
-    const S = window.HackbuildSenses;
+    const S = { ...window.HackbuildSenses, ...window.HackbuildSensesThree };
     await S.load();
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById("c") });
     const scene = new THREE.Scene();
@@ -69,8 +68,7 @@ s.onload = async () => {
   } catch (e) {
     window.__result = { error: String(e && e.stack || e) };
   }
-};
-document.head.append(s);
+});
 </script>
 </body>
 </html>

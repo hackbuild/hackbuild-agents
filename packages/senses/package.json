@@ -28,7 +28,8 @@
       "import": "./dist/wasm/inline.js"
     },
     "./wasm": "./dist/wasm/senses_bg.wasm",
-    "./iife": "./dist/senses.iife.js"
+    "./iife": "./dist/senses.iife.js",
+    "./three-iife": "./dist/senses-three.iife.js"
   },
   "files": [
     "dist",

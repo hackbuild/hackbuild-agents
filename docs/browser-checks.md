@@ -23,7 +23,7 @@ Rerun: `npm run build && npm run examples && npm run examples:check`.
 | 4 | senses | sniffer and tracker find the source on a live plume | pass | 16.9 s from 5 m downwind; 11.5 s and 13.2 s on earlier runs (measured) |
 | 5 | senses | a person looks at the eye, the plume and the saliency map at real frame rate | not run | needs the owner to look |
 | 6 | senses | tracker and sniffer behaviour against a running HACKLE | not run | needs a recorded HACKLE run |
-| 7 | senses | `senses.iife.js` from a file:// page outside the test fixture | not run | the example pages are served over http |
+| 7 | senses | `senses.iife.js` from a file:// page | pass | 2026-11-23, `packages/senses/test/fixtures/iife.html` in headless Chrome 150 with no `THREE` on the page: loads and runs Saliency. Before the eye moved to `senses-three.iife.js` it threw `ReferenceError: THREE is not defined` (measured) |
 | 8 | senses | WebGPU saliency path | not run | not written |
 | 9 | drives | an animal driven by drives and the chooser in a running page | pass | 5 of 5 acts chosen, 57 switches over 328 sim s, every switch logged a why; choice update 0.1 ms p95 (measured) |
 | 10 | drives | a person reads the why log against the drive plot | not run | needs the owner to look |
@@ -38,7 +38,7 @@ Rerun: `npm run build && npm run examples && npm run examples:check`.
 | 19 | cameras | shake feel and follow smoothing | not run | needs the owner to look; peak shake offset 0.224 m, decayed to 0 within 12 s (measured) |
 | 20 | tunables | the panel builds and syncs the URL hash in a real browser | pass | 4 inputs built on the mover page; a set wrote `St.speed` into the hash (measured) |
 | 21 | tunables | a person looks at the panel | not run | needs the owner to look; the package ships no stylesheet |
-| 22 | tunables | `tunables.iife.js` from a file:// page | not run | the example pages are served over http |
+| 22 | tunables | `tunables.iife.js` from a file:// page | pass | 2026-11-23, the same fixture: a registry defines, sets and reads a value (measured) |
 | 23 | tunables | import through the file input | not run | no scripted file pick in this pass |
 | 24 | scenario | WebGPU in headless Chrome | not run | this pass ran headful; headful Chrome found the adapter above |
 | 25 | scenario | Chrome on the ubuntu-24.04 CI image | not run | not checked |
