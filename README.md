@@ -14,6 +14,13 @@ their tests; the table below grows with them.
 | [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 10 vitest |
 | [`@hackbuild/cameras`](packages/cameras) | TS | follow with occlusion pull in, group framing, orbit, first person eye, seeded shake, split views | 7 vitest |
 
+## Examples
+
+One page per package, built from `examples/` and published at
+<https://hackbuild.github.io/hackbuild-agents/>. Every shape is built in
+code; no model, asset or weight file is loaded. `npm run examples` builds
+them into `_site/`; `npm run examples:check` runs the browser checks.
+
 ## Develop
 
     source ~/.nvm/nvm.sh && nvm use
@@ -33,9 +40,19 @@ saliency winners 240 of 240, maps bit identical; plume puffs within
 8.9e-16 m; behaviour choice on 339 recorded HACKLE drive states, 10,170
 of 10,170 decisions the same from the same seeded stream.
 
+### Verified on this machine
+
+- 2026-11-23: senses, drives, mover, cameras and the tunables panel ran
+  in Chrome 150 on an Apple M1 at real frame rate (59.88 fps p50 on every
+  page, measured) through the example pages; results per check are in
+  [docs/browser-checks.md](docs/browser-checks.md). The automated pass
+  measured them; the owner has not looked yet.
+
 ### Not verified by anything
 
-- No package has been looked at in a real browser at real frame rate.
+- Nobody has looked at any package in a real browser. The rows that need
+  a person, Safari or another browser are listed in
+  [docs/browser-checks.md](docs/browser-checks.md) as not run.
 
 ## Licence
 
