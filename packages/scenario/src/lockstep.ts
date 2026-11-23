@@ -88,7 +88,7 @@ export async function runLockstep(page: Page, sc: Scenario, o: LockstepOptions =
   const out: Trace = { rows: [], probes: [], fired: [], wallSeconds: 0 };
   let done = 0;
   let lastLog = Date.now();
-  while (done < total) {
+  const due = async () => {
     while (events.length && (events[0] as Ev).step <= done) {
       const e = events.shift() as Ev;
       if (e.js) await page.evaluate(bound(handle, e.js));
@@ -98,6 +98,9 @@ export async function runLockstep(page: Page, sc: Scenario, o: LockstepOptions =
         await page.screenshot({ path: e.path as `${string}.png` });
       }
     }
+  };
+  while (done < total) {
+    await due();
     let n = Math.min(o.chunk ?? 30, total - done);
     if (events.length) n = Math.min(n, Math.max(1, (events[0] as Ev).step - done));
     for (const p of probes) n = Math.min(n, p.n - (done % p.n));
@@ -120,6 +123,8 @@ export async function runLockstep(page: Page, sc: Scenario, o: LockstepOptions =
       o.onProgress(done / sps, (Date.now() - t0) / 1000);
     }
   }
+  // events at exactly `seconds` (a closing screenshot) fire after the last step
+  await due();
   const tr = (await page.evaluate(`${api}.trace()`)) as { rows: unknown[][]; cols?: string[]; hash?: string };
   out.rows = tr.rows;
   if (tr.cols) out.cols = tr.cols;
@@ -128,12 +133,15 @@ export async function runLockstep(page: Page, sc: Scenario, o: LockstepOptions =
   return out;
 }
 
-/** First differing row between two traces, or null when identical. */
+/** JSON with NaN and the infinities kept apart from null. */
+const exact = (v: unknown) => JSON.stringify(v, (_k, x) => (typeof x === "number" && !Number.isFinite(x) ? `${x}` : x));
+
+/** First differing row between two traces, or null when identical. NaN, Infinity and null all differ. */
 export function diffTraces(a: { rows: unknown[][]; hash?: string }, b: { rows: unknown[][]; hash?: string }): { row: number; a: unknown; b: unknown } | null {
   const n = Math.max(a.rows.length, b.rows.length);
   for (let i = 0; i < n; i++) {
-    const x = JSON.stringify(a.rows[i]);
-    const y = JSON.stringify(b.rows[i]);
+    const x = exact(a.rows[i]);
+    const y = exact(b.rows[i]);
     if (x !== y) return { row: i, a: a.rows[i] ?? null, b: b.rows[i] ?? null };
   }
   if (a.hash !== b.hash) return { row: n, a: a.hash ?? null, b: b.hash ?? null };

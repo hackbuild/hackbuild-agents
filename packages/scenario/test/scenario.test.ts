@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
@@ -145,6 +145,10 @@ describe("routes", () => {
     expect(diffTraces({ rows: [[1], [2]] }, { rows: [[1], [2]] })).toBeNull();
     expect(diffTraces({ rows: [[1], [2]] }, { rows: [[1], [3]] })).toEqual({ row: 1, a: [2], b: [3] });
     expect(diffTraces({ rows: [[1]], hash: "a" }, { rows: [[1]], hash: "b" })?.row).toBe(1);
+    // before: both sides went through JSON.stringify and NaN read as null
+    expect(diffTraces({ rows: [[Number.NaN]] }, { rows: [[null]] })?.row).toBe(0);
+    expect(diffTraces({ rows: [[Number.POSITIVE_INFINITY]] }, { rows: [[Number.NaN]] })?.row).toBe(0);
+    expect(diffTraces({ rows: [[Number.NaN]] }, { rows: [[Number.NaN]] })).toBeNull();
   });
 });
 
@@ -189,6 +193,13 @@ describe.skipIf(!chrome)("in chrome", () => {
     const off = await runSuite({ file: fixture, scenarios: [{ ...walk, seconds: 1 }], mode: "check", offline: true, readyMs: 3000 });
     expect(off.results[0]?.blocked.some((u) => u.includes("cdn.jsdelivr.net"))).toBe(true);
   }, 120000);
+
+  it("takes a screenshot set at exactly the scenario length", async () => {
+    // before: the step loop ended first and the closing shot never fired
+    const shot = join(tmp, "end.png");
+    await runSuite({ file: fixture, scenarios: [{ ...walk, seconds: 1, shots: [{ at: 1, path: shot }] }], mode: "check", routes: [npmCdn(nm)] });
+    expect(existsSync(shot)).toBe(true);
+  }, 60000);
 
   it("closes the browser when anything after launch fails", async () => {
     // before: a missing file threw from goto with the browser still running
