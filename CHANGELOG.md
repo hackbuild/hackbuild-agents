@@ -4,6 +4,32 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### Audit fixes, 2026-11-23
+
+- senses: the eye depth pass applies instancing, batching, skinning and
+  morph targets; the core IIFE no longer needs `THREE`, the eye moved to
+  `senses-three.iife.js`; colour frames reuse one target; non finite
+  projections are skipped; grids under 8 by 8 throw a JsError.
+- mover: passing sides held relative to the neighbour and dropped once
+  the closest approach is behind; contact and footprints constrain every
+  heading, the yield included; only a `follow` leader is exempt; one
+  stall waypoint at a time and an `unreachable` flag.
+- cameras: group distance solved from projected corners; shake draws only
+  while shaking and holds two knots.
+- scenario: npm CDN routes stay inside the package; `open` closes Chrome
+  on failure; reports fail on checks that did not run; compare needs a
+  golden directory; closing screenshots fire; NaN and null differ.
+- drives: `bodyClockJs`; untouched deficits stay unclamped in
+  `rewardOf`; a completed goal begun again restarts; `free()` on every
+  wasm class. tunables: non finite values ignored, hash written with
+  `history.replaceState`.
+- Every package ships LICENSE; senses and drives ship third party
+  notices for the compiled libm and wasm-bindgen code.
+- Verified: cargo, vitest (93 tests, the Chrome ones headless) and node
+  tests on an M1 with Rust 1.95; the example pages headful in Chrome 150
+  (docs/browser-checks.md). Not verified: Safari, Firefox, and a person
+  looking at any page.
+
 - repository scaffold: rules, hooks, voice and commit linters, CI.
 - `@hackbuild/tunables`: parameter registry with units and sources per
   number, layer switches under a master, presets, URL hash sharing, saves
