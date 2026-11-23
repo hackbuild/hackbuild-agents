@@ -28,7 +28,9 @@
   },
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.txt"
   ],
   "scripts": {
     "build": "node ../../tools/build-package.mjs drives"

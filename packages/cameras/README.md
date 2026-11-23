@@ -82,5 +82,5 @@ Measured 2026-11-22 from the build log.
 
 ## Licence
 
-Code MIT (`LICENSE` at the repository root). This README is CC-BY-4.0, its
+Code MIT (`LICENSE`, a copy of the repository root one). This README is CC-BY-4.0, its
 code samples also MIT.

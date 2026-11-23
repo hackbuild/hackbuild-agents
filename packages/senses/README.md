@@ -150,5 +150,7 @@ Budget: wasm under 128 KB raw; a change that crosses it says why.
 
 ## Licence
 
-Code MIT (`LICENSE` at the repository root). This README is CC-BY-4.0, its
-code samples also MIT.
+Code MIT (`LICENSE`, a copy of the repository root one). This README is CC-BY-4.0, its
+code samples also MIT. The wasm contains compiled libm (MIT) and
+wasm-bindgen (MIT or Apache-2.0) code; `THIRD-PARTY-NOTICES.txt` carries
+their notices.
