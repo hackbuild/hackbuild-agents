@@ -11,9 +11,11 @@ What is in it:
 - `Follow`: third person behind a heading with damped target and yaw; a
   `clear(from, dir, max)` callback (your raycast) pulls the camera in at
   once when something blocks the view and eases it back out.
-- `Group`: keeps every point on screen at a fixed pitch, solving the
-  distance from the field of view, padding and a usable screen band, with
-  a pull toward the arena centre.
+- `Group`: keeps every point on screen at a fixed pitch and yaw. The
+  centre is pulled toward the arena centre first; the distance is then
+  solved so every corner of the padded box round the points (`pad` in x
+  and z, 1 m above and below) projects inside the screen band. Points
+  can leave the screen only when `maxDistance` clamps the distance.
 - `Orbit`: a free orbit driven by deltas (rotate, zoom, pan); input
   binding stays with the app.
 - `FirstPerson`: an eye on an agent's head that scales the head to 0.001
@@ -45,6 +47,13 @@ defines `HackbuildCameras`.
 
 ### Verified on this machine
 
+- 2026-11-23: group framing over random point sets: 1,500 sets per
+  camera, six cameras (fov 40 to 70, aspect 9:16 to 21:9, centre pull 0
+  to 0.3, groups up to 20 m from the origin, three yaw and pitch pairs),
+  39,650 points projected with three.js, the worst at 0.876 of the half
+  screen (measured). Before the distance was solved from projected
+  corners, 379 of 13,414 points left the screen at fov 50 and 16:9 with
+  no centre pull, worst 1.29 (measured in an audit).
 - 2026-11-22: `npx vitest run packages/cameras` passed 7 of 7 tests
   (counted): damping agrees at 60 and 30 Hz to 1e-9, group framing keeps
   three spread points inside the three.js frustum, follow sits behind the

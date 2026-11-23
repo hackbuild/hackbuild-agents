@@ -35,6 +35,44 @@ describe("cameras", () => {
     }
   });
 
+  it("group framing keeps every point on screen over random sets (property)", () => {
+    // before the distance was solved from projected corners, 379 of 13,414
+    // points left the screen at fov 50 and 16:9 with no centre pull, and
+    // 836 of 9,077 with the default pull away from the origin (measured)
+    let total = 0;
+    let worst = 0;
+    for (const [fov, aspect, pull, yaw, pitch] of [
+      [50, 16 / 9, 0, 0, 0.92],
+      [60, 16 / 9, 0, 0, 0.92],
+      [50, 1, 0, 0, 0.92],
+      [50, 16 / 9, 0.1, 0, 0.92],
+      [40, 9 / 16, 0.1, 0.7, 0.5],
+      [70, 21 / 9, 0.3, -2, 1.3],
+    ] as const) {
+      const cam = new THREE.PerspectiveCamera(fov, aspect, 0.1, 500);
+      const g = new Group(cam, { centerPull: pull, yaw, pitch });
+      const r = rng(4);
+      for (let s = 0; s < 1500; s++) {
+        const n = 2 + ((r() * 6) | 0);
+        const spread = 1 + r() * 20;
+        const ox = (r() - 0.5) * 40;
+        const oz = (r() - 0.5) * 40;
+        const pts = Array.from({ length: n }, () => ({ x: ox + (r() - 0.5) * spread, y: r() * 1.5, z: oz + (r() - 0.5) * spread }));
+        const sol = g.solve(pts);
+        if (sol.dist >= 60 - 1e-9) continue;
+        g.update(pts, 0, true);
+        cam.updateMatrixWorld();
+        for (const p of pts) {
+          const v = new THREE.Vector3(p.x, p.y, p.z).project(cam);
+          total++;
+          worst = Math.max(worst, Math.abs(v.x), Math.abs(v.y));
+        }
+      }
+    }
+    expect(total).toBeGreaterThan(20000);
+    expect(worst).toBeLessThanOrEqual(1);
+  });
+
   it("follow sits behind the heading and pulls in when blocked", () => {
     const cam = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
     const f = new Follow(cam, { distance: 4 });

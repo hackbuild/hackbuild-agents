@@ -169,17 +169,41 @@ export class Group {
       maxZ = Math.max(maxZ, p.z);
     }
     const { pad, pitch, band, centerPull: k, center } = this.o;
-    const ex = maxX - minX + pad * 2;
-    const ez = maxZ - minZ + pad * 2;
-    const ey = maxY - minY + 2;
-    const th = Math.tan((this.camera.fov * Math.PI) / 360);
-    const tw = th * this.camera.aspect;
-    const needW = ex / (2 * tw);
-    const needH = (ez * Math.sin(pitch) + ey * Math.cos(pitch)) / (2 * th * band);
-    const dist = clamp(Math.max(needW, needH), this.o.minDistance, this.o.maxDistance);
+    // the centre pull comes first, so the distance below frames the pulled centre
     const cx = (minX + maxX) / 2;
     const cz = (minZ + maxZ) / 2;
-    return { target: { x: cx + (center.x - cx) * k, y: (minY + maxY) / 2, z: cz + (center.z - cz) * k }, dist };
+    const target = { x: cx + (center.x - cx) * k, y: (minY + maxY) / 2, z: cz + (center.z - cz) * k };
+    // camera basis for the orbit at this yaw and pitch: b from the target to
+    // the camera, f the view direction, r and u the screen axes
+    const yaw = this.o.yaw + Math.PI;
+    const cp = Math.cos(pitch);
+    const fx = Math.sin(yaw) * cp;
+    const fy = -Math.sin(pitch);
+    const fz = Math.cos(yaw) * cp;
+    const rl = Math.hypot(fz, fx) || 1;
+    const rx = -fz / rl;
+    const rz = fx / rl;
+    const ux = -rz * fy;
+    const uy = rz * fx - rx * fz;
+    const uz = rx * fy;
+    const th = Math.tan((this.camera.fov * Math.PI) / 360) * band;
+    const tw = Math.tan((this.camera.fov * Math.PI) / 360) * this.camera.aspect;
+    // every corner of the padded box (pad in x and z, 1 m above and below)
+    // must project inside the screen; depth grows one to one with the
+    // distance while the screen offsets stay fixed, so each corner gives a
+    // least distance in closed form
+    let need = 0;
+    for (const x of [minX - pad, maxX + pad])
+      for (const y of [minY - 1, maxY + 1])
+        for (const z of [minZ - pad, maxZ + pad]) {
+          const qx = x - target.x;
+          const qy = y - target.y;
+          const qz = z - target.z;
+          const sx = Math.abs(qx * rx + qz * rz);
+          const sy = Math.abs(qx * ux + qy * uy + qz * uz);
+          need = Math.max(need, Math.max(sx / tw, sy / th) - (qx * fx + qy * fy + qz * fz));
+        }
+    return { target, dist: clamp(need, this.o.minDistance, this.o.maxDistance) };
   }
   update(points: readonly V3[], dt: number, snap = false, shake?: V3): void {
     const s = this.solve(points);
