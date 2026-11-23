@@ -76,9 +76,9 @@ defines `HackbuildCameras`.
 
 | file | raw | gzip |
 |---|---|---|
-| `cameras.iife.js` | 9,033 bytes | 3,030 bytes |
+| `cameras.iife.js` | 10,133 bytes | 3,378 bytes |
 
-Measured 2026-11-22 from the build log.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
 
 ## Licence
 

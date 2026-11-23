@@ -7,12 +7,44 @@ their tests; the table below grows with them.
 
 | package | lang | what | tests |
 |---|---|---|---|
-| [`@hackbuild/tunables`](packages/tunables) | TS | parameter registry, layer switches, presets, URL hash sharing, panel binding | 15 vitest |
-| [`@hackbuild/senses`](packages/senses) | Rust + TS | Itti Koch saliency, looming, odour plume and trail tracking, hearing, field of view memory, eye renders to an occupancy grid | 18 cargo, 11 vitest |
-| [`@hackbuild/drives`](packages/drives) | Rust + TS | drive reduction reward, softmax choice with commitment and a why, cue learning, sleep and body clock, memory stream, task gating, inference scheduling | 12 cargo, 13 vitest |
-| [`@hackbuild/scenario`](packages/scenario) | Node TS | lockstep scenario runner on puppeteer-core and the system Chrome, routed pinned requests, goldens, motion metrics, frame sampler, profiler, check message reports | 11 vitest |
-| [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 10 vitest |
-| [`@hackbuild/cameras`](packages/cameras) | TS | follow with occlusion pull in, group framing, orbit, first person eye, seeded shake, split views | 7 vitest |
+| [`@hackbuild/tunables`](packages/tunables) | TS | parameter registry, layer switches, presets, URL hash sharing, panel binding | 17 vitest |
+| [`@hackbuild/senses`](packages/senses) | Rust + TS | Itti Koch saliency, looming, odour plume and trail tracking, hearing, field of view memory, eye renders to an occupancy grid | 19 cargo, 17 vitest (2 in Chrome) |
+| [`@hackbuild/drives`](packages/drives) | Rust + TS | drive reduction reward, softmax choice with commitment and a why, cue learning, sleep and body clock, memory stream, task gating, inference scheduling | 13 cargo, 19 vitest |
+| [`@hackbuild/scenario`](packages/scenario) | Node TS | lockstep scenario runner on puppeteer-core and the system Chrome, routed pinned requests, goldens, motion metrics, frame sampler, profiler, check message reports | 16 vitest (8 in Chrome) |
+| [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 15 vitest |
+| [`@hackbuild/cameras`](packages/cameras) | TS | follow with occlusion pull in, group framing, orbit, first person eye, seeded shake, split views | 9 vitest |
+
+Counted 2026-11-23. The shared `crates/rng` crate adds 2 cargo tests, and
+`tools/test` 48 node tests for the hooks, the voice and author linters
+and the package metadata.
+
+## Install
+
+Not on npm yet. From a clone, with Node 22.18 and the Rust toolchain in
+CONTRIBUTING.md:
+
+    npm ci && npm run build
+
+Each package's `dist/` then holds ES modules with types, and a single
+file classic script (`dist/<name>.iife.js`) for pages opened from
+file://; senses and drives inline their wasm there.
+
+## Use
+
+```ts
+import { createRegistry } from "@hackbuild/tunables";
+import { load as loadSenses, Saliency, seededRng } from "@hackbuild/senses";
+import { load as loadDrives, Drives } from "@hackbuild/drives";
+import { Steerer } from "@hackbuild/mover";
+
+await Promise.all([loadSenses(), loadDrives()]); // no argument: the inlined wasm; or pass a URL or bytes
+const rng = seededRng(7); // inject one Rng; no package calls Math.random
+const sal = new Saliency({ rng });
+const drives = new Drives({ hunger: 1, play: 0.8 });
+const steer = new Steerer("dog");
+```
+
+Each package README has a Use section of its own.
 
 ## Examples
 

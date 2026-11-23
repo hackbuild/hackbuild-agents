@@ -149,11 +149,11 @@ simulator whose code is public in
 
 | file | raw | gzip |
 |---|---|---|
-| `senses_bg.wasm` | 105,324 bytes | 45,632 bytes |
-| `senses.iife.js` (wasm inlined as base64) | 179,891 bytes | 70,273 bytes |
-| `senses-three.iife.js` | 9,494 bytes | 3,339 bytes |
+| `senses_bg.wasm` | 106,982 bytes | 46,483 bytes |
+| `senses.iife.js` (wasm inlined as base64) | 182,855 bytes | 71,763 bytes |
+| `senses-three.iife.js` | 10,144 bytes | 3,543 bytes |
 
-Measured 2026-11-23 from the build log, wasm-opt from wasm-pack 0.13.1.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9), wasm-opt from wasm-pack 0.13.1.
 Budget: wasm under 128 KB raw; a change that crosses it says why.
 
 ## Licence

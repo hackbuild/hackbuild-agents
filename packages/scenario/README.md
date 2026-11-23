@@ -110,9 +110,9 @@ puppeteer-core and node builtins external.
 
 | file | raw | gzip |
 |---|---|---|
-| `scenario.bundle.mjs` | 18,868 bytes | 7,162 bytes |
+| `scenario.bundle.mjs` | 20,062 bytes | 7,583 bytes |
 
-Measured 2026-11-22 from the build log.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
 
 ## Licence
 

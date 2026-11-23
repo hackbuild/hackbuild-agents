@@ -122,9 +122,9 @@ defines `HackbuildMover`.
 
 | file | raw | gzip |
 |---|---|---|
-| `mover.iife.js` | 13,480 bytes | 4,324 bytes |
+| `mover.iife.js` | 15,696 bytes | 4,883 bytes |
 
-Measured 2026-11-22 from the build log.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
 
 ## Licence
 

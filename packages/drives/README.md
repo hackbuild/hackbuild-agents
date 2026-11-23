@@ -154,10 +154,10 @@ instead.
 
 | file | raw | gzip |
 |---|---|---|
-| `drives_bg.wasm` | 112,142 bytes | 48,779 bytes |
-| `drives.iife.js` (wasm inlined as base64) | 190,224 bytes | 75,209 bytes |
+| `drives_bg.wasm` | 111,903 bytes | 48,773 bytes |
+| `drives.iife.js` (wasm inlined as base64) | 191,407 bytes | 76,176 bytes |
 
-Measured 2026-11-22 from the build log. Budget: wasm under 128 KB raw.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9). Budget: wasm under 128 KB raw.
 Most of the size is string formatting for the why sentences (inferred).
 
 ## Licence

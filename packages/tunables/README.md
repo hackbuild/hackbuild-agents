@@ -101,9 +101,9 @@ defines `HackbuildTunables` for pages opened from file://.
 
 | file | raw | gzip |
 |---|---|---|
-| `tunables.iife.js` | 11,411 bytes | 3,855 bytes |
+| `tunables.iife.js` | 11,598 bytes | 3,913 bytes |
 
-Measured 2026-11-22 from the build log. Budget: under 16 KB raw.
+Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9). Budget: under 16 KB raw.
 
 ## Licence
 
