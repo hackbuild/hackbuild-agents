@@ -42,6 +42,6 @@
     "hb-scenario": "./bin/scenario.mjs"
   },
   "peerDependencies": {
-    "puppeteer-core": ">=25.18.1"
+    "puppeteer-core": ">=25.18.1 <26.0.0"
   }
 }

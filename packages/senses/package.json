@@ -41,7 +41,7 @@
     "build": "node ../../tools/build-package.mjs senses"
   },
   "peerDependencies": {
-    "three": ">=0.186.1"
+    "three": ">=0.186.1 <0.188.0"
   },
   "peerDependenciesMeta": {
     "three": {
