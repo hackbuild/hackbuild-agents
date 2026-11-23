@@ -323,6 +323,11 @@ impl Saliency {
             .drain(..)
             .filter_map(|(p, k)| {
                 let v = cam.project(p);
+                // a point at the eye projects to NaN, which every
+                // comparison below would let through
+                if !(v.x.is_finite() && v.y.is_finite() && v.z.is_finite()) {
+                    return None;
+                }
                 if v.z > 1.0 || v.x.abs() > 1.0 || v.y.abs() > 1.0 {
                     return None;
                 }
@@ -351,7 +356,7 @@ impl Saliency {
         let r = w as f64 / 6.0;
         for o in &self.ior {
             let v = cam.project(cam.pos.add(o.dir));
-            if v.z > 1.0 {
+            if v.z > 1.0 || !(v.x.is_finite() && v.y.is_finite()) {
                 continue;
             }
             let cx = (v.x + 1.0) / 2.0 * w as f64;
@@ -445,6 +450,19 @@ impl Saliency {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_bias_or_inhibition_at_the_eye_is_skipped() {
+        // before: a point at the eye projected to NaN and turned all 800
+        // cells of the map NaN (measured)
+        let cam = Camera::look(Vec3::new(0.0, 0.5, 0.0), 0.0, 0.0, 60.0, 2.0, 0.05, 50.0);
+        let mut s = Saliency::new(SaliencyConfig::default(), 1);
+        let f = vec![90u8; 320 * 160 * 4];
+        s.bias_point(cam.pos, 1.0);
+        s.inhibit(Vec3::new(0.0, 0.0, 0.0), 10.0);
+        let m = s.update(&f, 320, 160, 0.0, &cam);
+        assert!(m.iter().all(|v| v.is_finite()));
+    }
 
     fn frame(w: usize, h: usize, spot: (usize, usize), rgb: [u8; 3]) -> Vec<u8> {
         let mut f = vec![60u8; w * h * 4];

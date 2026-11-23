@@ -82,7 +82,7 @@ impl Saliency {
     /// `opts`: width, height, gain, threshold, fixation median, ior seconds,
     /// snap angle, ground y, then the four channel weights.
     #[wasm_bindgen(constructor)]
-    pub fn new(opts: &[f64], seed: u32) -> Saliency {
+    pub fn new(opts: &[f64], seed: u32) -> Result<Saliency, JsError> {
         let d = SaliencyConfig::default();
         let o = |i: usize, v: f64| opts.get(i).copied().filter(|x| x.is_finite()).unwrap_or(v);
         let dc = Channels::default();
@@ -102,7 +102,10 @@ impl Saliency {
                 motion: o(11, dc.motion),
             },
         };
-        Saliency(Sal::new(cfg, seed))
+        if cfg.width < 8 || cfg.height < 8 {
+            return Err(JsError::new("saliency grid must be at least 8 by 8"));
+        }
+        Ok(Saliency(Sal::new(cfg, seed)))
     }
     #[wasm_bindgen(getter, js_name = mapWidth)]
     pub fn map_width(&self) -> usize {

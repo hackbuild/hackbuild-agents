@@ -101,6 +101,17 @@ describe("saliency parity with the legacy attention arithmetic", () => {
     console.log(`saliency parity: winner ${agree}/${frames}, max relative map difference ${maxRel.toExponential(2)} (measured)`);
   });
 
+  it("rejects a grid under 8 by 8 with an error and skips a bias at the eye", () => {
+    // before: width 4 panicked as RuntimeError: unreachable, and a bias at
+    // the eye position turned the whole map NaN
+    expect(() => new Saliency({ rng: seededRng(1), width: 4 })).toThrow(/at least 8 by 8/);
+    const cam = cameraLook({ x: 0, y: 0.5, z: 0 }, 0, 0, 60, 2, 0.05, 50);
+    const sal = new Saliency({ rng: seededRng(1) });
+    sal.biasPoint({ x: 0, y: 0.5, z: 0 }, 1);
+    const m = sal.update(frame(320, 160, 0, 3), 320, 160, 0, cam);
+    expect(m.every((v) => Number.isFinite(v))).toBe(true);
+  });
+
   it("inhibition of return survives a head turn", () => {
     const sal = new Saliency({ rng: seededRng(2) });
     const img = frame(320, 160, 1, 5);
