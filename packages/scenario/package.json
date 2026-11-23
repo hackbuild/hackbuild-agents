@@ -1,0 +1,46 @@
+{
+  "name": "@hackbuild/scenario",
+  "version": "0.1.0",
+  "description": "Lockstep scenario runner for browser sims on puppeteer-core and the system Chrome: routed requests from pinned local files, traces, golden comparison, motion metrics, a frame sampler and reports in the check message form.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Moheeb Zara <hackbuildvideo@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackbuild/hackbuild-agents.git",
+    "directory": "packages/scenario"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.11.0"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./profiler": {
+      "types": "./dist/profiler.d.ts",
+      "import": "./dist/profiler.js"
+    },
+    "./metrics": {
+      "types": "./dist/metrics.d.ts",
+      "import": "./dist/metrics.js"
+    },
+    "./bundle": "./dist/scenario.bundle.mjs"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node ../../tools/build-package.mjs scenario --esm"
+  },
+  "bin": {
+    "hb-scenario": "./bin/scenario.mjs"
+  },
+  "peerDependencies": {
+    "puppeteer-core": ">=25.18.1"
+  }
+}

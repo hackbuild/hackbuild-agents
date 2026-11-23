@@ -23,3 +23,8 @@ Versions follow semver per package. Nothing is published to npm yet.
   stream, a goal boost, and from the HACKLE lessons completion flags
   bound to their goal, settle checks with a timeout, a blocking layer
   gate and an inference scheduler.
+- `@hackbuild/scenario`: lockstep scenario runner on puppeteer-core and the
+  system Chrome with routed pinned requests and an offline mode, golden
+  traces, motion metrics (jerk, sliding, toggles, stalls, frame
+  percentiles), a rAF sampler, a per system profiler, reports in the check
+  message form, and the `hb-scenario` command.
