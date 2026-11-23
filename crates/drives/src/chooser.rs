@@ -2,21 +2,21 @@
 //! for options that cannot wait, otherwise softmax sampling only when the
 //! current act is done or its dwell ran out, with a commitment bonus on the
 //! current act. Every decision carries a why. Written for this library
-//! from the HACKLE `brain.choose` and `brain.set`, keeping its random draw
+//! from the legacy `brain.choose` and `brain.set`, keeping its random draw
 //! order so a seeded run replays.
 
 use agent_rng::{Mulberry32, Rng, ex_gaussian};
 
 #[derive(Clone, Copy, Debug)]
 pub struct ChooserConfig {
-    /// softmax temperature (HACKLE 0.06)
+    /// softmax temperature (legacy 0.06)
     pub temperature: f64,
-    /// bonus on the current act while it is not done (HACKLE 0.12)
+    /// bonus on the current act while it is not done (legacy 0.12)
     pub commitment: f64,
-    /// dwell ex-Gaussian mu and tail in seconds (HACKLE 5 and 7, sigma 1)
+    /// dwell ex-Gaussian mu and tail in seconds (legacy 5 and 7, sigma 1)
     pub dwell_mu: f64,
     pub dwell_tau: f64,
-    /// reaction latency ex-Gaussian mu and tail (HACKLE 0.3 and 0.3, sigma 0.06)
+    /// reaction latency ex-Gaussian mu and tail (legacy 0.3 and 0.3, sigma 0.06)
     pub react_mu: f64,
     pub react_tau: f64,
     /// a reactive option must beat the current act by this margin

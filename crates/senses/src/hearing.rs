@@ -1,6 +1,6 @@
 //! Sound localisation error: azimuth noise per animal, smaller once the
 //! head points at the source, with rare front back confusion. Written for
-//! this library from the HACKLE `brain.hear` (Guerineau 2022: dogs 1.3 to
+//! this library from the legacy `brain.hear` (Guerineau 2022: dogs 1.3 to
 //! 13.2 degrees, mean 7.6).
 
 use agent_rng::{Rng, gauss};

@@ -3,9 +3,12 @@
 Perception for simulated animals. The core is the Rust crate
 `crates/senses` compiled to wasm32 with SIMD128; this package loads it,
 wraps it in option objects that take an injected `Rng`, and adds a
-three.js eye under `/three`. Written for this library from the HACKLE
-senses (`attention`, `loomCheck`, `sense`, `memPos`, the nose) and the
-ARBOR perception pass and grid.
+three.js eye under `/three`. Written for this library from the senses
+of the earlier dog simulator whose code is public in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy) (`attention`,
+`loomCheck`, `sense`, `memPos`, the nose; called the legacy senses below)
+and from the perception pass and grid of an earlier unpublished
+prototype by the same author, who releases this code under MIT.
 
 What is in it:
 
@@ -132,7 +135,7 @@ simulator whose code is public in
 
 - Nobody has looked at the eye, the plume or the saliency map in a real
   browser at real frame rate.
-- Behavioural parity of the tracker and sniffer with a running HACKLE:
+- Behavioural parity of the tracker and sniffer with the running legacy simulator:
   they follow the same draw order and formulas, but no recorded run was
   compared.
 - The saliency in Chrome fixated the ground at the left edge of the test

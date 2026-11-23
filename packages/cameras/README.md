@@ -3,7 +3,7 @@
 Gameplay cameras that share damping, shake and occlusion handling. They
 drive any camera with `position.set`, `lookAt`, `fov` and `aspect` (a
 three PerspectiveCamera fits) and import nothing at runtime. Group framing
-is written for this library from the crownfall shared camera (MIT, same
+is written for this library from the shared camera of [crownfall](https://github.com/virgilvox/crownfall) (MIT, same
 author).
 
 What is in it:
@@ -19,7 +19,7 @@ What is in it:
 - `Orbit`: a free orbit driven by deltas (rotate, zoom, pan); input
   binding stays with the app.
 - `FirstPerson`: an eye on an agent's head that scales the head to 0.001
-  for its render only (the HACKLE lesson: hiding the head object would
+  for its render only (learned in earlier builds: hiding the head object would
   hide the whole subtree).
 - `Shake`: seeded value noise with decaying trauma (`Rng` injected). It
   draws only while shaking and holds two knots. Give it an Rng stream of

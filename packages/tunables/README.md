@@ -4,8 +4,9 @@ A parameter registry with layer switches for A/B work on agent behaviour.
 Every number that shapes behaviour is defined once with its range, step,
 note and source; layers gate whole features behind one master switch, so
 each feature keeps a fallback path that can be compared live. Written for
-this library from the HACKLE `TUNE` registry (`tdef`, `TV`, `ON`,
-`tuneUI`).
+this library from the `TUNE` registry (`tdef`, `TV`, `ON`, `tuneUI`) of
+the earlier dog simulator whose code is public in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy), called the legacy registry below.
 
 What is in it:
 
@@ -20,12 +21,12 @@ What is in it:
   as one `tune=` field, so it sits beside other hash fields
   (`#test&seed=3&tune=2|L.plume:0`); `fromUrlHash` reads it back.
 - saves hold only the values that differ from their defaults, as
-  `{ ver, d }`, so a new build's defaults reach saved sessions (the HACKLE
+  `{ ver, d }`, so a new build's defaults reach saved sessions (the legacy
   bug where a first run snapshot of every value pinned old defaults).
   `toJSON`, `fromJSON`, `restore` from storage. A save of another version
   goes through an explicit `migrate[ver]` that returns what is safe to
   keep; with no migration for that version nothing is kept. Version 0 is
-  the bare HACKLE export. Unknown keys are skipped and returned.
+  the bare legacy export. Unknown keys are skipped and returned.
 - `renames` map old keys to new ones. A key never changes meaning: a new
   meaning (wag rate in Hz becoming a multiplier) gets a new key.
 - `abPair(layer)`: two snapshots that differ in that one layer.
@@ -34,7 +35,7 @@ What is in it:
   row, reset all, export and import, follows the registry both ways and
   can keep the URL hash in sync.
 
-The definitions themselves (HACKLE has 71 parameters in 8 groups, vendor
+The definitions themselves (the legacy registry has 71 parameters in 8 groups, vendor
 count) stay in the app.
 
 ## Install

@@ -1,6 +1,6 @@
 //! A memory stream ranked by recency, importance and relevance (Park et
 //! al. 2023), with an importance budget that says when to reflect. Written
-//! for this library from the HACKLE `brain.remember` and the retrieval in
+//! for this library from the legacy `brain.remember` and the retrieval in
 //! `think`.
 
 #[derive(Clone, Debug)]
@@ -14,7 +14,7 @@ pub struct Memory {
 pub struct MemoryStream {
     items: Vec<Memory>,
     pub capacity: usize,
-    /// recency decay per game hour (HACKLE 0.995)
+    /// recency decay per game hour (legacy 0.995)
     pub decay: f64,
     /// summed importance since the last reflection
     pub pending_importance: f64,

@@ -2,12 +2,12 @@
 //! test, a range set by object size, motion and daylight, and an occlusion
 //! answer the caller supplies. Remembered positions drift with an error
 //! that grows with the square root of time since the last sighting (Fiset
-//! 2003). Written for this library from the HACKLE `sense` and `memPos`.
+//! 2003). Written for this library from the legacy `sense` and `memPos`.
 
 use crate::math::{Vec3, wrap_angle};
 use agent_rng::{Rng, gauss};
 
-/// A species profile for geometric vision. The defaults are HACKLE's dog.
+/// A species profile for geometric vision. The defaults are the legacy simulator's dog.
 #[derive(Clone, Copy, Debug)]
 pub struct VisionProfile {
     /// half the horizontal field of view (rad); 2.09 is a 240 degree field

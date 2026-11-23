@@ -1,4 +1,4 @@
-// Parity reference: the HACKLE senses.js attention arithmetic (levels,
+// Parity reference: the legacy senses.js attention arithmetic (levels,
 // csMap, N and the channel sum, with the top down blob), transcribed by
 // hand into a pure function for the tests. It is never shipped. Storage is
 // Float32Array and arithmetic is in doubles, as in the original.

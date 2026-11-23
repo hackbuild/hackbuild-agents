@@ -1,10 +1,12 @@
 # @hackbuild/mover
 
 A kinematic capsule mover and steering for agents that share space.
-`World` is written for this library from the crownfall character physics
-(MIT, same author); `Steerer` is new, written against the HACKLE
-avoidance stall (hackle-plan 5.4 item 3) and the HACKLE lessons on
-obstacles and footprints.
+`World` is written for this library from the character physics of
+[crownfall](https://github.com/virgilvox/crownfall) (MIT, same author). `Steerer` is new, written
+against an avoidance stall of the earlier dog simulator in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy): two agents
+facing each other each turned away and stood still. It also carries
+lessons of earlier builds on obstacles and footprints.
 
 What is in it:
 
@@ -103,7 +105,7 @@ defines `HackbuildMover`.
 
 - The fix for the logged stall itself: dog-simulator recorded the stall in
   corridor-pass seed 21 and parked-in-path seed 21; nobody has run those
-  scenarios with this package. A transcription of the HACKLE field with a
+  scenarios with this package. A transcription of the legacy field with a
   parked dog did not stall in isolation either (measured, offsets 0 to
   0.3 m), so the stall needs the moving dog to appear.
 - Turn rate limits: the tests move point agents with a 0.15 s velocity

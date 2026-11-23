@@ -22,7 +22,7 @@ Rerun: `npm run build && npm run examples && npm run examples:check`.
 | 3 | senses | eye id and depth pass into the occupancy grid | pass | ball seen in 40 of 60 passes, 338 occupied cells (measured) |
 | 4 | senses | sniffer and tracker find the source on a live plume | pass | 16.9 s from 5 m downwind; 11.5 s and 13.2 s on earlier runs (measured) |
 | 5 | senses | a person looks at the eye, the plume and the saliency map at real frame rate | not run | needs the owner to look |
-| 6 | senses | tracker and sniffer behaviour against a running HACKLE | not run | needs a recorded HACKLE run |
+| 6 | senses | tracker and sniffer behaviour against the running legacy simulator | not run | needs a recorded legacy run |
 | 7 | senses | `senses.iife.js` from a file:// page | pass | 2026-11-23, `packages/senses/test/fixtures/iife.html` in headless Chrome 150 with no `THREE` on the page: loads and runs Saliency. Before the eye moved to `senses-three.iife.js` it threw `ReferenceError: THREE is not defined` (measured) |
 | 8 | senses | WebGPU saliency path | not run | not written |
 | 9 | drives | an animal driven by drives and the chooser in a running page | pass | 5 of 5 acts chosen, 57 switches over 328 sim s, every switch logged a why; choice update 0.1 ms p95 (measured) |

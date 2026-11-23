@@ -53,7 +53,7 @@ function stallSeconds(t: { x: number; z: number; goal: boolean }[]): number {
 
 const body = (id: string, x: number, z: number, radius: number, priority = 0): Body => ({ id, x, z, vx: 0, vz: 0, radius, priority, steer: new Steerer(id) });
 
-describe("passing and yielding (hackle-plan 5.4 item 3)", () => {
+describe("passing and yielding (two agents facing each other each turned away and stood still)", () => {
   it("two walkers head on in a corridor pass without a stall", () => {
     const h = body("human", 0, -4, 0.3, 1);
     const d = body("dog", 0.05, 4, 0.35);

@@ -43,7 +43,7 @@ export interface RegistryOptions {
   /**
    * Explicit migrations by the saved version. A save of another version with
    * no migration keeps nothing: its values go back to the current defaults.
-   * Version 0 is a bare values object with no `ver` (the HACKLE export).
+   * Version 0 is a bare values object with no `ver` (the legacy export).
    */
   migrate?: Record<number, (values: Record<string, number>) => Record<string, number>>;
   /**

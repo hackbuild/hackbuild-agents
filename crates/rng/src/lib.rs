@@ -3,7 +3,11 @@
 //! TypeScript `seededRng`, bit for bit. Every transcendental function goes
 //! through `libm`, so native and wasm builds agree.
 //!
-//! The draw order of each sampler matches the HACKLE organic kernel
+//! "The legacy" in these sources is the earlier dog simulator whose code is
+//! public at https://github.com/hackbuild/dog-simulator/tree/main/legacy
+//! (MIT parts only); the crate was written for this library from it.
+//!
+//! The draw order of each sampler matches the legacy organic kernel
 //! (`gauss` draws u then v, `ex_gaussian` draws the normal first), so a
 //! stream replayed through both gives the same numbers.
 
@@ -69,7 +73,7 @@ pub fn gauss<R: Rng + ?Sized>(rng: &mut R) -> f64 {
 }
 
 /// Ex-Gaussian reaction time: Normal(mu, sigma) plus Exponential(tau),
-/// floored at 0.02 s as in HACKLE.
+/// floored at 0.02 s as in the legacy simulator.
 pub fn ex_gaussian<R: Rng + ?Sized>(mu: f64, sigma: f64, tau: f64, rng: &mut R) -> f64 {
     let g = gauss(rng);
     let u = rng.next_f64();
@@ -98,7 +102,7 @@ pub struct Ou {
 }
 
 impl Ou {
-    /// Starts at `mu + sigma * N(0, 1) * 0.5`, as HACKLE does (one gauss draw).
+    /// Starts at `mu + sigma * N(0, 1) * 0.5`, as the legacy simulator does (one gauss draw).
     pub fn new<R: Rng + ?Sized>(tau: f64, sigma: f64, mu: f64, rng: &mut R) -> Self {
         let x = mu + sigma * gauss(rng) * 0.5;
         Ou { tau, sigma, mu, x }

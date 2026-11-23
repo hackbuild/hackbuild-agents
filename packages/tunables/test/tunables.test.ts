@@ -4,9 +4,9 @@ import { describe, expect, it } from "vitest";
 import { bindPanel } from "../src/dom.js";
 import { createRegistry, decimalsFor, type Registry } from "../src/index.js";
 
-// a cut of the HACKLE registry: the master layer, two layers, three numbers
-function hackle(storage?: Map<string, string>): Registry {
-  // version 0 is the bare HACKLE export: from it only the personality is safe to keep
+// a cut of the legacy registry: the master layer, two layers, three numbers
+function legacyRegistry(storage?: Map<string, string>): Registry {
+  // version 0 is the bare legacy export: from it only the personality is safe to keep
   const o: Parameters<typeof createRegistry>[0] = {
     master: "L.organic",
     version: 2,
@@ -27,7 +27,7 @@ function hackle(storage?: Map<string, string>): Registry {
 
 describe("registry", () => {
   it("defines, reads, clamps and rejects unknown keys", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.get("Br.temp")).toBe(0.06);
     r.set("Br.temp", 9);
     expect(r.get("Br.temp")).toBe(0.3);
@@ -38,7 +38,7 @@ describe("registry", () => {
   });
 
   it("gates every layer behind the master switch", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.layer("L.plume")).toBe(true);
     r.set("L.plume", 0);
     expect(r.layer("L.plume")).toBe(false);
@@ -50,50 +50,50 @@ describe("registry", () => {
   });
 
   it("keeps groups in definition order", () => {
-    expect(hackle().groups().map((g) => g.group)).toEqual(["layers", "brain", "senses", "personality"]);
+    expect(legacyRegistry().groups().map((g) => g.group)).toEqual(["layers", "brain", "senses", "personality"]);
   });
 
   it("writes only changed values to the URL hash and reads them back", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.toUrlHash()).toBe("");
     r.set("Br.temp", 0.125);
     r.set("L.plume", 0);
     const h = r.toUrlHash();
     expect(h).toBe("tune=2|L.plume:0|Br.temp:0.125");
-    const q = hackle();
+    const q = legacyRegistry();
     expect(q.fromUrlHash(`#test&seed=3&${encodeURIComponent(h)}`)).toEqual([]);
     expect(q.snapshot()).toEqual(r.snapshot());
   });
 
   it("reports unknown and malformed hash entries", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.fromUrlHash("tune=1|Gone.key:1|Br.temp:x|Se.fix:1.5")).toEqual(["Br.temp:x", "Gone.key"]);
     expect(r.get("Se.fix")).toBe(1.5);
   });
 
   it("applies renames within the current version", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.fromJSON({ ver: 2, d: { "Br.temperature": 0.1 } })).toEqual([]);
     expect(r.get("Br.temp")).toBe(0.1);
   });
 
-  it("migrates the bare HACKLE export explicitly and keeps only the personality", () => {
-    const r = hackle();
-    // the first HACKLE format saved every value, defaults included
+  it("migrates the bare legacy export explicitly and keeps only the personality", () => {
+    const r = legacyRegistry();
+    // the first legacy format saved every value, defaults included
     expect(r.fromJSON({ "P.age": 12, "Br.temp": 0.06, "Se.fix": 1.9, "L.day": 1 }).sort()).toEqual(["Br.temp", "L.day", "Se.fix"]);
     expect(r.get("P.age")).toBe(12);
     expect(r.get("Se.fix")).toBe(0.83);
   });
 
   it("keeps nothing from a version with no migration", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     expect(r.fromJSON({ ver: 1, d: { "Se.fix": 1.5, "P.age": 9 } })).toEqual(["Se.fix", "P.age"]);
-    expect(r.snapshot()).toEqual(hackle().snapshot());
+    expect(r.snapshot()).toEqual(legacyRegistry().snapshot());
   });
 
   it("saves only values that differ from defaults, so new defaults reach old sessions", () => {
     const store = new Map<string, string>();
-    const a = hackle(store);
+    const a = legacyRegistry(store);
     a.set("Se.fix", 1.2);
     a.set("Br.temp", 0.06);
     expect(JSON.parse(store.get("tunables") ?? "{}")).toEqual({ ver: 2, d: { "Se.fix": 1.2 } });
@@ -107,9 +107,9 @@ describe("registry", () => {
 
   it("persists to storage and restores", () => {
     const store = new Map<string, string>();
-    const a = hackle(store);
+    const a = legacyRegistry(store);
     a.set("Se.fix", 1.2);
-    const b = hackle(store);
+    const b = legacyRegistry(store);
     expect(b.get("Se.fix")).toBe(0.83);
     b.restore();
     expect(b.get("Se.fix")).toBe(1.2);
@@ -117,7 +117,7 @@ describe("registry", () => {
   });
 
   it("applies presets, resets, notifies and unsubscribes", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     const seen: [string, number][] = [];
     const off = r.onChange((k, v) => seen.push([k, v]));
     r.applyPreset("puppy");
@@ -133,7 +133,7 @@ describe("registry", () => {
   });
 
   it("returns an A/B pair that differs in one layer only", () => {
-    const r = hackle();
+    const r = legacyRegistry();
     r.set("Br.temp", 0.2);
     const { on, off } = r.abPair("L.sample");
     const diff = Object.keys(on).filter((k) => on[k] !== off[k]);
@@ -144,11 +144,11 @@ describe("registry", () => {
   it("round trips any in range values through the hash (property)", () => {
     fc.assert(
       fc.property(fc.double({ min: 0.005, max: 0.3, noNaN: true }), fc.integer({ min: 2, max: 160 }), fc.boolean(), (t, age, plume) => {
-        const a = hackle();
+        const a = legacyRegistry();
         a.set("Br.temp", t);
         a.set("P.age", age);
         a.set("L.plume", plume ? 1 : 0);
-        const b = hackle();
+        const b = legacyRegistry();
         b.fromUrlHash(a.toUrlHash());
         expect(b.snapshot()).toEqual(a.snapshot());
       }),
@@ -166,7 +166,7 @@ describe("panel", () => {
     const doc = win.document as unknown as Document;
     const host = doc.createElement("div");
     doc.body.append(host);
-    const r = hackle();
+    const r = legacyRegistry();
     const loc = { hash: "#test&seed=3" };
     let exported = "";
     const p = bindPanel(host, r, { document: doc, syncHash: true, location: loc, groupLabels: { brain: "CHOICE" }, onExport: (t) => (exported = t) });

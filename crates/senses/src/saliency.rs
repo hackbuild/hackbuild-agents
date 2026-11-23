@@ -1,7 +1,7 @@
 //! Itti Koch saliency on an eye frame, after Itti, Koch and Niebur 1998:
 //! center surround differences on a pyramid, the N() normalization, a
 //! winner take all, and inhibition of return. Written for this library from
-//! the HACKLE `attention` object, with the same arithmetic: maps are stored
+//! the legacy `attention` object, with the same arithmetic: maps are stored
 //! as f32 and computed in f64, so the map matches the original to the last
 //! f32 bit on the same frame (the parity test measures this).
 //!
@@ -12,7 +12,7 @@
 use crate::math::{Camera, Vec3};
 use agent_rng::{Mulberry32, Rng, log_normal};
 
-/// Channel weights; HACKLE uses 1, 0.7, 0.6, 1.7.
+/// Channel weights; the legacy simulator uses 1, 0.7, 0.6, 1.7.
 #[derive(Clone, Copy, Debug)]
 pub struct Channels {
     pub intensity: f64,
@@ -34,12 +34,12 @@ impl Default for Channels {
 
 #[derive(Clone, Copy, Debug)]
 pub struct SaliencyConfig {
-    /// feature grid the frame is sampled to (HACKLE 80 by 40)
+    /// feature grid the frame is sampled to (legacy 80 by 40)
     pub width: usize,
     pub height: usize,
     pub channels: Channels,
     pub gain: f64,
-    /// the winner must beat this to become a fixation (HACKLE 0.35)
+    /// the winner must beat this to become a fixation (legacy 0.35)
     pub threshold: f64,
     /// fixation dwell median in seconds (Barber 2016: mean 827 ms)
     pub fixation_median: f64,
@@ -311,7 +311,7 @@ impl Saliency {
                     + c.blue_yellow * m_b[i] as f64
                     + c.edges * m_e[i] as f64
                     + c.motion * m_m[i] as f64)) as f32;
-            // the intensity weight is folded in below so the default keeps HACKLE's operation order
+            // the intensity weight is folded in below so the default keeps the legacy simulator's operation order
         }
         if c.intensity != 1.0 {
             for i in 0..self.map.len() {

@@ -70,9 +70,9 @@ describe("native and wasm agree", () => {
   });
 });
 
-describe("saliency parity with the HACKLE attention arithmetic", () => {
+describe("saliency parity with the legacy attention arithmetic", () => {
   it("agrees on the winner in every frame and on the map to f32 rounding", () => {
-    // 240 synthetic seeded frames at 320 by 160 (HACKLE's eye size), with a top down blob on a third of them
+    // 240 synthetic seeded frames at 320 by 160 (the legacy simulator's eye size), with a top down blob on a third of them
     const cam = cameraLook({ x: 0, y: 0.5, z: 0 }, 0, 0, 60, 2, 0.05, 50);
     const ref = new LegacyAttention();
     const sal = new Saliency({ rng: seededRng(1) });
@@ -122,9 +122,9 @@ describe("saliency parity with the HACKLE attention arithmetic", () => {
   });
 });
 
-describe("plume parity with the HACKLE nose", () => {
+describe("plume parity with the legacy nose", () => {
   it("replays puff positions from the same seeded stream", () => {
-    // reference: HACKLE plumeTick for one source, transcribed, on the stream the field seeds from
+    // reference: legacy plumeTick for one source, transcribed, on the stream the field seeds from
     const seed = 77;
     const rng = seededRng(seed);
     class OU {

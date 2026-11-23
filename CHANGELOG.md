@@ -20,7 +20,7 @@ Versions follow semver per package. Nothing is published to npm yet.
   chooser with reactive latencies, softmax with commitment and a why per
   decision, a cue learner with associability, eligibility traces and
   decaying inhibition, sleep pressure, body clock and stages, a memory
-  stream, a goal boost, and from the HACKLE lessons completion flags
+  stream, a goal boost, and from lessons of earlier builds completion flags
   bound to their goal, settle checks with a timeout, a blocking layer
   gate and an inference scheduler.
 - `@hackbuild/scenario`: lockstep scenario runner on puppeteer-core and the
@@ -35,5 +35,6 @@ Versions follow semver per package. Nothing is published to npm yet.
 - `crates/senses`: wasm surface written without `chunks_exact`, which the
   newer clippy on CI rejects.
 - `@hackbuild/cameras`: follow with occlusion pull in, group framing from
-  the crownfall camera, free orbit, a first person eye that hides the
+  the crownfall camera (https://github.com/virgilvox/crownfall), free
+  orbit, a first person eye that hides the
   head for its render, seeded shake and split viewports.

@@ -1,9 +1,10 @@
 // @hackbuild/cameras: gameplay cameras that share damping, shake and
 // occlusion handling. They drive any camera with `position.set`, `lookAt`,
 // `fov` and `aspect` (a three PerspectiveCamera fits) and import nothing at
-// runtime. Group framing is written for this library from the crownfall
-// camera (MIT, same author); the first person eye follows the HACKLE
-// lesson of hiding the agent's own head for that render.
+// runtime. Group framing is written for this library from the shared
+// camera of crownfall (https://github.com/virgilvox/crownfall, MIT, same
+// author); the first person eye follows a lesson of earlier builds: hide
+// the agent's own head for that render only.
 
 export type Rng = () => number;
 
@@ -284,7 +285,7 @@ export interface Scalable {
 
 /**
  * A first person eye on an agent's head. `render` hides the head (scaled
- * to 0.001, the HACKLE lesson: visible false would hide the whole subtree)
+ * to 0.001, learned in earlier builds: visible false would hide the whole subtree)
  * for this render only, then restores it.
  */
 export class FirstPerson {

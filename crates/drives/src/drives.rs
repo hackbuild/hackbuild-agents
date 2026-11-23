@@ -1,7 +1,7 @@
 //! Homeostatic drive reduction reward after Keramati and Gutkin 2011: the
 //! drive is a weighted n-norm root of the deficits, and the reward of an
 //! act is how far its expected effect lowers that drive. Written for this
-//! library from the HACKLE `driveD` and `gain`.
+//! library from the legacy `driveD` and `gain`.
 
 #[derive(Clone, Debug)]
 pub struct Drives {
@@ -9,10 +9,10 @@ pub struct Drives {
     pub weights: Vec<f64>,
     /// current deficits, 0 to 1
     pub values: Vec<f64>,
-    /// exponent n and root m (HACKLE 3 and 4)
+    /// exponent n and root m (legacy 3 and 4)
     pub n: f64,
     pub m: f64,
-    /// reward gain (HACKLE 2.4)
+    /// reward gain (legacy 2.4)
     pub gain: f64,
 }
 
@@ -37,7 +37,7 @@ impl Drives {
     }
     /// The reward of an act with expected `effect` per deficit: the drop in
     /// drive, times the gain. Reductions are scaled by `scale`, increases
-    /// are not (HACKLE's secure base and nearness scaling).
+    /// are not (the legacy simulator's secure base and nearness scaling).
     pub fn reward_of(&self, effect: &[f64], scale: f64) -> f64 {
         let mut h = self.values.clone();
         for (i, &k) in effect.iter().enumerate() {

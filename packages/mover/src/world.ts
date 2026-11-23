@@ -1,7 +1,7 @@
 // Kinematic capsule mover against axis aligned boxes and vertical
 // cylinders, with step up, ceilings, wall sliding, substeps and moving
-// platform carry. Written for this library from the crownfall character
-// physics (MIT, the same author).
+// platform carry. Written for this library from the character physics of
+// crownfall (https://github.com/virgilvox/crownfall, MIT, same author).
 
 export const STEP_UP = 0.36;
 

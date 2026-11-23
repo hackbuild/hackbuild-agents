@@ -3,7 +3,7 @@
 //! and a stage machine for one sleep (onset, NREM, REM, brief wake) with
 //! ex-Gaussian stage lengths and a hypnogram. After a bad experience onset
 //! is faster and REM longer (Kis 2017). Written for this library from the
-//! HACKLE `brain.tick` sleep terms, `bodyClock` and `sleepRun`.
+//! legacy `brain.tick` sleep terms, `bodyClock` and `sleepRun`.
 
 use agent_rng::{Mulberry32, Rng, ex_gaussian};
 
@@ -23,16 +23,16 @@ pub fn body_clock(h: f64) -> f64 {
 
 #[derive(Clone, Copy, Debug)]
 pub struct SleepConfig {
-    /// pressure rise per game hour awake (HACKLE 0.055)
+    /// pressure rise per game hour awake (legacy 0.055)
     pub up: f64,
-    /// pressure fall per game hour asleep (HACKLE 0.11)
+    /// pressure fall per game hour asleep (legacy 0.11)
     pub down: f64,
-    /// NREM game minutes (HACKLE 6) and REM game minutes (HACKLE 2.5)
+    /// NREM game minutes (legacy 6) and REM game minutes (legacy 2.5)
     pub nrem: f64,
     pub rem: f64,
-    /// chance of a brief wake after REM (HACKLE 0.45)
+    /// chance of a brief wake after REM (legacy 0.45)
     pub wake: f64,
-    /// sleepiness under this ends the sleep at a brief wake (HACKLE 0.45)
+    /// sleepiness under this ends the sleep at a brief wake (legacy 0.45)
     pub enough: f64,
 }
 
@@ -100,7 +100,7 @@ impl Sleep {
         self.stage
     }
     /// Pressure over `game_hours`: down while asleep, up while awake
-    /// scaled by `activity` (0.7 at rest to 1.3 running in HACKLE).
+    /// scaled by `activity` (0.7 at rest to 1.3 running in the legacy simulator).
     pub fn pressure_step(&mut self, game_hours: f64, activity: f64) {
         if self.stage == Stage::Awake {
             self.pressure = (self.pressure + self.cfg.up * game_hours * activity).clamp(0.0, 1.0);
@@ -112,7 +112,7 @@ impl Sleep {
     pub fn sleepiness(&self, hour: f64) -> f64 {
         0.8 * self.pressure + 0.5 * body_clock(hour)
     }
-    /// HACKLE's fatigue drive from pressure and the clock.
+    /// the legacy simulator's fatigue drive from pressure and the clock.
     pub fn fatigue(&self, hour: f64, running: bool) -> f64 {
         (0.8 * self.pressure + 0.45 * body_clock(hour) - 0.15 + if running { 0.05 } else { 0.0 })
             .clamp(0.0, 1.0)

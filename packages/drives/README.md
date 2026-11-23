@@ -4,14 +4,15 @@ Drives, choice, learning, sleep and memory for simulated animals. The core
 is the Rust crate `crates/drives` compiled to wasm32 with SIMD128; this
 package loads it and wraps it with named options and an injected `Rng`.
 Task gating and inference scheduling are plain TypeScript. Written for
-this library from the HACKLE brain (`driveD`, `gain`, `choose`, `set`,
+this library from the brain of the earlier dog simulator whose code is
+public in [dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy), called the legacy brain below (`driveD`, `gain`, `choose`, `set`,
 `cue`, `learnTrace`, `bodyClock`, `sleepRun`, `remember` and the retrieval
 in `think`).
 
 What is in it:
 
 - `Drives`: drive reduction reward over named deficits (Keramati and
-  Gutkin 2011), with the scale on reductions HACKLE uses for nearness and
+  Gutkin 2011), with the scale on reductions the legacy simulator uses for nearness and
   the secure base.
 - `Chooser`: reactive switches after an ex-Gaussian latency for options
   that cannot wait, otherwise softmax sampling with a commitment bonus only
@@ -29,14 +30,14 @@ What is in it:
 - `MemoryStream`: recency, importance and relevance scoring (Park et al.
   2023) with an importance budget for reflection; `GoalBoost` for a goal
   from a slow deliberation with an expiry.
-- From the HACKLE lessons: `Completion` binds a done flag to the goal it
+- From lessons of earlier builds: `Completion` binds a done flag to the goal it
   was raised for, `settled` checks the real condition (heading error under
   0.12 rad, angular speed under 0.4 rad/s) with a timeout, `LayerGate`
   releases blocking layers a new task does not declare, and
   `InferenceScheduler` starts a model call only after a minimum interval,
   while idle, inside a frame budget, one at a time, with a state to show.
 
-Not in it: HACKLE's 22 executors, its `EFFECT` values, dialogue and
+Not in it: the legacy simulator's 22 executors, its `EFFECT` values, dialogue and
 prompts stay in the app. The top 3 planner from the human agent is not
 written.
 
@@ -143,7 +144,7 @@ instead.
 - Blocking, which the plan lists among the conditioning results, is not
   modelled: each cue learns alone.
 - Choice parity covers decisions from a finished act; dwell timing and the
-  pending latency path are checked by unit tests, not against HACKLE.
+  pending latency path are checked by unit tests, not against the legacy simulator.
 
 ## Size budget
 

@@ -4,7 +4,7 @@
 //! with obstacles inflated by the agent radius and no corner cutting, then
 //! line of sight smoothing. Frontiers are free reachable cells beside
 //! unknown cells, grouped into buckets and sorted by walking distance.
-//! Written for this library from the ARBOR perception grid.
+//! Written for this library from an earlier unpublished perception prototype by the same author.
 
 use crate::math::{Camera, Vec3};
 use std::cmp::Ordering;
@@ -16,9 +16,9 @@ pub const OCCUPIED: u8 = 2;
 
 #[derive(Clone, Copy, Debug)]
 pub struct GridConfig {
-    /// cells per side (ARBOR 220)
+    /// cells per side (prototype 220)
     pub cells: usize,
-    /// cell size in metres (ARBOR 0.1)
+    /// cell size in metres (prototype 0.1)
     pub cell: f64,
     /// obstacle inflation and the always free footprint, in cells
     pub radius: i32,

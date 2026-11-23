@@ -1,10 +1,12 @@
 // three.js adapter: cameras as the 16 number layout the wasm takes, and an
 // agent eye that renders an object ID buffer and a depth buffer from the
 // agent's head, so perception reads only what the eye can see. Written for
-// this library from the ARBOR perception pass and the HACKLE eye render.
+// this library from an earlier unpublished perception prototype by the
+// same author and the eye render of the earlier dog simulator
+// (https://github.com/hackbuild/dog-simulator/tree/main/legacy).
 // Readback is synchronous by default; `passAsync` uses
 // readRenderTargetPixelsAsync and refuses a second pass while one is in
-// flight (the HACKLE lesson: a busy flag, never a queue).
+// flight (learned in earlier builds: a busy flag, never a queue).
 import * as THREE from "three";
 import type { CameraArray } from "./index.js";
 
@@ -20,15 +22,15 @@ export function cameraFromThree(cam: THREE.PerspectiveCamera, out: CameraArray =
 }
 
 export interface EyeOptions {
-  /** vertical field of view in degrees (ARBOR 74) */
+  /** vertical field of view in degrees (prototype 74) */
   fov?: number;
-  /** ID buffer size (ARBOR 192 by 108) */
+  /** ID buffer size (prototype 192 by 108) */
   width?: number;
   height?: number;
-  /** depth buffer size (ARBOR 96 by 54) */
+  /** depth buffer size (prototype 96 by 54) */
   depthWidth?: number;
   depthHeight?: number;
-  /** depth range in metres (ARBOR 12) */
+  /** depth range in metres (prototype 12) */
   far?: number;
   near?: number;
 }
@@ -36,7 +38,7 @@ export interface EyeOptions {
 export interface Tracked {
   object: THREE.Object3D;
   label: string;
-  /** pixels needed to count as seen (ARBOR: 2 for props, 60 for furniture) */
+  /** pixels needed to count as seen (prototype: 2 for props, 60 for furniture) */
   minPixels?: number;
 }
 

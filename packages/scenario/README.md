@@ -22,7 +22,7 @@ What is in it:
 - Page contract: `window.__sim` with `step(n)`, `trace()` returning
   `{ rows, cols?, hash? }`, and optional `render()`. The page opened with
   `#test&seed=N` must not run its own loop.
-- Motion metrics from the HACKLE lessons: `jerk` (third difference of
+- Motion metrics from lessons of earlier builds: `jerk` (third difference of
   positions), `sliding` (heading against direction of motion over 0.6
   rad), `togglesPerSecond`, `stallSeconds` (under 0.2 m in 2 s with a
   goal), `frameStats` (p50, p95, max).

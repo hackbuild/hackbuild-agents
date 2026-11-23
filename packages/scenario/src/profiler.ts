@@ -1,4 +1,4 @@
-// A per system frame profiler, from the HACKLE lessons: mark after each
+// A per system frame profiler, from lessons of earlier builds: mark after each
 // system in the frame and read the average and worst ms per label. Runs
 // in a page or in Node; the clock is injected (performance.now).
 

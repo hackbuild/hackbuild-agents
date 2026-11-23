@@ -1,11 +1,11 @@
-// Scheduling heavy inference, from the HACKLE lessons: GPU contention is
+// Scheduling heavy inference, from lessons of earlier builds: GPU contention is
 // invisible to JS profiling, so a model call runs only after a minimum
 // interval, optionally only while the agent is idle, and only while recent
 // frames are inside a budget; one call at a time, with a busy state the UI
 // can show.
 
 export interface ScheduleOptions {
-  /** seconds between the starts of two calls (HACKLE cortex: 25) */
+  /** seconds between the starts of two calls (legacy cortex: 25) */
   minInterval: number;
   /** only start while the caller says the agent is idle */
   idleOnly?: boolean;

@@ -3,28 +3,28 @@
 //! traces so a late reward credits the most recent eligible act with less
 //! weight, massed practice damping, inhibition that decays faster than
 //! excitation (so extinguished cues partly come back), free operant offers,
-//! and everyday non compliance. Written for this library from the HACKLE
+//! and everyday non compliance. Written for this library from the legacy
 //! `brain.cue`, `learnTrace`, `sampleOffer` and `offerTrick`, keeping the
-//! draw order. The always true condition HACKLE carried in its ignore test
-//! (defect 17 of the plan) is dropped, which removes one draw.
+//! draw order. The always true condition the legacy simulator carried in
+//! its ignore test is dropped, which removes one draw.
 
 use agent_rng::{Mulberry32, Rng, ex_gaussian};
 
 #[derive(Clone, Copy, Debug)]
 pub struct LearnConfig {
-    /// learning rate (HACKLE 0.35)
+    /// learning rate (legacy 0.35)
     pub alpha: f64,
-    /// associability rate (HACKLE 0.3)
+    /// associability rate (legacy 0.3)
     pub theta: f64,
-    /// eligibility trace time constant in seconds (HACKLE 1.2)
+    /// eligibility trace time constant in seconds (legacy 1.2)
     pub trace_seconds: f64,
-    /// inhibition decay per minute (HACKLE 0.06)
+    /// inhibition decay per minute (legacy 0.06)
     pub inhibition_decay: f64,
-    /// free operant offer rate (HACKLE 0.5)
+    /// free operant offer rate (legacy 0.5)
     pub offer_rate: f64,
-    /// base non compliance (HACKLE 0.25; Browne: 44 percent of everyday sit and down ignored)
+    /// base non compliance (legacy 0.25; Browne: 44 percent of everyday sit and down ignored)
     pub ignore: f64,
-    /// cue latency ex-Gaussian mu and tail (HACKLE 0.45 and 0.45, sigma 0.08)
+    /// cue latency ex-Gaussian mu and tail (legacy 0.45 and 0.45, sigma 0.08)
     pub cue_mu: f64,
     pub cue_tau: f64,
     /// false: no non compliance, no latency (the canned path)

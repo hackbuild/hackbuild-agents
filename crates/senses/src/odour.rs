@@ -1,7 +1,7 @@
 //! Odour: an intermittent puff plume in a meandering wind plus a decaying
 //! ground trail grid, two nostril sniffing in bouts, and a tracker with
 //! decide, trail, surge and cast modes. Written for this library from the
-//! HACKLE nose (`plumeTick`, `trailDeposit`, `trailDir`, `sniffTick`,
+//! legacy nose (`plumeTick`, `trailDeposit`, `trailDir`, `sniffTick`,
 //! `sniffRun`), keeping its random draw order so a seeded run replays.
 //!
 //! Celani, Villermaux and Vergassola 2014: odour arrives as whiffs and
@@ -12,20 +12,20 @@
 //!
 //! Puffs are kept as a struct of arrays with a uniform spatial hash, so no
 //! object is made per puff and a concentration query visits only nearby
-//! puffs (HACKLE defect 20).
+//! puffs.
 
 use agent_rng::{Mulberry32, Ou, Rng, ex_gaussian, poisson_gap, range};
 
 #[derive(Clone, Copy, Debug)]
 pub struct OdourConfig {
-    /// side of the square world in metres, centred on the origin (HACKLE 34)
+    /// side of the square world in metres, centred on the origin (legacy 34)
     pub size: f64,
-    /// trail cells per side (HACKLE 64)
+    /// trail cells per side (legacy 64)
     pub cells: usize,
     pub max_puffs: usize,
     /// puffs live this long (s)
     pub puff_life: f64,
-    /// puffs leaving this half extent are dropped (HACKLE 17)
+    /// puffs leaving this half extent are dropped (legacy 17)
     pub bounds: f64,
     /// puffs per second per source at strength 1
     pub puff_rate: f64,
@@ -280,7 +280,7 @@ impl OdourField {
     }
 
     /// Fades the trail by `elapsed / halflife` halvings (any time unit, the
-    /// same for both; HACKLE uses game minutes, halflife 45).
+    /// same for both; the legacy simulator uses game minutes, halflife 45).
     pub fn decay_trail(&mut self, elapsed: f64, halflife: f64) {
         let k = libm::pow(0.5, elapsed / halflife);
         for v in self.trail.iter_mut() {
@@ -386,7 +386,7 @@ impl Sniffer {
     }
     /// Advances the sniff clock; returns true when a sniff was taken this
     /// step. `nose` is the nose tip (x, z), `side` the offset to the left
-    /// nostril (HACKLE 3 cm across the head).
+    /// nostril (legacy 3 cm across the head).
     pub fn tick(
         &mut self,
         field: &OdourField,

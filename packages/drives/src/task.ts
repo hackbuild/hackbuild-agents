@@ -1,4 +1,4 @@
-// Task gating, from the HACKLE lessons: completion flags go stale when a
+// Task gating, from lessons of earlier builds: completion flags go stale when a
 // step reads a flag left over from the previous goal (the human sat
 // backwards because the turn step read motor.done from the walk), and a
 // task started while a blocking layer was held froze the body (seated,
@@ -43,7 +43,7 @@ export interface SettleCheck {
   elapsed: number;
   /** give up after this many seconds (default 3) */
   timeout?: number;
-  /** defaults from the lesson: 0.12 rad and 0.4 rad/s */
+  /** defaults from earlier builds: 0.12 rad and 0.4 rad/s */
   maxError?: number;
   maxRate?: number;
 }

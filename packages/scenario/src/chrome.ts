@@ -24,7 +24,7 @@ export interface OpenOptions {
   routes?: Route[];
   /** refuse every request that is not file:, data: or blob: (the self contained build check) */
   offline?: boolean;
-  /** the HACKLE lesson: 420 by 280 reaches about 20 fps under swiftshader */
+  /** learned in earlier builds: 420 by 280 reaches about 20 fps under swiftshader */
   width?: number;
   height?: number;
   headless?: boolean;

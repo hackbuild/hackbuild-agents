@@ -4,6 +4,10 @@
 //! inhibition, sleep pressure with a body clock and a stage machine, and a
 //! memory stream ranked by recency, importance and relevance.
 //!
+//! "The legacy" in these sources is the earlier dog simulator whose code is
+//! public at https://github.com/hackbuild/dog-simulator/tree/main/legacy
+//! (MIT parts only); the crate was written for this library from it.
+//!
 //! Every transcendental function goes through `libm` and every random draw
 //! through a seeded Mulberry32, so a native build and a `wasm32` build give
 //! bit identical numbers for the same seed.

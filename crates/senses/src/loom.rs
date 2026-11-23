@@ -1,6 +1,6 @@
 //! Looming: time to contact tau = theta / (d theta / dt) from the growth of
 //! an object's angular size (Lee 1976). A fast approach under the threshold
-//! is a startle. Written for this library from the HACKLE `loomCheck`.
+//! is a startle. Written for this library from the legacy `loomCheck`.
 
 /// Angular size in radians of an object of `size` metres at `dist` metres.
 pub fn angular_size(size: f64, dist: f64) -> f64 {
@@ -23,7 +23,7 @@ pub fn time_to_contact(prev_angle: f64, angle: f64, dt: f64) -> f64 {
 
 #[derive(Clone, Copy, Debug)]
 pub struct LoomConfig {
-    /// startle under this tau in seconds (HACKLE `Se.loom` 0.6, scaled by temperament)
+    /// startle under this tau in seconds (legacy `Se.loom` 0.6, scaled by temperament)
     pub tau: f64,
     /// ignore objects smaller than this angle (rad)
     pub min_angle: f64,

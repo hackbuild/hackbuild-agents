@@ -34,7 +34,7 @@ describe("native and wasm agree", () => {
   });
 });
 
-// ---- parity reference: HACKLE brain.driveD, gain and choose, transcribed by hand for the test ----
+// ---- parity reference: legacy brain.driveD, gain and choose, transcribed by hand for the test ----
 const W = { hunger: 1, fatigue: 1, play: 0.8, social: 0.9, curiosity: 0.6, prey: 1.1 };
 type K = keyof typeof W;
 const KEYS = Object.keys(W) as K[];
@@ -74,10 +74,10 @@ const exgRef = (rng: () => number, mu: number, sigma: number, tau: number) => {
   const g = Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
   return Math.max(0.02, mu + sigma * g - tau * Math.log(1 - rng()));
 };
-/** The utilities the HACKLE brain gives with drives on, for a yard with food out, a ball in view and the human near. */
+/** The utilities the legacy brain gives with drives on, for a yard with food out, a ball in view and the human near. */
 function utilities(d: Record<K, number>, gainOf: (e: Partial<Record<K, number>>, s?: number) => number): Record<B, number> {
   const G = (b: string, s = 1) => gainOf(EFFECT[b] as Partial<Record<K, number>>, s);
-  // HACKLE clamps every utility at 0 after scoring
+  // the legacy brain clamps every utility at 0 after scoring
   const U: Record<B, number> = {
     idle: 0.12,
     explore: G("explore", 1.25),
@@ -92,7 +92,7 @@ function utilities(d: Record<K, number>, gainOf: (e: Partial<Record<K, number>>,
   for (const b of BEH) U[b] = Math.max(0, U[b]);
   return U;
 }
-/** HACKLE choose() from idle with the current act done, then the pending switch; returns the act picked. */
+/** legacy choose() from idle with the current act done, then the pending switch; returns the act picked. */
 function legacyChoose(U: Record<B, number>, rng: () => number): B {
   const cur: B = "idle";
   let best: B = "idle";
@@ -118,7 +118,7 @@ function legacyChoose(U: Record<B, number>, rng: () => number): B {
   return pick;
 }
 
-describe("choice parity with the HACKLE brain on recorded drive states", () => {
+describe("choice parity with the legacy brain on recorded drive states", () => {
   const fx = JSON.parse(readFileSync(join(here, "fixtures/recorded-drive-states.json"), "utf8")) as { states: number[][] };
   const states = fx.states.map(([hunger, fatigue, play, social]) => ({ hunger, fatigue, play, social, curiosity: 0.5, prey: 0 }) as Record<K, number>);
 
@@ -319,7 +319,7 @@ describe("learner, sleep and memory", () => {
   });
 });
 
-describe("task gating and scheduling (HACKLE lessons 3 and 4)", () => {
+describe("task gating and scheduling (stale completion flags and blocking layers in earlier builds)", () => {
   it("a late done report for an old goal does not complete the new one", () => {
     const c = new Completion<string>();
     c.begin("walk to bench", 0);

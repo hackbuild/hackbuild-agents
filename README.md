@@ -34,11 +34,15 @@ in RULES.md and CONTRIBUTING.md.
 
 Each package README carries its own dated list. Across the repository:
 
-Parity with the HACKLE code it was written from (measured on synthetic
-seeded inputs against hand transcriptions; tolerances in each README):
-saliency winners 240 of 240, maps bit identical; plume puffs within
-8.9e-16 m; behaviour choice on 339 recorded HACKLE drive states, 10,170
-of 10,170 decisions the same from the same seeded stream.
+Parity with the earlier dog simulator the senses, drives and tunables
+were written from (its code is public in
+[dog-simulator/legacy](https://github.com/hackbuild/dog-simulator/tree/main/legacy)),
+measured against fixtures produced by running that code on seeded inputs
+(tolerances in each README): saliency maps bit identical on 300 frames of
+five sizes; 360 fixation frames with top down bias and inhibition of
+return, 36 of 36 shifts at the same frames; plume puffs within 3.6e-15
+up to the 600 puff cap; 6,000 behaviour choices over every path, the same
+act each time; body clock within 2.22e-16.
 
 ### Verified on this machine
 
