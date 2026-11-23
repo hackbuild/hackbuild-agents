@@ -9,6 +9,7 @@ their tests; the table below grows with them.
 |---|---|---|---|
 | [`@hackbuild/tunables`](packages/tunables) | TS | parameter registry, layer switches, presets, URL hash sharing, panel binding | 15 vitest |
 | [`@hackbuild/senses`](packages/senses) | Rust + TS | Itti Koch saliency, looming, odour plume and trail tracking, hearing, field of view memory, eye renders to an occupancy grid | 18 cargo, 11 vitest |
+| [`@hackbuild/drives`](packages/drives) | Rust + TS | drive reduction reward, softmax choice with commitment and a why, cue learning, sleep and body clock, memory stream, task gating, inference scheduling | 12 cargo, 13 vitest |
 
 ## Develop
 
@@ -26,7 +27,8 @@ Each package README carries its own dated list. Across the repository:
 Parity with the HACKLE code it was written from (measured on synthetic
 seeded inputs against hand transcriptions; tolerances in each README):
 saliency winners 240 of 240, maps bit identical; plume puffs within
-8.9e-16 m.
+8.9e-16 m; behaviour choice on 339 recorded HACKLE drive states, 10,170
+of 10,170 decisions the same from the same seeded stream.
 
 ### Not verified by anything
 

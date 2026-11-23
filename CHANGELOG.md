@@ -16,3 +16,10 @@ Versions follow semver per package. Nothing is published to npm yet.
   of view vision with percept memory, an occupancy grid with A* and
   frontiers, and a three.js eye (ID and depth renders) under `/three`.
 - `crates/rng`: the shared seeded Mulberry32 and samplers.
+- `@hackbuild/drives` and `crates/drives`: drive reduction reward, a
+  chooser with reactive latencies, softmax with commitment and a why per
+  decision, a cue learner with associability, eligibility traces and
+  decaying inhibition, sleep pressure, body clock and stages, a memory
+  stream, a goal boost, and from the HACKLE lessons completion flags
+  bound to their goal, settle checks with a timeout, a blocking layer
+  gate and an inference scheduler.

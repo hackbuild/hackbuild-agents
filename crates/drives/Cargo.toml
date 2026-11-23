@@ -1,0 +1,21 @@
+[package]
+name = "hackbuild-drives"
+version = "0.1.0"
+description = "Homeostatic drives, sampled choice with commitment, associative learning, sleep and a memory stream"
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[lib]
+name = "drives"
+crate-type = ["cdylib", "rlib"]
+
+[features]
+default = []
+wasm = ["dep:wasm-bindgen"]
+
+[dependencies]
+agent_rng = { package = "hackbuild-agent-rng", path = "../rng" }
+libm = "0.2.16"
+wasm-bindgen = { version = "=0.2.129", optional = true }

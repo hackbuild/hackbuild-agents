@@ -22,6 +22,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hackbuild-drives"
+version = "0.1.0"
+dependencies = [
+ "hackbuild-agent-rng",
+ "libm",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "hackbuild-senses"
 version = "0.1.0"
 dependencies = [
