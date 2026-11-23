@@ -9,9 +9,14 @@ export class Completion<G = string> {
   private goal: G | null = null;
   private done = false;
   private started = 0;
-  /** A new goal: the flag resets. Returns true when the goal changed. */
+  /**
+   * A new goal: the flag resets. The same goal again while it is in
+   * progress changes nothing; the same goal after it was done starts it
+   * anew (walking to the bench a second time). Returns true when a task
+   * started.
+   */
   begin(goal: G, now: number): boolean {
-    if (this.goal === goal) return false;
+    if (this.goal === goal && !this.done) return false;
     this.goal = goal;
     this.done = false;
     this.started = now;

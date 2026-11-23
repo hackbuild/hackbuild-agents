@@ -330,6 +330,18 @@ describe("task gating and scheduling (stale completion flags and blocking layers
     expect(c.isDone("turn to sit")).toBe(true);
   });
 
+  it("the same goal begun again after it was done starts anew", () => {
+    // before: begin with an equal goal kept done true, so a second walk to
+    // the bench completed at once
+    const c = new Completion<string>();
+    c.begin("walk to bench", 0);
+    expect(c.begin("walk to bench", 0.5)).toBe(false);
+    c.report("walk to bench");
+    expect(c.begin("walk to bench", 9)).toBe(true);
+    expect(c.isDone("walk to bench")).toBe(false);
+    expect(c.elapsed(10)).toBe(1);
+  });
+
   it("settles on the real condition or a timeout", () => {
     expect(settled({ error: 0.1, rate: 0.2, elapsed: 0.5 })).toEqual({ done: true, timedOut: false });
     expect(settled({ error: 0.5, rate: 0.2, elapsed: 0.5 })).toEqual({ done: false, timedOut: false });

@@ -30,8 +30,9 @@ What is in it:
 - `MemoryStream`: recency, importance and relevance scoring (Park et al.
   2023) with an importance budget for reflection; `GoalBoost` for a goal
   from a slow deliberation with an expiry.
-- From lessons of earlier builds: `Completion` binds a done flag to the goal it
-  was raised for, `settled` checks the real condition (heading error under
+- From lessons of earlier builds: `Completion` binds a done flag to the
+  goal it was raised for (the same goal begun again after it was done
+  starts anew), `settled` checks the real condition (heading error under
   0.12 rad, angular speed under 0.4 rad/s) with a timeout, `LayerGate`
   releases blocking layers a new task does not declare, and
   `InferenceScheduler` starts a model call only after a minimum interval,
