@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // CI job browser: every single file build (*.iife.js) in every packed
 // tarball loads from a file:// page in headless Chrome with no network, sets
-// its global, and throws nothing. A build that needs a page global the test
-// page does not provide (THREE for a three.js adapter) is listed as not run,
+// its global, and throws nothing. A build that reads the THREE page global
+// gets the devDependency three.js, bundled to a classic script here, loaded
+// first; when three is not installed such a build is listed as not run,
 // never as a pass. Run node tools/lint-packages.mjs first (it fills .pack/).
 // Fails when no Chrome is found: this job exists to run in one.
 // Usage: node tools/check-browser.mjs   (HB_CHROME overrides the browser)
@@ -12,6 +13,7 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { gunzipSync } from "node:zlib";
 import puppeteer from "puppeteer-core";
+import { rolldown } from "rolldown";
 
 const root = resolve(import.meta.dirname, "..");
 const PACK = join(root, ".pack");
@@ -41,6 +43,17 @@ function untar(gz) {
 }
 
 const work = mkdtempSync(join(tmpdir(), "hb-browser-"));
+// three.js as the classic script a page would load before a three adapter
+let threeShim = null;
+try {
+  const bundle = await rolldown({ input: join(root, "node_modules", "three", "build", "three.module.js"), logLevel: "silent" });
+  const { output } = await bundle.generate({ format: "iife", name: "THREE", codeSplitting: false });
+  await bundle.close();
+  threeShim = join(work, "three.iife.js");
+  writeFileSync(threeShim, output[0].code);
+} catch {
+  console.log("check-browser: three is not installed, builds that read THREE are not run");
+}
 const browser = await puppeteer.launch({ executablePath: chrome, headless: true, args: ["--no-sandbox", "--allow-file-access-from-files"] });
 const rows = [];
 let failed = 0;
@@ -55,10 +68,12 @@ try {
       mkdirSync(dir, { recursive: true });
       const file = path.split("/").pop();
       writeFileSync(join(dir, file), bytes);
-      writeFileSync(join(dir, `${file}.html`), `<!doctype html><meta charset="utf-8"><script src="./${file}"></script>`);
+      const wantsThree = /\bTHREE\b/.test(src);
+      const pre = wantsThree && threeShim ? `<script src="${pathToFileURL(threeShim).href}"></script>` : "";
+      writeFileSync(join(dir, `${file}.html`), `<!doctype html><meta charset="utf-8">${pre}<script src="./${file}"></script>`);
       const page = await browser.newPage();
       const errors = [];
-      page.on("pageerror", (e) => errors.push(String(e.message ?? e)));
+      page.on("pageerror", (e) => errors.push(String(e.message ?? e) + (process.env.HB_DEBUG ? ` at ${e.stack}` : "")));
       await page.setRequestInterception(true);
       page.on("request", (r) => (r.url().startsWith("file:") || r.url().startsWith("data:") ? r.continue() : (errors.push(`network request ${r.url()}`), r.abort())));
       await page.goto(pathToFileURL(join(dir, `${file}.html`)).href, { waitUntil: "load" });
@@ -66,14 +81,14 @@ try {
       await page.close();
       const needs = errors.find((e) => /THREE is not defined|reading '[^']+'\) of undefined.*THREE/.test(e));
       let status;
-      if (needs && /\bTHREE\b/.test(src)) status = "not run: needs a THREE page global";
+      if (needs && !threeShim) status = "not run: needs a THREE page global";
       else if (errors.length) {
         status = `fail: ${errors.join("; ")}`;
         failed++;
       } else if (keys <= 0) {
         status = `fail: global ${global ?? "(none found)"} not set`;
         failed++;
-      } else status = `pass: ${global} with ${keys} exports`;
+      } else status = `pass: ${global} with ${keys} exports${wantsThree && threeShim ? ", three.js loaded first" : ""}`;
       rows.push(`| \`${tgz}\` | \`${path}\` | ${status} |`);
       console.log(`check-browser: ${tgz} ${path} ${status}`);
     }
