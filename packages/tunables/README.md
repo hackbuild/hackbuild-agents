@@ -99,11 +99,14 @@ defines `HackbuildTunables` for pages opened from file://.
 
 ## Size budget
 
-| file | raw | gzip |
+| file | gzip (measured) | ceiling |
 |---|---|---|
-| `tunables.iife.js` | 11,598 bytes | 3,913 bytes |
+| `dist/index.js` (main entry, imports external) | 2,332 bytes | 2,448 bytes |
+| `dist/tunables.iife.js` (single file build) | 3,913 bytes | 4,108 bytes |
 
-Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9). Budget: under 16 KB raw.
+Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
+5 percent from its row.
 
 ## Licence
 

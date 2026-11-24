@@ -1,0 +1,32 @@
+{
+  "about": "gzip level 9 bytes (measured) per published file; CI fails when a file moves more than 5 percent from its row. Rewrite with node tools/lint-packages.mjs --update-budget after a reviewed change.",
+  "measured": "2026-11-23",
+  "margin": 0.05,
+  "packages": {
+    "@hackbuild/cameras": {
+      "main: dist/index.js bundled": 3265,
+      "dist/cameras.iife.js": 3378
+    },
+    "@hackbuild/drives": {
+      "main: dist/index.js bundled": 76054,
+      "dist/wasm/drives_bg.wasm": 48773,
+      "dist/drives.iife.js": 76176
+    },
+    "@hackbuild/mover": {
+      "main: dist/index.js bundled": 4761,
+      "dist/mover.iife.js": 4883
+    },
+    "@hackbuild/scenario": {
+      "main: dist/index.js bundled": 7592
+    },
+    "@hackbuild/senses": {
+      "main: dist/index.js bundled": 71634,
+      "dist/wasm/senses_bg.wasm": 46483,
+      "dist/senses.iife.js": 71763
+    },
+    "@hackbuild/tunables": {
+      "main: dist/index.js bundled": 2332,
+      "dist/tunables.iife.js": 3913
+    }
+  }
+}

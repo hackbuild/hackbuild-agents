@@ -108,11 +108,13 @@ puppeteer-core and node builtins external.
 
 ## Size budget
 
-| file | raw | gzip |
+| file | gzip (measured) | ceiling |
 |---|---|---|
-| `scenario.bundle.mjs` | 20,062 bytes | 7,583 bytes |
+| `dist/index.js` (main entry, imports external) | 7,592 bytes | 7,971 bytes |
 
-Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
+Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
+5 percent from its row.
 
 ## Licence
 

@@ -74,11 +74,14 @@ defines `HackbuildCameras`.
 
 ## Size budget
 
-| file | raw | gzip |
+| file | gzip (measured) | ceiling |
 |---|---|---|
-| `cameras.iife.js` | 10,133 bytes | 3,378 bytes |
+| `dist/index.js` (main entry, imports external) | 3,265 bytes | 3,428 bytes |
+| `dist/cameras.iife.js` (single file build) | 3,378 bytes | 3,546 bytes |
 
-Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
+Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
+5 percent from its row.
 
 ## Licence
 

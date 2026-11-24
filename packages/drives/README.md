@@ -154,13 +154,15 @@ instead.
 
 ## Size budget
 
-| file | raw | gzip |
+| file | gzip (measured) | ceiling |
 |---|---|---|
-| `drives_bg.wasm` | 111,903 bytes | 48,773 bytes |
-| `drives.iife.js` (wasm inlined as base64) | 191,407 bytes | 76,176 bytes |
+| `dist/index.js` (main entry, imports external) | 76,054 bytes | 79,856 bytes |
+| `dist/wasm/drives_bg.wasm` | 48,773 bytes | 51,211 bytes |
+| `dist/drives.iife.js` (single file build) | 76,176 bytes | 79,984 bytes |
 
-Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9). Budget: wasm under 128 KB raw.
-Most of the size is string formatting for the why sentences (inferred).
+Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
+5 percent from its row.
 
 ## Licence
 

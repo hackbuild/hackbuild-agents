@@ -26,6 +26,8 @@
     "README.md",
     "LICENSE"
   ],
+  "unpkg": "./dist/mover.iife.js",
+  "jsdelivr": "./dist/mover.iife.js",
   "scripts": {
     "build": "node ../../tools/build-package.mjs mover"
   }

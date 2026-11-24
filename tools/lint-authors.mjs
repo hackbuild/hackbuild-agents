@@ -42,9 +42,17 @@ export function packageFails(path, text) {
 }
 
 export function cargoFails(path, text) {
+  // a crate names the owner itself or inherits authors.workspace = true; the
+  // workspace root that crates inherit from names the owner
   const m = /^authors\s*=\s*\[([^\]]*)\]/m.exec(text);
-  if (!m) return [];
+  const inherits = /^authors\.workspace\s*=\s*true\s*$/m.test(text);
+  if (!m) {
+    if (/^\[package\]/m.test(text) && !inherits) return [`${path}: [package] has no authors, legal is ["${OWNER}"] or authors.workspace = true`];
+    if (/^\[workspace\.package\]/m.test(text)) return [`${path}: [workspace.package] has no authors, legal is ["${OWNER}"]`];
+    return [];
+  }
   const people = [...m[1].matchAll(/"([^"]*)"/g)].map((x) => x[1]);
+  if (!people.length) return [`${path}: authors is empty, legal is ["${OWNER}"]`];
   return people.flatMap((who) =>
     AI_IDENTITY.test(who) ? [`${path}: authors names an ai tool (${who}), legal is people only`] : who !== OWNER ? [`${path}: author is "${who}", legal is "${OWNER}"`] : [],
   );

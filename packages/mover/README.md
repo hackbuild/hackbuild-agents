@@ -120,11 +120,14 @@ defines `HackbuildMover`.
 
 ## Size budget
 
-| file | raw | gzip |
+| file | gzip (measured) | ceiling |
 |---|---|---|
-| `mover.iife.js` | 15,696 bytes | 4,883 bytes |
+| `dist/index.js` (main entry, imports external) | 4,761 bytes | 4,999 bytes |
+| `dist/mover.iife.js` (single file build) | 4,883 bytes | 5,127 bytes |
 
-Measured 2026-11-23 by tools/check-sizes.mjs (gzip level 9).
+Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
+5 percent from its row.
 
 ## Licence
 

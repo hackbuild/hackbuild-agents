@@ -26,6 +26,8 @@
     "README.md",
     "LICENSE"
   ],
+  "unpkg": "./dist/cameras.iife.js",
+  "jsdelivr": "./dist/cameras.iife.js",
   "scripts": {
     "build": "node ../../tools/build-package.mjs cameras"
   },

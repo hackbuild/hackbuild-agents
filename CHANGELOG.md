@@ -4,6 +4,23 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### Release readiness, 2026-11-23
+
+- ci: `packages` job packs every package and runs the files allowlist,
+  manifest, peer, publint, attw and gzip size budget checks
+  (`tools/lint-packages.mjs`, `tools/size-budget.json`); README size
+  tables are generated from the budget. `browser` job loads each single
+  file build from file:// in headless Chrome. The `unit` job summary
+  names every skipped test. lint-authors now requires authors in every
+  Cargo.toml.
+- Changesets for versions and package changelogs; `release.yml` runs on
+  manual dispatch only, packs and uploads the tarballs, and publishes
+  nothing.
+- Verified: publint and attw clean on all six tarballs, all five single
+  file builds that need no page global load in Chrome 150 headless on
+  macOS 12 (`senses-three.iife.js` needs `THREE`, not run). Not verified
+  until the push: the same on the Linux runner.
+
 ### Audit fixes, 2026-11-23
 
 - senses: the eye depth pass applies instancing, batching, skinning and

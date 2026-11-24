@@ -32,6 +32,8 @@
     "LICENSE",
     "THIRD-PARTY-NOTICES.txt"
   ],
+  "unpkg": "./dist/drives.iife.js",
+  "jsdelivr": "./dist/drives.iife.js",
   "scripts": {
     "build": "node ../../tools/build-package.mjs drives"
   }

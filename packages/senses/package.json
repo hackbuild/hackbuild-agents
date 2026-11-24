@@ -37,6 +37,8 @@
     "LICENSE",
     "THIRD-PARTY-NOTICES.txt"
   ],
+  "unpkg": "./dist/senses.iife.js",
+  "jsdelivr": "./dist/senses.iife.js",
   "scripts": {
     "build": "node ../../tools/build-package.mjs senses"
   },
