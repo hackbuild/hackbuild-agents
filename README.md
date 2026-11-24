@@ -2,6 +2,8 @@
 
 Embodied agent building blocks for browser sims and games: senses, drives, tunable parameters, movers, cameras and a lockstep scenario test runner.
 
+Live examples: <https://hackbuild.github.io/hackbuild-agents/>
+
 Status: phase A, 2026-11-22. Packages land in `packages/` as they pass
 their tests; the table below grows with them.
 
