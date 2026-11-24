@@ -4,6 +4,16 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### @hackbuild/scenario 0.2.0, 2026-11-24
+
+- scenario: `@hackbuild/scenario/browser`, a browser entry over the same
+  lockstep core as the Node runner (`drive` with a page or sim driver):
+  `parseScenario`, `runScenario` with streamed events, `runScenarios`
+  with goldens, `parseTrace`, `diffRows`, `diffMessage`, `traceHash`,
+  plus the metrics, profiler and report functions. Actions and probes
+  may be functions of `h` as well as strings. Main entry gzip 7,592 to
+  8,597 bytes (measured).
+
 ### hackbuild-ui pin, 2026-11-23
 
 - examples: hackbuild-ui 0.4.3 to 0.5.0 at commit 5211c3a, pinned by

@@ -36,6 +36,17 @@ What is in it:
   not run, and `reportPasses` (so the `hb-scenario` exit code) fails on
   it unless the check sets `optional: true`. `runSuite` refuses `compare`
   and `record` without a `goldenDir`.
+- `@hackbuild/scenario/browser`: the same lockstep core for a sim that
+  runs in the page, with no Node built ins and no puppeteer (a test
+  bundles it for the browser and checks). `parseScenario` loads a JSON
+  definition (code fields are strings run with `new Function`, so load
+  only files you trust), `runScenario(sim, scenario, { onEvent })` steps
+  it and streams step, action, fired, probe and shot events,
+  `runScenarios({ scenarios, makeSim, goldens })` returns a report for
+  `formatReport`, `reportPasses` and `verdict`, and `parseTrace`,
+  `diffRows`, `diffMessage` and `traceHash` compare two traces: "trace
+  differs at row 88: heading 0.41, expected 0.39". The metrics, the
+  profiler and the report functions are exported here too.
 - `hb-scenario record|compare|check --file F --list L`: the same from the
   command line; the list module exports `scenarios`, `routes` and
   `options`.
@@ -96,7 +107,19 @@ puppeteer-core and node builtins external.
   them (measured), which is why real frame rate runs take
   `gpu: "default"`.
 
+- 2026-11-24: `npx vitest run packages/scenario` passed 22 of 22 tests
+  (counted). A seeded DOM free sim gave trace hash equality for one seed
+  three ways: the browser entry in Node, the browser entry bundled and
+  imported in a headless Chrome 150 page, and the Node runner stepping
+  the same sim in that page. A different seed gave a different hash.
+- 2026-11-24: `Math.atan2(0.3, 1.7)` printed 0.17467219900823971 in
+  Node 22.18 and 0.1746721990082397 in Chrome 150 (measured). A sim
+  whose trace must hash the same in Node and a browser keeps
+  transcendental results out of its state or rounds them.
+
 ### Not verified by anything
+
+- The browser entry under Firefox or Safari: not run.
 
 - dog-simulator still runs its own copy of the runner; nobody has moved
   its scenarios onto this package yet.
@@ -110,9 +133,9 @@ puppeteer-core and node builtins external.
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 7,592 bytes | 7,971 bytes |
+| `dist/index.js` (main entry, imports external) | 8,597 bytes | 9,026 bytes |
 
-Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+Measured 2026-11-24 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
 5 percent from its row.
 
