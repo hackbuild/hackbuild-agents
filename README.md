@@ -53,7 +53,8 @@ Each package README has a Use section of its own.
 One page per package, built from `examples/` and published at
 <https://hackbuild.github.io/hackbuild-agents/>. Every shape is built in
 code; no model, asset or weight file is loaded. `npm run examples` builds
-them into `_site/`; `npm run examples:check` runs the browser checks.
+them into `_site/`, and into `_site/single/` one HTML per page that opens
+from disk; `npm run examples:check` runs the browser checks.
 
 ## Develop
 

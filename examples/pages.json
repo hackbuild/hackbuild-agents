@@ -3,6 +3,7 @@
   "intro": "one page per package. every shape is built in code; no model, asset or weight file is loaded.",
   "footer": "code mit. pages built from github.com/hackbuild/hackbuild-agents. no weights or model files are hosted here.",
   "source": "https://github.com/hackbuild/hackbuild-agents",
+  "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"#1a1a1a\"/></svg>",
   "pages": [
     {
       "name": "senses",

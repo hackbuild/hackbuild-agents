@@ -9,8 +9,9 @@ the same day for the rows marked so: Chrome 150.0.7871.125, headful, on
 an Apple M1 (macOS 12) with the real GPU (WebGL renderer ANGLE Metal, Apple
 M1; WebGPU adapter vendor apple, architecture common-3, shader-f16), driven
 by `tools/check-examples.mjs` over the example pages built by
-`tools/build-examples.mjs`. The automated pass measured these numbers; the
-owner has not looked yet. Screenshots go to `.local/shots/` (gitignored).
+`tools/build-examples.mjs`, since replaced by `tools/build-pages.mjs`.
+The automated pass measured these numbers; the owner has not looked yet.
+Screenshots go to `.local/shots/` (gitignored).
 Rows that need a person stay not run until someone looks and writes the
 date and their name here.
 
