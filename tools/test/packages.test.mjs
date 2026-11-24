@@ -9,7 +9,7 @@ import { join } from "node:path";
 const root = join(import.meta.dirname, "..", "..");
 const licence = readFileSync(join(root, "LICENSE"), "utf8");
 
-for (const name of readdirSync(join(root, "packages"))) {
+for (const name of readdirSync(join(root, "packages"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name)) {
   const dir = join(root, "packages", name);
   if (!existsSync(join(dir, "package.json"))) continue;
   test(`${name} ships its licence`, () => {
