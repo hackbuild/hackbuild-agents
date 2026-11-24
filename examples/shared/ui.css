@@ -79,7 +79,10 @@ body.hb { display: flex; flex-direction: column; min-height: 100vh; }
 .pg-tune .tn-value { font-family: var(--hb-readout); font-size: 18px; color: var(--hb-ink); min-width: 4ch; text-align: right; }
 .pg-tune .tn-unit, .pg-tune .tn-source, .pg-tune .tn-cite { color: var(--hb-ink-3); }
 .pg-tune button { font-family: var(--hb-utility); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; background: var(--hb-paper-raised); color: var(--hb-ink); border: var(--hb-border) solid var(--hb-ink); box-shadow: 2px 2px 0 var(--hb-ink); padding: 5px 10px; min-height: 44px; cursor: pointer; }
-.pg-tune button:hover { background: var(--hb-pink); }
+/* hover only on a mouse, as hackbuild-ui 0.5.0 does: a tapped button does not stay pink */
+@media (hover: hover) and (pointer: fine) {
+  .pg-tune button:hover { background: var(--hb-pink); }
+}
 .pg-tune .tn-presets, .pg-tune .tn-actions { display: flex; flex-wrap: wrap; gap: var(--hb-s2); align-items: center; margin: 0 0 var(--hb-s3); font-family: var(--hb-utility); font-size: 11px; }
 @media (min-width: 641px) {
   .pg-tune .tn-label { flex: 0 0 160px; }
