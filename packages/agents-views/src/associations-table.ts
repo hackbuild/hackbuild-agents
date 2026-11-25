@@ -64,11 +64,10 @@ export interface AssociationsHandle {
 export const ASSOCIATIONS_NOTE =
   "rows are cues, columns are acts. cells show net strength, excitation minus a separate inhibition that fades faster, so an extinguished cue partly comes back after a break. the attn column is each cue's associability: it rises after surprises and falls as the outcome becomes predictable. credit fades with delay, so a slow treat can reward whatever it is doing when it lands. if nothing is strong it offers tricks it was rewarded for before; teach a new word by praising whatever it does.";
 
-/** hackle's cell: pink from 6 to 96 percent by strength, the figure paper past 0.55. */
+/** hackle's cell: .hb-heat.is-pink fills by --v, the figure paper past 0.55. */
 function paint(td: HTMLElement, v: number): void {
   const t = clamp01(v);
   td.style.setProperty("--v", t.toFixed(2));
-  td.style.background = `color-mix(in srgb, var(--hb-pink) ${(6 + t * 90).toFixed(0)}%, var(--hb-paper-raised))`;
   td.classList.toggle("is-hi", t > 0.55);
   td.textContent = String(Math.round(t * 99));
 }
@@ -78,24 +77,17 @@ export function associationsTable(host: HTMLElement, o: AssociationsOptions = {}
   const doc = host.ownerDocument;
   const col = stack(host);
   const p = panel(doc, "associations", "rw + pearce kaye hall");
-  const scroll = el(doc, "div");
-  scroll.style.overflowX = "auto";
-  const table = el(doc, "table", "hb-heat");
-  table.style.width = "100%";
+  const scroll = el(doc, "div", "hb-scroll-x");
+  const table = el(doc, "table", "hb-heat is-pink");
   const cap = el(doc, "caption", "hb-hint", "link strength 0 to 99, cue by act");
-  cap.style.captionSide = "top";
-  cap.style.textAlign = "left";
   const thead = el(doc, "thead");
   const tbody = el(doc, "tbody");
   table.append(cap, thead, tbody);
   scroll.append(table);
   const trial = el(doc, "p", "hb-hint");
-  trial.style.marginTop = "6px";
-  const note = el(doc, "p", "hb-spark-note", o.note ?? ASSOCIATIONS_NOTE);
-  note.style.margin = "6px 0 0";
+  const note = el(doc, "p", "hb-note", o.note ?? ASSOCIATIONS_NOTE);
   const reset = el(doc, "button", "hb-btn", "reset learning");
   reset.type = "button";
-  reset.style.marginTop = "8px";
   reset.addEventListener("click", () => o.onReset?.());
   p.root.append(scroll, trial, note, reset);
   col.append(p.root);
@@ -128,7 +120,6 @@ export function associationsTable(host: HTMLElement, o: AssociationsOptions = {}
         const tr = el(doc, "tr");
         const td = el(doc, "td", "hb-hint", "no cues yet. say a word, then praise whatever it does.");
         td.colSpan = s.actions.length + 2;
-        td.style.textAlign = "left";
         tr.append(td);
         tbody.replaceChildren(tr);
       } else {
@@ -142,12 +133,8 @@ export function associationsTable(host: HTMLElement, o: AssociationsOptions = {}
             s.actions.forEach((a, i) => {
               const td = el(doc, "td");
               paint(td, r.values[i] ?? 0);
-              if (s.last && s.last.cue === r.cue && s.last.action === a) {
-                td.style.outlineWidth = "2px";
-                td.style.outlineStyle = "solid";
-                td.style.outlineColor = "var(--hb-ink)";
-                td.style.outlineOffset = "-2px";
-              }
+              // the last rewarded cell; hackbuild-ui has no outline mark for it yet
+              if (s.last && s.last.cue === r.cue && s.last.action === a) td.setAttribute("aria-current", "true");
               tr.append(td);
             });
             const td = el(doc, "td");

@@ -59,24 +59,22 @@ export function eyeInset(host: HTMLElement, o: EyeInsetOptions): EyeInsetHandle 
   const h = o.height ?? 160;
   let sel = o.who.find((x) => x.id === o.selected) ?? (o.who[0] as EyeWho);
 
+  // the head as hackbuild-ui's HbInset with who: title, the who switch (.hb-inset-who), the mode line
   const hd = el(doc, "div", "hb-inset-hd");
-  const title = el(doc, "span", "hb-inset-title");
+  const title = el(doc, "span", "hb-inset-title", "eye");
   const aux = el(doc, "span", "hb-hd-aux");
-  const cycle = el(doc, "button", "hb-inset-cycle");
-  cycle.type = "button";
-  hd.append(title, aux);
-  if (o.who.length > 1) hd.append(cycle);
-  const modes = el(doc, "div", "hb-inset-modes");
-  modes.setAttribute("role", "group");
-  modes.setAttribute("aria-label", "whose eyes");
+  const whoGroup = el(doc, "span", "hb-inset-who");
+  whoGroup.setAttribute("role", "group");
+  whoGroup.setAttribute("aria-label", "whose eyes");
   const buttons = o.who.map((x) => {
-    const b = el(doc, "button", "hb-inset-mode", x.label);
+    const b = el(doc, "button", "", x.label);
     b.type = "button";
     if (x.title) b.title = x.title;
     b.addEventListener("click", () => pick(x.id, true));
     return b;
   });
-  modes.append(...buttons);
+  whoGroup.append(...buttons);
+  hd.append(title, ...(o.who.length > 1 ? [whoGroup] : []), aux);
   const media = el(doc, "div", "hb-inset-media");
   media.style.setProperty("--hb-inset-ratio", `${w} / ${h}`);
   const canvas = o.canvas ?? el(doc, "canvas");
@@ -86,25 +84,16 @@ export function eyeInset(host: HTMLElement, o: EyeInsetOptions): EyeInsetHandle 
   }
   canvas.setAttribute("role", "img");
   media.append(canvas);
-  host.replaceChildren(hd, ...(o.who.length > 1 ? [modes] : []), media);
+  host.replaceChildren(hd, media);
 
   function pick(id: string, user: boolean): void {
     const next = o.who.find((x) => x.id === id);
     if (!next) return;
     sel = next;
-    title.textContent = "eye";
     canvas.setAttribute("aria-label", sel.title ?? sel.label);
     buttons.forEach((b, i) => b.setAttribute("aria-pressed", String(o.who[i] === sel)));
-    const i = o.who.indexOf(sel);
-    const after = o.who[(i + 1) % o.who.length] as EyeWho;
-    cycle.textContent = sel.label;
-    cycle.setAttribute("aria-label", `${sel.label}, press for ${after.label}`);
     if (user) o.onWho?.(sel.id);
   }
-  cycle.addEventListener("click", () => {
-    const i = o.who.indexOf(sel);
-    pick((o.who[(i + 1) % o.who.length] as EyeWho).id, true);
-  });
   pick(sel.id, false);
 
   const handle: EyeInsetHandle = {

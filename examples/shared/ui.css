@@ -58,3 +58,6 @@ body.hb { display: flex; flex-direction: column; min-height: 100vh; }
 
 /* agents pages: the why log; the tunables panel is hackbuild-ui .hb-tunables */
 .pg-evlog { margin: 0 0 var(--hb-s4); --hb-log-h: 220px; }
+
+/* agents-views pages: the yard's canvas fills the layout subject (hackbuild-ui has no class for it) */
+.hb-lay-subject > canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }

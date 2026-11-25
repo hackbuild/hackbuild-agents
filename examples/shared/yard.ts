@@ -136,7 +136,6 @@ export async function yard(o: YardPage): Promise<void> {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
   ui.subject.append(renderer.domElement);
-  Object.assign(renderer.domElement.style, { position: "absolute", inset: "0", width: "100%", height: "100%", display: "block" });
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xeef2ef);
   scene.add(new THREE.HemisphereLight(0xffffff, 0xb0aca0, 2.2));

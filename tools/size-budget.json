@@ -29,8 +29,8 @@
       "dist/tunables.iife.js": 3913
     },
     "@hackbuild/agents-views": {
-      "main: dist/index.js bundled": 4760,
-      "dist/agents-views.iife.js": 4895
+      "main: dist/index.js bundled": 4350,
+      "dist/agents-views.iife.js": 4484
     }
   }
 }

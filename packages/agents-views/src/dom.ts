@@ -21,13 +21,8 @@ export function panel(doc: Document, title: string, aux = ""): { root: HTMLEleme
 export const clamp01 = (v: number): number => (Number.isFinite(v) ? Math.min(1, Math.max(0, v)) : 0);
 export const f2 = (v: number): string => (Number.isFinite(v) ? v.toFixed(2) : "0.00");
 
-/** The panels of a view stand apart by hackle's 16 px, the one layout rule a view sets. The
- * column is a child, so the host keeps its own display and a hidden rack pane stays hidden. */
+/** The panels of a view, stacked as hackle's blocks (.hb-rack-stack). The column is a
+ * child, so the host keeps its own display and a hidden rack pane stays hidden. */
 export function stack(host: HTMLElement): HTMLElement {
-  const col = host.ownerDocument.createElement("div");
-  col.style.display = "grid";
-  col.style.gap = "16px";
-  col.style.alignContent = "start";
-  col.style.minWidth = "0";
-  return col;
+  return el(host.ownerDocument, "div", "hb-rack-stack");
 }

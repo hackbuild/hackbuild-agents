@@ -124,20 +124,15 @@ export function drivesBars(host: HTMLElement, o: DrivesBarsOptions = {}): Drives
   const doc = host.ownerDocument;
   const col = stack(host);
   const beh = panel(doc, "behavior", "0.0 s");
-  const name = el(doc, "p", "hb-display", "idle");
-  // hackle's behavior name: Permanent Marker at 28 px
-  name.style.fontSize = "28px";
-  name.style.lineHeight = "1.05";
+  const name = el(doc, "p", "hb-marker", "idle");
   name.setAttribute("aria-live", "polite");
-  const why = el(doc, "p", "hb-choice-why");
-  why.style.marginTop = "4px";
+  const why = el(doc, "p", "hb-note");
   beh.root.append(name, why);
   const util = panel(doc, "utility", "sampled");
   const utilRows = el(doc, "div", "hb-gauges");
   utilRows.setAttribute("role", "list");
   utilRows.setAttribute("aria-label", "what each act is worth now");
-  const note = el(doc, "p", "hb-spark-note", o.note ?? DRIVES_NOTE);
-  note.style.margin = "6px 0 0";
+  const note = el(doc, "p", "hb-note", o.note ?? DRIVES_NOTE);
   util.root.append(utilRows, note);
   const drv = panel(doc, "drives", "need 0 to 1");
   const driveRows = el(doc, "div", "hb-gauges");

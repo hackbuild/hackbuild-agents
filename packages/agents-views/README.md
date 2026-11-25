@@ -102,8 +102,8 @@ is loaded.
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 4,760 bytes | 4,998 bytes |
-| `dist/agents-views.iife.js` (single file build) | 4,895 bytes | 5,139 bytes |
+| `dist/index.js` (main entry, imports external) | 4,350 bytes | 4,567 bytes |
+| `dist/agents-views.iife.js` (single file build) | 4,484 bytes | 4,708 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

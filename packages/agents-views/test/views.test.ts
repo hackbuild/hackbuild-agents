@@ -41,7 +41,7 @@ describe("DrivesBars", () => {
     const host = document.createElement("div");
     const v = drivesBars(host);
     v.update(drivesBarsState(d, drives, { seconds: 2.5, sampled: false, pink: ["play"] }));
-    expect(host.querySelector(".hb-display")?.textContent).toBe(d.current);
+    expect(host.querySelector(".hb-marker")?.textContent).toBe(d.current);
     expect(host.querySelectorAll(".hb-panel-hd-inst")).toHaveLength(3);
     expect(host.style.display).toBe("");
     const util = host.querySelectorAll(".hb-gauges")[0] as HTMLElement;
@@ -93,7 +93,8 @@ describe("AssociationsTable", () => {
     const sit = rows[0]?.querySelectorAll("td") as NodeListOf<HTMLElement>;
     expect(sit[0]?.textContent).toBe("79");
     expect(sit[0]?.classList.contains("is-hi")).toBe(true);
-    expect(sit[0]?.style.outlineStyle).toBe("solid");
+    expect(sit[0]?.getAttribute("aria-current")).toBe("true");
+    expect(host.querySelector("table")?.classList.contains("is-pink")).toBe(true);
     expect(Number(sit[1]?.textContent)).toBeLessThan(10);
     expect(sit).toHaveLength(3);
     expect(host.textContent).toContain("the attn column");
@@ -131,14 +132,14 @@ describe("EyeInset", () => {
     expect(seen[0]).toBe(0.001);
     expect(head.scale.x).toBe(1);
     expect(host.querySelector(".hb-hd-aux")?.textContent).toBe("dichromat");
-    const modes = host.querySelectorAll<HTMLButtonElement>(".hb-inset-mode");
+    const modes = host.querySelectorAll<HTMLButtonElement>(".hb-inset-hd > .hb-inset-who > button");
     expect(modes[0]?.getAttribute("aria-pressed")).toBe("true");
     modes[1]?.click();
     expect(picked).toEqual(["his"]);
     v.frame();
-    expect(host.querySelector(".hb-inset-cycle")?.textContent).toBe("his eyes");
+    expect(modes[1]?.getAttribute("aria-pressed")).toBe("true");
     expect(host.querySelector(".hb-hd-aux")?.textContent).toBe("human colour");
-    (host.querySelector(".hb-inset-cycle") as HTMLButtonElement).click();
+    modes[0]?.click();
     expect(v.who.id).toBe("dog");
   });
 });
@@ -189,7 +190,7 @@ describe("vue components", () => {
     state.bars = { ...state.bars, behavior: "chase" };
     state.table.cues.push({ cue: "sit", values: [0.9], attention: 0.2 });
     await nextTick();
-    expect(host.querySelector(".hb-display")?.textContent).toBe("chase");
+    expect(host.querySelector(".hb-marker")?.textContent).toBe("chase");
     expect(host.querySelectorAll("tbody td")).toHaveLength(2);
     (host.querySelector(".hb-panel .hb-btn") as HTMLButtonElement | null)?.click();
     expect(resets.value).toBe(1);

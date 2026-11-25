@@ -80,6 +80,6 @@ export const EyeInset = defineComponent({
       mode: (t: string) => view?.mode(t),
       canvas: () => view?.canvas ?? null,
     });
-    return () => h("figure", { ref: root, style: "margin:0" });
+    return () => h("figure", { ref: root });
   },
 });

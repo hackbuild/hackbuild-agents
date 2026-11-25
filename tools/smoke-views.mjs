@@ -47,7 +47,7 @@ const SMOKES = {
     const b = await read();
     const rows = await page.evaluate(() => document.querySelectorAll("#rack-brain .hb-gauge").length);
     const cur = await page.evaluate(() => document.querySelectorAll("#rack-brain .hb-gauges")[0].querySelectorAll(".hb-gauge.is-cur").length);
-    const name = await page.evaluate(() => document.querySelector("#rack-brain .hb-display")?.textContent ?? "");
+    const name = await page.evaluate(() => document.querySelector("#rack-brain .hb-marker")?.textContent ?? "");
     return [
       [rows === 12, `${rows} rows, want 7 acts and 5 drives`],
       [cur === 1, `${cur} current utility rows, want 1`],
@@ -82,7 +82,7 @@ const SMOKES = {
       return hi - lo;
     });
     const before = await page.evaluate(() => document.querySelector('[data-ux="inset"] .hb-hd-aux').textContent);
-    await page.click('[data-ux="inset"] .hb-inset-mode:nth-child(2)');
+    await page.click('[data-ux="inset"] .hb-inset-who > button:nth-child(2)');
     await wait(500);
     const after = await page.evaluate(() => document.querySelector('[data-ux="inset"] .hb-hd-aux').textContent);
     return [
