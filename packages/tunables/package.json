@@ -28,7 +28,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "how.ts"
   ],
   "unpkg": "./dist/tunables.iife.js",
   "jsdelivr": "./dist/tunables.iife.js",

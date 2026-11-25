@@ -24,7 +24,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "how.ts"
   ],
   "unpkg": "./dist/mover.iife.js",
   "jsdelivr": "./dist/mover.iife.js",

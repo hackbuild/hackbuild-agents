@@ -24,7 +24,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "how.ts"
   ],
   "unpkg": "./dist/cameras.iife.js",
   "jsdelivr": "./dist/cameras.iife.js",
