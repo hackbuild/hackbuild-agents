@@ -1,6 +1,9 @@
 // Shared helpers for the example pages: status line, readout, frame timer,
 // webgpu probe, a weight loader that takes a URL or a dropped file, and the
-// result object the browser check harness reads (window.__hb).
+// result object the browser check harness reads (window.__hb). Controls are
+// hackbuild-ui markup driven by its vanilla entry: chips, range rows, the
+// event log.
+import { chipGroup, eventLog, rangeRow, type EventLogHandle } from "@virgilvox/hackbuild-ui/vanilla";
 
 export type Kind = "ok" | "bad" | "warn" | "info";
 
@@ -259,4 +262,62 @@ export function onDrop(zone: HTMLElement, cb: (files: File[]) => void, input?: H
 
 export function mb(bytes: number): string {
   return `${(bytes / 1e6).toFixed(1)} MB`;
+}
+
+const attr = (s: string) => s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+
+/** A labelled single choice chip group, as markup for #controls. */
+export function chipsHtml(id: string, label: string, values: readonly string[], on = values[0]): string {
+  const chips = values.map((v) => `<button type="button" class="hb-chip${v === on ? " is-on" : ""}" data-value="${attr(v)}">${attr(v)}</button>`).join("");
+  return `<div class="hb-ctl pg-chips"><span>${attr(label)}</span><div class="hb-chipgroup" id="${id}" aria-label="${attr(label)}">${chips}</div></div>`;
+}
+
+/** Binds the chip group of chipsHtml; value reads and sets the chip that is on. */
+export function chips(id: string, onChange: (v: string) => void = () => {}): { value: string } {
+  const h = chipGroup($(`#${id}`), { onChange: (v) => onChange(v[0] ?? "") });
+  return {
+    get value() {
+      return h.value[0] ?? "";
+    },
+    set value(v: string) {
+      h.set([v]);
+    },
+  };
+}
+
+/** A range with its number box (.hb-prow), as markup for #controls. */
+export function rangeHtml(id: string, label: string, min: number, max: number, step: number, value: number): string {
+  const a = `min="${min}" max="${max}" step="${step}" value="${value}"`;
+  return `<div class="hb-prow pg-prow" id="${id}"><span class="hb-prow-label"><span class="hb-prow-name">${attr(label)}</span></span><div class="hb-prow-ctl"><input class="hb-range" type="range" ${a} aria-label="${attr(label)}"></div><input class="hb-input hb-prow-num" type="number" ${a} aria-label="${attr(label)} value"></div>`;
+}
+
+/** Binds a rangeHtml row; the value follows the drag as it previews. */
+export function range(id: string): { readonly value: number } {
+  let v = Number(($(`#${id}`).querySelector("input") as HTMLInputElement).value);
+  rangeRow($(`#${id}`), { onPreview: (x) => (v = x), onCommit: (x) => (v = x) });
+  return {
+    get value() {
+      return v;
+    },
+  };
+}
+
+/** A tagged event log placed after `after`, with an empty line until the first row. */
+export function evlog(after: HTMLElement, label: string, empty: string): EventLogHandle {
+  const sec = document.createElement("section");
+  sec.className = "hb-evlog pg-evlog";
+  sec.innerHTML = `<div class="hb-evlog-head"><span class="hb-evlog-label">${attr(label)}</span></div><div class="hb-evlog-box"><div class="hb-evlog-rows" role="log" aria-label="${attr(label)}" tabindex="0"><p class="hb-evlog-empty">${attr(empty)}</p></div></div>`;
+  after.after(sec);
+  const log = eventLog(sec, { max: 40, kinds: { switch: { tag: "SWITCH", tone: "pink" }, react: { tag: "REACT", tone: "warn" } } });
+  const push = log.push.bind(log);
+  log.push = (kind, text, t) => {
+    sec.querySelector(".hb-evlog-empty")?.remove();
+    return push(kind, text, t);
+  };
+  return log;
+}
+
+/** A hackbuild-ui token read from the page, for canvas and three colours. */
+export function token(name: string, fallback: string): string {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }

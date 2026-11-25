@@ -1,17 +1,15 @@
 import { Chooser, Drives, load, seededRng } from "@hackbuild/drives";
-import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } from "../shared/ui.js";
+import { $, FrameTimer, auto, check, chips, chipsHtml, evlog, finish, readout, result, sleep, status, token } from "../shared/ui.js";
 
 const r = result("drives");
 $("#controls").innerHTML = `
-<label class="hb-ctl">sim speed <select class="hb-select" id="speed"><option>1</option><option selected>4</option><option>16</option></select></label>
+${chipsHtml("speed", "sim speed", ["1", "4", "16"], "4")}
 <button class="hb-btn" id="ball" type="button">throw the ball</button>
 <button class="hb-btn hb-btn-2" id="feed" type="button">fill the bowl</button>`;
-const speedIn = $("#speed") as HTMLSelectElement;
-// why the chooser switched, newest first, in the hackbuild-ui console
-const log = document.createElement("ol");
-log.className = "hb-console pg-log";
-log.setAttribute("aria-label", "why log");
-$("#readout").after(log);
+const speedIn = chips("speed");
+// why the chooser switched, on the hackbuild-ui event log, newest at the foot
+const log = evlog($("#readout"), "why log", "no switch yet.");
+const whys: string[] = [];
 
 status("loading the drives wasm.");
 await load();
@@ -20,8 +18,11 @@ type K = "hunger" | "fatigue" | "play" | "social";
 type B = "idle" | "eat" | "fetch" | "rest" | "greet";
 const KEYS: K[] = ["hunger", "fatigue", "play", "social"];
 // data on the void takes the hackbuild-ui lit set: --hb-lit-err, --hb-lit-info, --hb-lit-warn, --hb-slime, --hb-lit-label
-const COLORS: Record<K, string> = { hunger: "#ff5c4d", fatigue: "#58a6ff", play: "#ffb020", social: "#a6e22e" };
-const ACT_COLOR: Record<B, string> = { idle: "#9a9184", eat: "#ff5c4d", fetch: "#ffb020", rest: "#58a6ff", greet: "#a6e22e" };
+const LIT = { err: token("--hb-lit-err", "#ff5c4d"), info: token("--hb-lit-info", "#58a6ff"), warn: token("--hb-lit-warn", "#ffb020"), ok: token("--hb-slime", "#a6e22e"), label: token("--hb-lit-label", "#9a9184") };
+const VOID = token("--hb-void", "#0a0a0a");
+const INK = token("--hb-paper", "#f5f0e6");
+const COLORS: Record<K, string> = { hunger: LIT.err, fatigue: LIT.info, play: LIT.warn, social: LIT.ok };
+const ACT_COLOR: Record<B, string> = { idle: LIT.label, eat: LIT.err, fetch: LIT.warn, rest: LIT.info, greet: LIT.ok };
 // what each act does to the drives per second while it runs, and how long it runs (inferred starting values)
 const EFFECT: Record<B, Partial<Record<K, number>>> = { idle: {}, eat: { hunger: -0.5 }, fetch: { play: -0.4, fatigue: 0.05 }, rest: { fatigue: -0.25 }, greet: { social: -0.3 } };
 const LENGTH: Record<B, number> = { idle: 3, eat: 4, fetch: 6, rest: 10, greet: 3 };
@@ -32,6 +33,7 @@ drives.set({ hunger: 0.3, fatigue: 0.2, play: 0.5, social: 0.4 });
 const choose = new Chooser<B>({ rng: seededRng(42), options: ["idle", "eat", "fetch", "rest", "greet"], start: "idle" });
 
 const canvas = document.createElement("canvas");
+$("#stage").classList.add("hb-stage-void");
 $("#stage").append(canvas);
 const ctx = canvas.getContext("2d")!;
 const history: { t: number; v: Record<K, number>; act: B }[] = [];
@@ -84,10 +86,8 @@ function step(dt: number) {
     switches++;
     counts[d.current]++;
     actStart = simT;
-    const li = document.createElement("li");
-    li.textContent = `${simT.toFixed(1)} s: ${d.why}`;
-    log.prepend(li);
-    while (log.children.length > 40) log.lastChild?.remove();
+    log.push(d.reason === "reactive" ? "react" : "switch", d.why, `${simT.toFixed(1)} s`);
+    whys.push(d.why);
   }
   const now = drives.values;
   for (const k of KEYS) if (!(now[k] >= -1e-9 && now[k] <= 1 + 1e-9)) bounded = false;
@@ -100,7 +100,7 @@ function draw() {
   const dpr = Math.min(devicePixelRatio, 2);
   const w = (canvas.width = Math.round(canvas.clientWidth * dpr));
   const h = (canvas.height = Math.round(canvas.clientHeight * dpr));
-  ctx.fillStyle = "#0a0a0a";
+  ctx.fillStyle = VOID;
   ctx.fillRect(0, 0, w, h);
   const x = (t: number) => ((t - (simT - 120)) / 120) * w;
   const band = 18 * dpr;
@@ -124,7 +124,7 @@ function draw() {
     ctx.fillStyle = COLORS[k];
     ctx.fillText(k, 10 * dpr, (18 + i * 16) * dpr);
   });
-  ctx.fillStyle = "#f5f0e6";
+  ctx.fillStyle = INK;
   ctx.fillText(`last 120 sim s; band is the current act: ${choose.current}`, 90 * dpr, 18 * dpr);
 }
 
@@ -180,7 +180,7 @@ if (auto) {
     ...Object.fromEntries(Object.entries(counts).map(([k, n]) => [`times chose ${k} (measured)`, n])),
   });
   const used = Object.values(counts).filter((n) => n > 0).length;
-  const why = [...log.children].every((li) => /: \w+: /.test(li.textContent ?? ""));
+  const why = whys.length > 0 && whys.every((w) => /^\w+: /.test(w));
   const ok = used >= 4 && bounded && why && r.notes.length === 0;
   check(r, "drives: an animal driven by drives and the chooser in a running page", ok ? "pass" : "fail", `${used} of 5 acts chosen over ${Math.round(simT)} sim s, ${switches} switches, every switch logged a why (measured)`);
   check(r, "drives: a person reads the why log against the drive plot", "not run", "needs the owner to look; screenshot in .local/shots/drives.png");

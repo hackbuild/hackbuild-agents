@@ -3,15 +3,15 @@ import { createRegistry } from "@hackbuild/tunables";
 import { bindPanel } from "@hackbuild/tunables/dom";
 import * as THREE from "three";
 import { boxMesh, capsule, stage } from "../shared/scene.js";
-import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } from "../shared/ui.js";
+import { $, FrameTimer, auto, check, chips, chipsHtml, finish, readout, result, sleep, status } from "../shared/ui.js";
 
 const r = result("mover");
 const SCENES = ["corridor pass", "parked in path", "bench", "four way cross"] as const;
 type Scene = (typeof SCENES)[number];
 $("#controls").innerHTML = `
-<label class="hb-ctl">scene <select class="hb-select" id="scene">${SCENES.map((s) => `<option>${s}</option>`).join("")}</select></label>
+${chipsHtml("scene", "scene", SCENES)}
 <button class="hb-btn" id="restart" type="button">restart</button>`;
-const sceneIn = $("#scene") as HTMLSelectElement;
+const sceneIn = chips("scene", (s) => setup(s as Scene));
 const whyLine = document.createElement("p");
 whyLine.className = "pg-what";
 $("#readout").after(whyLine);
@@ -106,7 +106,6 @@ function setup(s: Scene) {
   world = new World(colliders);
 }
 setup("corridor pass");
-sceneIn.addEventListener("change", () => setup(sceneIn.value as Scene));
 $("#restart").addEventListener("click", () => setup(sceneIn.value as Scene));
 
 const timer = new FrameTimer();

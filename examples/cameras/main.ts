@@ -1,16 +1,16 @@
 import { FirstPerson, Follow, Group, Orbit, Shake, splitViewports } from "@hackbuild/cameras";
 import * as THREE from "three";
 import { boxMesh, capsule, lcg, stage } from "../shared/scene.js";
-import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } from "../shared/ui.js";
+import { $, FrameTimer, auto, check, chips, chipsHtml, finish, readout, result, sleep, status } from "../shared/ui.js";
 
 const r = result("cameras");
 const MODES = ["follow", "group", "orbit", "first person", "split"] as const;
 type Mode = (typeof MODES)[number];
 $("#controls").innerHTML = `
-<label class="hb-ctl">camera <select class="hb-select" id="mode">${MODES.map((m) => `<option>${m}</option>`).join("")}</select></label>
+${chipsHtml("mode", "camera", MODES)}
 <button class="hb-btn" id="shake" type="button">shake</button>
 <span class="pg-note">orbit: drag or arrow keys rotate, pinch or + and - zoom</span>`;
-const modeIn = $("#mode") as HTMLSelectElement;
+const modeIn = chips("mode");
 
 const { renderer, scene, camera, controls } = stage([0, 0.5, 0], 6);
 controls.enabled = false;

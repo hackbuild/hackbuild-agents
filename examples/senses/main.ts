@@ -2,12 +2,12 @@ import { Eye, cameraFromThree } from "@hackbuild/senses/three";
 import { OCCUPIED, FREE, OccupancyGrid, OdourField, PerceptMemory, Saliency, Sniffer, Tracker, load, seededRng } from "@hackbuild/senses";
 import * as THREE from "three";
 import { boxMesh, capsule, stage } from "../shared/scene.js";
-import { $, FrameTimer, auto, check, finish, readout, result, sleep, status } from "../shared/ui.js";
+import { $, FrameTimer, auto, check, finish, range, rangeHtml, readout, result, sleep, status, token } from "../shared/ui.js";
 
 const r = result("senses");
 $("#controls").innerHTML = `
-<label class="hb-ctl">wind m/s <input class="hb-range" id="wind" type="range" min="0.2" max="2" step="0.1" value="0.7"><span class="hb-readout" id="windv">0.7</span></label>
-<label class="hb-ctl">arousal <input class="hb-range" id="arousal" type="range" min="0" max="1" step="0.05" value="0.5"></label>
+${rangeHtml("wind", "wind m/s", 0.2, 2, 0.1, 0.7)}
+${rangeHtml("arousal", "arousal", 0, 1, 0.05, 0.5)}
 <button class="hb-btn" id="reset" type="button">restart the sniffer</button>`;
 // the sense canvases as hackbuild-ui feeds: small multiples, pixel art kept square
 const panels = document.createElement("div");
@@ -25,9 +25,8 @@ const mk = (label: string, w: number, h: number) => {
   return c;
 };
 $("#stage").after(panels);
-const windIn = $("#wind") as HTMLInputElement;
-const arousalIn = $("#arousal") as HTMLInputElement;
-windIn.addEventListener("input", () => ($("#windv").textContent = windIn.value));
+const windIn = range("wind");
+const arousalIn = range("arousal");
 
 status("loading the senses wasm.");
 await load();
@@ -56,7 +55,7 @@ bowl.position.set(BOWL.x, 0.06, BOWL.z);
 const nose = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.35, 16), new THREE.MeshStandardMaterial({ color: 0xc8742c }));
 nose.geometry.rotateX(Math.PI / 2);
 scene.add(bowl, nose);
-const gaze = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), head, 1.2, 0xffffff);
+const gaze = new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), head, 1.2, new THREE.Color(token("--hb-pink", "#FE0386")));
 scene.add(gaze);
 const grid3 = scene.children.find((o) => o instanceof THREE.GridHelper)!;
 const puffGeo = new THREE.BufferGeometry();
