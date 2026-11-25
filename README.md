@@ -17,6 +17,7 @@ their tests; the table below grows with them.
 | [`@hackbuild/scenario`](packages/scenario) | Node TS | lockstep scenario runner on puppeteer-core and the system Chrome, routed pinned requests, goldens, motion metrics, frame sampler, profiler, check message reports | 16 vitest (8 in Chrome) |
 | [`@hackbuild/mover`](packages/mover) | TS | kinematic capsule mover, steering with a held passing side, timed yields, multi part footprints and a stall detector | 15 vitest |
 | [`@hackbuild/cameras`](packages/cameras) | TS | follow with occlusion pull in, group framing, orbit, first person eye, seeded shake, split views | 9 vitest |
+| [`@hackbuild/agents-views`](packages/agents-views) | TS | the behavior, utility and drive bars, the cues by acts associations table and the eye card, each a Vue component and a custom element on hackbuild-ui | 8 vitest, 3 headless smokes |
 
 Counted 2026-11-23. The shared `crates/rng` crate adds 2 cargo tests, and
 `tools/test` 48 node tests for the hooks, the voice and author linters

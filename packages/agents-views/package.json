@@ -1,0 +1,51 @@
+{
+  "name": "@hackbuild/agents-views",
+  "version": "0.1.0",
+  "description": "Views that bind the agents packages to the hackbuild-ui class layer: the behaviour, utility and drive bars, the cues by acts associations table, and the eye inset. Each ships as a Vue component and as a custom element.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Moheeb Zara <hackbuildvideo@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackbuild/hackbuild-agents.git",
+    "directory": "packages/agents-views"
+  },
+  "engines": {
+    "node": "^22.18.0 || >=24.11.0"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js"
+    },
+    "./iife": "./dist/agents-views.iife.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "how.ts"
+  ],
+  "unpkg": "./dist/agents-views.iife.js",
+  "jsdelivr": "./dist/agents-views.iife.js",
+  "scripts": {
+    "build": "node ../../tools/build-package.mjs agents-views HackbuildAgentsViews"
+  },
+  "peerDependencies": {
+    "@virgilvox/hackbuild-ui": ">=0.10.0 <0.12.0",
+    "vue": "^3.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@virgilvox/hackbuild-ui": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  }
+}
