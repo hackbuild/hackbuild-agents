@@ -16,7 +16,7 @@ What is in it:
   a `Drives` object of `@hackbuild/drives`.
 - `associationsTable(host, { onReset })`: cues by acts, each cell the net
   strength (excitation minus inhibition) from 0 to 99 in pink, the attn
-  column (associability), the last rewarded cell outlined, a line on the
+  column (associability), the last rewarded cell marked aria-current, a line on the
   last trial, the explanation and reset learning. `associationsState(learner)`
   reads a `CueLearner`.
 - `eyeInset(host, { who, draw })`: makes `host` the eye card, an inset
