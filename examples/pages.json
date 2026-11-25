@@ -32,6 +32,33 @@
       "name": "cameras",
       "what": "follow with occlusion pull in, group framing, orbit, first person with the head hidden, shake and split views.",
       "timeoutS": 60
+    },
+    {
+      "name": "drives-bars",
+      "packages": [
+        "agents-views",
+        "drives"
+      ],
+      "what": "what the dog is doing and why, what each act is worth now with the choice in pink, and how much it needs each thing. a scripted day moves the bars.",
+      "timeoutS": 30
+    },
+    {
+      "name": "associations-table",
+      "packages": [
+        "agents-views",
+        "drives"
+      ],
+      "what": "what the dog has learned, cues by acts, with how much it still listens to each cue. the scripted day teaches sit, paw and come.",
+      "timeoutS": 30
+    },
+    {
+      "name": "eye-inset",
+      "packages": [
+        "agents-views",
+        "cameras"
+      ],
+      "what": "the eye card: what the dog sees, in two colours and blurred, or what he sees. switch whose eyes in the card head.",
+      "timeoutS": 30
     }
   ]
 }
