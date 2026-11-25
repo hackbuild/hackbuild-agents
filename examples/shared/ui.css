@@ -27,15 +27,8 @@ body.hb { display: flex; flex-direction: column; min-height: 100vh; }
 .hb-inset-media { --hb-inset-ratio: 16 / 9; }
 .hb-inset-media > canvas { object-fit: contain; background: var(--hb-void); }
 
-/* page output: pre blocks, the chat reply, the element grid */
+/* page output: pre blocks */
 .pg-main pre { white-space: pre-wrap; overflow-wrap: anywhere; }
-.pg-out { margin: 0 0 var(--hb-s3); }
-.pg-out .pg-reply { max-width: 100%; align-self: stretch; }
-.pg-out .hb-msg-text { min-height: 6em; }
-.pg-grid { display: grid; gap: var(--hb-s4); grid-template-columns: minmax(0, 1fr); margin: 0 0 var(--hb-s4); }
-.pg-grid > .hb-panel { min-width: 0; }
-.hb h2.hb-panel-hd-inst.pg-sub { margin-top: var(--hb-s4); }
-.pg-scroll { max-height: 420px; overflow: auto; }
 
 /* index list: page name over its line */
 .pg-pages { list-style: none; margin: 0 0 var(--hb-s4); padding: 0; }
@@ -55,8 +48,6 @@ body.hb { display: flex; flex-direction: column; min-height: 100vh; }
   .hb-bar > .pg-note { flex: 0 1 auto; }
   .hb-bar > .pg-chips { flex: 0 1 auto; }
   .hb-bar > .pg-prow { flex: 1 1 260px; }
-  .pg-grid { gap: var(--hb-s5); grid-template-columns: repeat(auto-fit, minmax(460px, 1fr)); margin-bottom: var(--hb-s5); }
-  .pg-wide { grid-column: 1 / -1; }
   .pg-pages > .hb-row { flex-direction: row; align-items: baseline; flex-wrap: wrap; gap: var(--hb-s3); }
   .pg-pages a { min-width: 9ch; }
   .pg-pages span { flex: 1 1 320px; }
@@ -65,38 +56,5 @@ body.hb { display: flex; flex-direction: column; min-height: 100vh; }
   .pg-pages a, .hb-header h1 a { min-height: 0; line-height: inherit; }
 }
 
-/* agents pages: the why log, and the @hackbuild/tunables panel (its tn-
-   classes) set in the hackbuild-ui idiom: folds, param rows, buttons */
+/* agents pages: the why log; the tunables panel is hackbuild-ui .hb-tunables */
 .pg-evlog { margin: 0 0 var(--hb-s4); --hb-log-h: 220px; }
-.pg-tune { margin: 0 0 var(--hb-s5); }
-.pg-tune .tn-group { border: var(--hb-border) solid var(--hb-ink); background: var(--hb-paper-raised); margin-bottom: var(--hb-s3); }
-.pg-tune .tn-head { font-family: var(--hb-utility); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; padding: var(--hb-s2) var(--hb-s3); min-height: 44px; display: flex; align-items: center; gap: var(--hb-s2); cursor: pointer; list-style: none; }
-.pg-tune .tn-head::-webkit-details-marker { display: none; }
-.pg-tune .tn-head::before { content: "+"; font-weight: 700; }
-.pg-tune .tn-group[open] > .tn-head::before { content: "-"; }
-.pg-tune .tn-group[open] > .tn-head { border-bottom: var(--hb-border) solid var(--hb-ink); }
-.pg-tune .tn-count { margin-left: auto; font-family: var(--hb-readout); font-size: 16px; color: var(--hb-ink-3); }
-.pg-tune .tn-row, .pg-tune .tn-toggle { display: flex; flex-wrap: wrap; align-items: center; gap: var(--hb-s1) var(--hb-s2); padding: var(--hb-s2) var(--hb-s3); border-bottom: 1px dashed rgba(26, 26, 26, .25); font-family: var(--hb-utility); font-size: 11px; }
-.pg-tune .tn-label { flex: 1 1 100%; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; color: var(--hb-ink-3); }
-.pg-tune .tn-toggle .tn-label { flex: 1 1 auto; }
-.pg-tune .tn-row input[type=range] { flex: 1 1 140px; min-width: 0; height: 44px; margin: 0; accent-color: var(--hb-pink); }
-.pg-tune .tn-value { font-family: var(--hb-readout); font-size: 18px; color: var(--hb-ink); min-width: 4ch; text-align: right; }
-.pg-tune .tn-unit, .pg-tune .tn-source, .pg-tune .tn-cite { color: var(--hb-ink-3); }
-.pg-tune button, .pg-tune .tn-import-label { font-family: var(--hb-utility); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; background: var(--hb-paper-raised); color: var(--hb-ink); border: var(--hb-border) solid var(--hb-ink); box-shadow: 2px 2px 0 var(--hb-ink); padding: 5px 10px; min-height: 44px; cursor: pointer; }
-/* hover only on a mouse, as hackbuild-ui 0.5.0 does: a tapped button does not stay pink */
-@media (hover: hover) and (pointer: fine) {
-  .pg-tune button:hover, .pg-tune .tn-import-label:hover { background: var(--hb-pink); }
-}
-.pg-tune .tn-presets, .pg-tune .tn-actions { display: flex; flex-wrap: wrap; gap: var(--hb-s2); align-items: center; margin: 0 0 var(--hb-s3); font-family: var(--hb-utility); font-size: 11px; }
-/* the import file input sits inside its label, drawn as a button; the input itself is hidden but focusable */
-.pg-tune .tn-import-label { display: inline-flex; align-items: center; position: relative; }
-.pg-tune .tn-import-label:focus-within { outline: var(--hb-border) solid var(--hb-pink); outline-offset: 2px; }
-.pg-tune .tn-import { position: absolute; inset: calc(-1 * var(--hb-border)); opacity: 0; width: auto; height: auto; cursor: pointer; }
-@media (min-width: 641px) {
-  .pg-tune .tn-label { flex: 0 0 160px; }
-}
-@media (min-width: 641px) and (pointer: fine) {
-  .pg-tune button, .pg-tune .tn-import-label { min-height: 0; }
-  .pg-tune .tn-head { min-height: 0; }
-  .pg-tune .tn-row input[type=range] { height: auto; margin: 2px; }
-}

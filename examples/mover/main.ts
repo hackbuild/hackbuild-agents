@@ -18,7 +18,7 @@ $("#readout").after(whyLine);
 // steering values on a @hackbuild/tunables panel; a change applies on restart and is kept in the url hash
 const tuneHost = document.createElement("div");
 tuneHost.id = "tune";
-tuneHost.className = "pg-tune";
+tuneHost.className = "hb-tunables";
 whyLine.after(tuneHost);
 const tune = createRegistry({ version: 1 });
 tune.define({ key: "St.speed", group: "steer", label: "walk speed", unit: "m/s", def: 1.2, min: 0.4, max: 2.5, step: 0.05, source: "inferred" });

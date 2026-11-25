@@ -34,7 +34,8 @@ What is in it:
 - `@hackbuild/tunables/dom`: `bindPanel(host, registry, opts)` builds the
   panel with DOM calls only (labels are text, never markup), a reset per
   row, reset all, export and import, follows the registry both ways and
-  can keep the URL hash in sync.
+  can keep the URL hash in sync. The panel carries no styles: put the
+  `hb-tunables` class from hackbuild-ui 0.9.3 or later on the host.
 
 The definitions themselves (the legacy registry has 71 parameters in 8 groups, vendor
 count) stay in the app.
