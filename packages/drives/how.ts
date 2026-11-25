@@ -1,18 +1,17 @@
-// how this works, @hackbuild/drives: the fold on the package page and in the suite.
-// Data only, kept out of the runtime entry; tsconfig.how.json checks it.
-export default {
-  name: "@hackbuild/drives",
+// how this works: the fold of the package page and of the suite tool. Plain data, no imports;
+// checked by tsconfig.how.json, shipped in the tarball, never imported by the runtime entry.
+const how: HowDoc = {
   what: "drives, choice with a why, cue learning, sleep and a memory stream for simulated animals. rust core in wasm.",
   how: [
-    "the core is the rust crate crates/drives compiled to wasm32 with simd128. load() reads the inlined wasm, a url or bytes; every class takes an injected rng, so a seed replays the same choices.",
-    "Drives holds named deficits and scores an act by how much it would reduce them (drive reduction reward). Chooser samples an act with softmax and a commitment bonus, switches at once for options that cannot wait, and returns a why sentence with the reason, the probability and every utility.",
-    "CueLearner keeps excitation and inhibition per cue and action with associability and eligibility traces, so a late reward credits less. Sleep and bodyClock run pressure, a body clock and a stage machine with a hypnogram. MemoryStream scores memories by recency, importance and relevance.",
-    "task gating and inference scheduling are plain typescript: LayerGate releases layers a new task does not declare, and InferenceScheduler starts a model call only when idle, inside a frame budget, one at a time.",
+    "the core is the rust crate `crates/drives` compiled to wasm32 with simd128. `load()` reads the inlined wasm, a url or bytes; every class takes an injected rng, so a seed replays the same choices.",
+    "`Drives` holds named deficits and scores an act by how much it would reduce them (drive reduction reward). `Chooser` samples an act with softmax and a commitment bonus, switches at once for options that cannot wait, and returns a why sentence with the reason, the probability and every utility.",
+    "`CueLearner` keeps excitation and inhibition per cue and action with associability and eligibility traces, so a late reward credits less. `Sleep` and `bodyClock` run pressure, a body clock and a stage machine with a hypnogram. `MemoryStream` scores memories by recency, importance and relevance.",
+    "task gating and inference scheduling are plain typescript: `LayerGate` releases layers a new task does not declare, and `InferenceScheduler` starts a model call only when idle, inside a frame budget, one at a time.",
   ],
   packages: ["@hackbuild/drives"],
   install: "npm install @hackbuild/drives",
-  today: "git clone https://github.com/hackbuild/hackbuild-agents && cd hackbuild-agents && npm ci && npm run build -w @hackbuild/drives",
-  published: false,
+  today: `git clone https://github.com/hackbuild/hackbuild-agents
+cd hackbuild-agents && npm ci && npm run build -w @hackbuild/drives`,
   lang: "ts",
   code: `import { load, Chooser, Drives, seededRng } from "@hackbuild/drives";
 
@@ -30,8 +29,6 @@ const d = choose.update(now, {
 }, ["fetch"]);
 if (d.pending) turnHeadTo(d.pending.id);
 log(d.why); // "eat: top score 0.42 (p 0.81), latency 230 ms"`,
-  links: {
-    page: "https://hackbuild.github.io/hackbuild-agents/drives/",
-    source: "https://github.com/hackbuild/hackbuild-agents/tree/main/packages/drives",
-  },
+  links: { page: "https://hackbuild.github.io/hackbuild-agents/drives/", source: "https://github.com/hackbuild/hackbuild-agents/tree/main/packages/drives" },
 };
+export default how;

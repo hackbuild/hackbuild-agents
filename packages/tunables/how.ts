@@ -1,18 +1,17 @@
-// how this works, @hackbuild/tunables: the fold on the package page and in the suite.
-// Data only, kept out of the runtime entry; tsconfig.how.json checks it.
-export default {
-  name: "@hackbuild/tunables",
+// how this works: the fold of the package page and of the suite tool. Plain data, no imports;
+// checked by tsconfig.how.json, shipped in the tarball, never imported by the runtime entry.
+const how: HowDoc = {
   what: "a parameter registry with layer switches, presets, url hash sharing and a panel binding, for a/b work on agent behaviour.",
   how: [
-    "every number that shapes behaviour is defined once with a default, a range, a step, a unit and a source word. set clamps into the range and ignores NaN.",
-    "layers gate whole features behind one master switch, so each feature keeps a fallback path you can compare live. abPair(layer) gives two snapshots that differ in that one layer.",
+    "every number that shapes behaviour is defined once with a default, a range, a step, a unit and a source word. `set` clamps into the range and ignores NaN.",
+    "layers gate whole features behind one master switch, so each feature keeps a fallback path you can compare live. `abPair(layer)` gives two snapshots that differ in that one layer.",
     "saves and the url hash hold only values that differ from their defaults, so a new build's defaults reach old sessions. a save of another version goes through an explicit migration or is dropped.",
-    "@hackbuild/tunables/dom binds a panel with dom calls only: a reset per row, reset all, export, import, and the url hash kept in sync.",
+    "`@hackbuild/tunables/dom` binds a panel with dom calls only: a reset per row, reset all, export, import, and the url hash kept in sync.",
   ],
   packages: ["@hackbuild/tunables"],
   install: "npm install @hackbuild/tunables",
-  today: "git clone https://github.com/hackbuild/hackbuild-agents && cd hackbuild-agents && npm ci && npm run build -w @hackbuild/tunables",
-  published: false,
+  today: `git clone https://github.com/hackbuild/hackbuild-agents
+cd hackbuild-agents && npm ci && npm run build -w @hackbuild/tunables`,
   lang: "ts",
   code: `import { createRegistry } from "@hackbuild/tunables";
 import { bindPanel } from "@hackbuild/tunables/dom";
@@ -27,8 +26,6 @@ tune.fromUrlHash(location.hash);
 bindPanel(document.querySelector("#tune")!, tune, { syncHash: true });
 
 if (tune.layer("L.plume")) plumeTick(dt);`,
-  links: {
-    page: "https://hackbuild.github.io/hackbuild-agents/tunables/",
-    source: "https://github.com/hackbuild/hackbuild-agents/tree/main/packages/tunables",
-  },
+  links: { page: "https://hackbuild.github.io/hackbuild-agents/tunables/", source: "https://github.com/hackbuild/hackbuild-agents/tree/main/packages/tunables" },
 };
+export default how;

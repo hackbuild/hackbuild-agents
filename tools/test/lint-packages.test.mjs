@@ -11,6 +11,8 @@ test("files: the required three plus dist pass, anything else fails", () => {
   assert.equal(fileFails(["package.json", "dist/index.js"]).length, 2);
   assert.equal(fileFails([...base, "src/index.ts"]).length, 1);
   assert.equal(fileFails([...base, "dist/test/a.test.js"]).length, 1);
+  assert.deepEqual(fileFails([...base, "how.ts"]), []);
+  assert.equal(fileFails([...base, "src/how.ts"]).length, 1);
   assert.equal(fileFails([...base, "dist/index.js.map"]).length, 1);
   assert.equal(fileFails([...base, "dist/wasm/.gitignore"]).length, 1);
   assert.equal(fileFails([...base, "tsconfig.tsbuildinfo"]).length, 1);
