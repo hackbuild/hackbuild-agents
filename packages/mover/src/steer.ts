@@ -160,6 +160,24 @@ export class Steerer {
     this.sideWp = null;
     this.goalStalls = 0;
   }
+  /**
+   * A goal reached through waypoints, as `planPath` gives them: the last
+   * point is the goal, the others are walked in order first. The stall
+   * history resets as with `setGoal`.
+   */
+  setPath(points: readonly { x: number; z: number }[]): void {
+    const last = points[points.length - 1];
+    if (!last) {
+      this.clearGoal();
+      return;
+    }
+    this.setGoal(last.x, last.z);
+    this.waypoints = points.slice(0, -1).map((p) => ({ x: p.x, z: p.z }));
+  }
+  /** Waypoints left before the goal (a stall side waypoint included). */
+  get waypointsLeft(): number {
+    return this.waypoints.length;
+  }
   clearGoal(): void {
     this.goal = null;
     this.waypoints = [];

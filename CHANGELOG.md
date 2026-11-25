@@ -4,6 +4,16 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### @hackbuild/mover 0.2.0, 2026-11-24
+
+- mover: `planPath(world, from, to, options)`, A* on a grid over the
+  `World` colliders an actor cannot step onto, grown by `radius` plus
+  `margin`, pulled straight; failures carry `reason` (`goal-blocked`,
+  `no-way`, `too-large`). `Steerer.setPath(waypoints)` walks them and
+  `waypointsLeft` counts the rest; `blockers` and `clearAt` expose the
+  planner's tests. Round a 6 m wall the planned walk arrives in 7.22 s,
+  the steerer alone in 23.80 s (measured).
+
 ### @hackbuild/scenario 0.2.0, 2026-11-24
 
 - scenario: `@hackbuild/scenario/browser`, a browser entry over the same

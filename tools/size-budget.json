@@ -13,8 +13,8 @@
       "dist/drives.iife.js": 76176
     },
     "@hackbuild/mover": {
-      "main: dist/index.js bundled": 4761,
-      "dist/mover.iife.js": 4883
+      "main: dist/index.js bundled": 7098,
+      "dist/mover.iife.js": 7238
     },
     "@hackbuild/scenario": {
       "main: dist/index.js bundled": 8597

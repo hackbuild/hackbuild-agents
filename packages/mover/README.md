@@ -42,6 +42,11 @@ What is in it:
   - per agent filters: an `ignore` set for the goal object or the
     agent's own body;
   - a `why` string per step.
+- `planPath`: A* on a grid over the `World` colliders the actor cannot
+  step onto, each grown by the actor radius plus a margin, then pulled
+  straight; the waypoints go to `Steerer.setPath`. The steerer alone
+  bends round one obstacle at a time, so a wall across the line to the
+  goal costs it repeated stalls.
 - No random draws: the same inputs give the same steps.
 
 ## Install
@@ -67,6 +72,28 @@ body.vel.z = out.vz;
 world.step(body, dt);
 Object.assign(human, { x: body.pos.x, z: body.pos.z, vx: body.vel.x, vz: body.vel.z });
 ```
+
+## Paths round walls
+
+```ts
+import { planPath, Steerer, World, box, wallBox } from "@hackbuild/mover";
+
+const world = new World([box(0, 0, 0, 12, 12), wallBox(0, 0, 6, 0.2, 0, 2)]);
+const p = planPath(world, { x: 0, z: -2 }, { x: 0, z: 2 }, { radius: 0.3, cell: 0.2 });
+const steer = new Steerer("walker");
+if (p.ok) steer.setPath(p.waypoints);
+else console.log(p.reason, p.why); // "goal-blocked", "no-way" or "too-large"
+```
+
+Options: `cell` (0.2 m), `radius` (0.3 m), `margin` (0.12 m), `y` and
+`height` for the band a collider must cross to block (0, 1.7 m),
+`stepUp` (the world's), `bounds` (default the box round every enabled
+collider and both ends), `maxCells` (250,000). Moves are 8 way with no
+corner cutting. The goal point must clear the grown colliders; the start
+may sit inside the pad. A gap passes when a cell centre in it clears the
+pad, so a gap within one cell of `2 * (radius + margin)` may read as shut:
+use a smaller `cell` there. `blockers` and `clearAt` give the same tests
+the planner uses. The plan is static: replan after colliders move.
 
 `dist/mover.iife.js` is the single file build, a classic script that
 defines `HackbuildMover`.
@@ -105,6 +132,14 @@ defines `HackbuildMover`.
   side waypoint; the capsule steps onto 0.3 m, stops at 0.6 m, slides
   along a wall and rides a moving platform.
 
+- 2026-11-24, planner: `npx vitest run packages/mover` passed 20 of 20
+  tests (counted). Round a 6 m wall, the planned walk arrives in 7.22 s
+  and the steerer alone in 23.80 s through stall side waypoints
+  (measured, 60 Hz). A 1.2 m gap is planned through and walked; a 0.6 m
+  gap, a closed pen and a goal inside a wall are reported as `no-way`,
+  `no-way` and `goal-blocked`; a 0.3 m step is walked over; two runs give
+  equal results.
+
 ### Not verified by anything
 
 - The fix for the logged stall itself: dog-simulator recorded the stall in
@@ -115,6 +150,8 @@ defines `HackbuildMover`.
 - Turn rate limits: the tests move point agents with a 0.15 s velocity
   lag and no heading dynamics.
 - Motion in a real browser: nobody has looked at it.
+- The planner against moving colliders, agents as obstacles, or worlds
+  over 250,000 cells.
 - The triangle mesh collider and raycasts listed in the games survey are
   not written.
 
@@ -122,10 +159,10 @@ defines `HackbuildMover`.
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 4,761 bytes | 4,999 bytes |
-| `dist/mover.iife.js` (single file build) | 4,883 bytes | 5,127 bytes |
+| `dist/index.js` (main entry, imports external) | 7,098 bytes | 7,452 bytes |
+| `dist/mover.iife.js` (single file build) | 7,238 bytes | 7,599 bytes |
 
-Measured 2026-11-23 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+Measured 2026-11-24 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
 5 percent from its row.
 
