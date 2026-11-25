@@ -4,6 +4,8 @@ Embodied agent building blocks for browser sims and games: senses, drives, tunab
 
 Live examples: <https://hackbuild.github.io/hackbuild-agents/>
 
+Every tool in one app: the suite, <https://hackbuild.github.io/hackbuild-suite/> (source <https://github.com/hackbuild/hackbuild-suite>).
+
 Status: phase A, 2026-11-22. Packages land in `packages/` as they pass
 their tests; the table below grows with them.
 
