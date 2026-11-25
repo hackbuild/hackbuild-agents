@@ -4,6 +4,13 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### Patch releases, 2026-11-24
+
+- every package one patch up (0.1.0 to 0.1.1, mover and scenario 0.2.0
+  to 0.2.1): the tarball gains `how.ts`, the shared how to use record.
+- tunables: the README names the hackbuild-ui `hb-tunables` host class;
+  the example pages drop their local panel rules for it.
+
 ### @hackbuild/mover 0.2.0, 2026-11-24
 
 - mover: `planPath(world, from, to, options)`, A* on a grid over the

@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/mover",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Kinematic capsule mover against boxes and cylinders with step up and platform carry, and steering for agents that share space: a held passing side, timed yields, multi part footprints, a stall detector, and a grid path planner over the world colliders.",
   "type": "module",
   "license": "MIT",

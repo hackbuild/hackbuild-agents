@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/tunables",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parameter registry with layer switches, presets, URL hash sharing and a panel binding for A/B work on agent behaviour.",
   "type": "module",
   "license": "MIT",

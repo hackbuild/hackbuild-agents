@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/senses",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Perception for simulated animals: Itti Koch saliency with world space inhibition of return, looming, odour plume and trail tracking, hearing error, field of view vision, and eye renders to an occupancy grid. Rust core in wasm.",
   "type": "module",
   "license": "MIT",

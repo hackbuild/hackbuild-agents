@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/scenario",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Lockstep scenario runner for browser sims on puppeteer-core and the system Chrome: routed requests from pinned local files, traces, golden comparison, motion metrics, a frame sampler and reports in the check message form, with a browser entry that runs the same core against a sim in the page.",
   "type": "module",
   "license": "MIT",
