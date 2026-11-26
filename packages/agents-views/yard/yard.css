@@ -11,7 +11,7 @@ overlays, the yard hint, the behaviour name, the verb row and the bars are this 
 
 .hb-yard [hidden],.hchips[hidden]{display:none!important}
 .hb-yard,.hb-yard *,.hb-yard *::before,.hb-yard *::after{box-sizing:border-box}
-.hb-yard :is(button,input,select,textarea){font:inherit;color:inherit}
+.hb-yard :is(button,input,select,textarea):not(.hb-tab){font:inherit;color:inherit}
 /* the mark at the original's 26 px; the tagline sits beside it, the readout chips push right */
 .hchips{margin-left:auto;display:flex;gap:6px;flex-wrap:nowrap;overflow:hidden;flex:0 1 auto;min-width:0}
 .chip{font-family:var(--hb-readout);font-size:17px;line-height:1;padding:4px 7px;border:1.5px solid var(--hb-ink);background:var(--hb-paper);white-space:nowrap;text-transform:uppercase}
@@ -68,8 +68,8 @@ overlays, the yard hint, the behaviour name, the verb row and the bars are this 
 .pane:focus{outline:none}
 /* blocks: the original's raised card with an ink head */
 .pane>.hb-panel{margin:0 4px 16px 0;padding:9px 10px;box-shadow:4px 4px 0 var(--hb-ink);border-width:1.5px}
-.hb .pane h3.hb-panel-hd-inst{text-transform:uppercase;display:flex;justify-content:space-between;gap:8px;font-size:19px;letter-spacing:0;margin:-9px -10px 9px;padding:3px 9px}
-.hb .pane h3.hb-panel-hd-inst .hb-hd-aux{color:#ffd1e8;text-transform:none;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.hb-yard .pane h3.hb-panel-hd-inst{text-transform:uppercase;display:flex;justify-content:space-between;gap:8px;font-size:19px;letter-spacing:0;margin:-9px -10px 9px;padding:3px 9px}
+.hb-yard .pane h3.hb-panel-hd-inst .hb-hd-aux{color:#ffd1e8;text-transform:none;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 /* the original's compact buttons: 7 px by 10 px, 3 px shadow; a pressed toggle fills ink */
 .pane .hb-btn,#tool .hb-btn{padding:7px 10px;gap:6px;box-shadow:3px 3px 0 var(--hb-ink);font-size:13px;text-transform:none;letter-spacing:0}
 .hb-btn[aria-pressed="true"]{background:var(--hb-ink);color:var(--hb-paper)}
