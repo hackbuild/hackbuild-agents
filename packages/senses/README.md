@@ -185,6 +185,6 @@ The attention, nose and hearing follow the public [dog-simulator legacy](https:/
 | `dist/wasm/senses_bg.wasm` | 46,483 bytes | 48,807 bytes |
 | `dist/senses.iife.js` (single file build) | 71,794 bytes | 75,383 bytes |
 
-Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+Measured 2026-11-26 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
 5 percent from its row.

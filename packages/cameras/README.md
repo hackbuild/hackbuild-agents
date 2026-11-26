@@ -148,6 +148,6 @@ Not verified by anything:
 | `dist/index.js` (main entry, imports external) | 3,251 bytes | 3,413 bytes |
 | `dist/cameras.iife.js` (single file build) | 3,366 bytes | 3,534 bytes |
 
-Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
+Measured 2026-11-26 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
 5 percent from its row.
