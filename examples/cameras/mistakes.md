@@ -1,0 +1,5 @@
+- Importing three inside code that uses this package only for the rigs: the rigs take any `CameraLike` (`position.set`, `lookAt`, `fov`, `aspect`), so a test or a non three renderer passes a plain object.
+- Giving `Shake` the sim's rng: it draws only while shaking and per frame, so a shared stream ties the sim to the frame rate and breaks seeded replays. Give it a stream of its own, and never `Math.random`.
+- Passing `snap = true` to `Follow.update` or `Group.update` every frame: it skips the damping. Snap on the first frame or after a teleport only.
+- Hiding the head with `visible = false` for a first person view: that hides the whole subtree, body included. Use `FirstPerson.render(draw)`, which scales the head to 0.001 for that draw only.
+- Passing `y` from `splitViewports` to three's `setViewport`: three counts from the bottom, so use `yGl`.

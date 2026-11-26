@@ -6,14 +6,17 @@
 // author); the first person eye follows a lesson of earlier builds: hide
 // the agent's own head for that render only.
 
+/** Uniform numbers in [0, 1), injected so a seed replays the same shake. */
 export type Rng = () => number;
 
+/** A point or offset in metres, y up. */
 export interface V3 {
   x: number;
   y: number;
   z: number;
 }
 
+/** The camera surface the rigs write: a three PerspectiveCamera fits, nothing is imported. */
 export interface CameraLike {
   position: { set(x: number, y: number, z: number): unknown; x: number; y: number; z: number };
   lookAt(x: number, y: number, z: number): void;
@@ -88,6 +91,7 @@ export function orbitPosition(target: V3, yaw: number, pitch: number, dist: numb
   return { x: target.x - Math.sin(yaw) * cp * dist, y: target.y + Math.sin(pitch) * dist, z: target.z - Math.cos(yaw) * cp * dist };
 }
 
+/** Options of {@link Follow}; every field has a default. */
 export interface FollowOptions {
   distance?: number;
   minDistance?: number;
@@ -148,6 +152,7 @@ export class Follow {
   }
 }
 
+/** Options of {@link Group}; every field has a default. */
 export interface GroupOptions {
   center?: V3;
   pitch?: number;
@@ -279,13 +284,14 @@ export class Orbit {
   }
 }
 
+/** An object with a scale, such as a three Object3D head bone. */
 export interface Scalable {
   scale: { x: number; y: number; z: number; set(x: number, y: number, z: number): unknown };
 }
 
 /**
  * A first person eye on an agent's head. `render` hides the head (scaled
- * to 0.001, learned in earlier builds: visible false would hide the whole subtree)
+ * to 0.001, since visible false would hide the whole subtree)
  * for this render only, then restores it.
  */
 export class FirstPerson {
