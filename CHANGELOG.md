@@ -4,6 +4,12 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### @hackbuild/agents-views 0.2.1, 2026-11-26
+
+- agents-views: with no `bar`, the yard's setup and command buttons float
+  as a small group in the stage's top right corner instead of ending the
+  verb row, so a phone keeps the eight verbs on two rows as the original.
+
 ### @hackbuild/agents-views 0.2.0, 2026-11-26
 
 - agents-views: `@hackbuild/agents-views/yard`, `mountYard(host, options)`,

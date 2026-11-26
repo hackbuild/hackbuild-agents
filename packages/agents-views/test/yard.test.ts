@@ -124,11 +124,13 @@ describe("mountYard", () => {
     expect(document.getElementById("hb-yard-style")).toBeNull();
   });
 
-  it("without a bar puts setup and commands in the verb row", async () => {
+  it("without a bar floats setup and commands in a stage corner, apart from the verbs", async () => {
     const { mountYard } = await import("../src/yard.js");
     await mountYard(host(), base);
     const env = runs[0] as { byId(id: string): HTMLElement | null };
-    expect(document.querySelector("#tool #bSetup")).not.toBeNull();
+    expect(document.querySelector("#stage>#corner #bSetup")).not.toBeNull();
+    expect(document.querySelector("#corner #bPalette")).not.toBeNull();
+    expect(document.querySelector("#tool #bSetup")).toBeNull();
     expect(document.getElementById("chipGpu")).toBeNull();
     expect(env.byId("chipGpu")).not.toBeNull();
   });

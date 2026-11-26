@@ -32,7 +32,8 @@ export interface YardOptions {
   hub?: string;
   /**
    * Where the readout chips, the setup button and the command button go, such as the host's
-   * header. Left out, the two buttons join the verb row and the chips are not shown.
+   * header. Left out, the two buttons float in the stage's top right corner, apart from the verbs,
+   * and the chips are not shown.
    */
   bar?: HTMLElement | null;
   /**
@@ -107,9 +108,13 @@ export async function mountYard(host: HTMLElement, o: YardOptions): Promise<Yard
     o.bar.classList.add("hb-yard-bar");
     o.bar.append(...barParts);
   } else {
-    // no bar: setup and commands sit at the end of the verb row; the chips stay off the page
-    const tool = root.querySelector("#tool");
-    for (const p of barParts) if (p.tagName === "BUTTON") tool?.append(p);
+    // no bar: setup and commands float in the stage corner, apart from the verbs; no chips
+    const corner = doc.createElement("div");
+    corner.id = "corner";
+    corner.setAttribute("aria-label", "setup and commands");
+    corner.setAttribute("role", "group");
+    for (const p of barParts) if (p.tagName === "BUTTON") corner.append(p);
+    root.querySelector("#stage")?.prepend(corner);
   }
   host.replaceChildren(root);
 

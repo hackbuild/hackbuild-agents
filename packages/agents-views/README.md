@@ -76,7 +76,7 @@ bars.update({ behavior: "fetch", why: "play is high", utilities: { idle: 0.1, fe
 
 ### Yard is the whole dog simulator
 
-`mountYard(host, options)` fills `host` with the yard and returns `{ root, ready, dispose }`. It loads nothing on its own: `physics` returns the rapier3d-compat module, `dog` and `human` are binary glTF files (a URL, bytes, a Blob or a function), `anims` is the person's clip pack, `voice` his wav reference, and `hub` a model hub in place of Hugging Face for the cortex models. Pass `bar`, such as your header, and the readout chips, the setup button and the command button go there; without it the two buttons end the verb row. One yard runs per page, since its parts find each other by id, and its stylesheet is scoped to `.hb-yard`. `params` carries the lockstep and seed switches, read from the page hash when you pass neither it nor `reseed`.
+`mountYard(host, options)` fills `host` with the yard and returns `{ root, ready, dispose }`. It loads nothing on its own: `physics` returns the rapier3d-compat module, `dog` and `human` are binary glTF files (a URL, bytes, a Blob or a function), `anims` is the person's clip pack, `voice` his wav reference, and `hub` a model hub in place of Hugging Face for the cortex models. Pass `bar`, such as your header, and the readout chips, the setup button and the command button go there; without it the two buttons float in the stage's top right corner, apart from the verbs. One yard runs per page, since its parts find each other by id, and its stylesheet is scoped to `.hb-yard`. `params` carries the lockstep and seed switches, read from the page hash when you pass neither it nor `reseed`.
 
 ```ts
 import * as RAPIER from "@dimforge/rapier3d-compat";

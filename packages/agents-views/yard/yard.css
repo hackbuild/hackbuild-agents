@@ -41,6 +41,10 @@ overlays, the yard hint, the behaviour name, the verb row and the bars are this 
 #eyeSal{pointer-events:none}
 #tool{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;pointer-events:none;z-index:7}
 #tool>*{pointer-events:auto}
+/* no host bar: setup and commands as a small group in the stage's top right corner */
+#corner{position:absolute;right:12px;top:12px;display:flex;gap:6px;align-items:center;z-index:7}
+#corner .hb-btn{padding:7px 10px;box-shadow:3px 3px 0 var(--hb-ink);font-size:13px;text-transform:none;letter-spacing:0}
+#corner~#hint{top:62px}
 #tool .hb-btn svg{width:16px;height:16px;flex:none}
 #camLab,#micLab{display:inline-block}
 #camLab::first-letter,#micLab::first-letter{text-transform:uppercase}
@@ -164,8 +168,10 @@ table.heat td.is-hi{color:#fff}
   #tool{gap:4px;left:8px;right:8px;bottom:8px}
   #tool .hb-btn{min-height:34px;padding:4px 7px;font-size:12px;box-shadow:2px 2px 0 var(--hb-ink)}
   #padRow{bottom:96px}
+  #corner{right:8px;top:8px;gap:4px}
+  #corner .hb-btn{min-height:34px;padding:4px 7px;font-size:12px;box-shadow:2px 2px 0 var(--hb-ink)}
 }
-@media (max-width:600px) and (pointer:coarse){#tool .hb-btn{min-height:44px}}
+@media (max-width:600px) and (pointer:coarse){#tool .hb-btn,#corner .hb-btn{min-height:44px}}
 /* a phone held sideways: the stage beside the rack */
 @media (orientation:landscape) and (max-height:560px) and (min-width:560px){
   #work{grid-template-rows:minmax(0,1fr);grid-template-columns:minmax(0,1fr) 46vw}

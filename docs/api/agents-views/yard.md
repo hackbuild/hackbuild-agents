@@ -38,7 +38,7 @@ Options of `mountYard`.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 | <a id="property-anims"></a> `anims` | `object` \| [`YardAsset`](#yardasset) | The person's clip pack (JSON with roles, fps and clips), as an object or an asset. |
-| <a id="property-bar"></a> `bar?` | `HTMLElement` \| `null` | Where the readout chips, the setup button and the command button go, such as the host's header. Left out, the two buttons join the verb row and the chips are not shown. |
+| <a id="property-bar"></a> `bar?` | `HTMLElement` \| `null` | Where the readout chips, the setup button and the command button go, such as the host's header. Left out, the two buttons float in the stage's top right corner, apart from the verbs, and the chips are not shown. |
 | <a id="property-dog"></a> `dog` | [`YardAsset`](#yardasset) | The dog model, a binary glTF with the rig the yard expects. |
 | <a id="property-hub"></a> `hub?` | `string` | A model hub base URL for the cortex models in place of https://huggingface.co/. |
 | <a id="property-human"></a> `human?` | [`YardAsset`](#yardasset) \| `null` | The person model, a binary glTF; null or left out draws a placeholder of capsules. |
