@@ -1,0 +1,5 @@
+- Load the hackbuild-ui stylesheet (`hackbuild.css` from @virgilvox/hackbuild-ui) on the page. The views write its classes only and carry no styles, so without it the bars and the table draw as plain text.
+- Mount a view once and call `update(state)` each tick. Calling `drivesBars(host)` again every frame rebuilds the panels and loses the in place bar motion.
+- Call `load()` from @hackbuild/drives before making the `Chooser`, `Drives` or `CueLearner` you pass to `drivesBarsState` or `associationsState`; this package reads them by shape and never loads the wasm itself.
+- Call the eye card's `frame()` from your render loop. `eyeInset` draws nothing by itself, and `draw` runs inside `who.eye.render`, so do not hide or restore the head yourself.
+- Import Vue components from `@hackbuild/agents-views/vue`, not the main entry, and install `vue` for it; the main entry has no Vue code.

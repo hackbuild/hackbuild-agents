@@ -20,7 +20,7 @@ export interface DrivesBarsState {
   current?: string;
   /** need per drive, 0 to 1 */
   drives: Record<string, number>;
-  /** drive rows drawn pink, as hackle drew prey and bond */
+  /** drive rows drawn pink, such as prey and bond */
   pink?: readonly string[];
   /** a switch that is on its way */
   pending?: { id: string; inMs: number } | null;
@@ -38,6 +38,7 @@ export interface DecisionLike {
 /** Drives values, or a @hackbuild/drives Drives object. */
 export type DrivesLike = Record<string, number> | { readonly values: Record<string, number> };
 
+/** Options of `drivesBarsState`: the clock, the seconds in the act and names of your own. */
 export interface DrivesBarsFrom {
   /** sim seconds now, for the pending switch */
   now?: number;
@@ -49,6 +50,7 @@ export interface DrivesBarsFrom {
   behavior?: string;
   /** a why of your own in place of the decision's */
   why?: string;
+  /** drive rows drawn pink */
   pink?: readonly string[];
 }
 
@@ -69,17 +71,23 @@ export function drivesBarsState(d: DecisionLike, drives: DrivesLike, o: DrivesBa
   return s;
 }
 
+/** Options of `drivesBars`. */
 export interface DrivesBarsOptions {
   /** the note under the utility rows while no switch is pending */
   note?: string;
 }
 
+/** What `drivesBars` returns: the host, an update and a dispose. */
 export interface DrivesBarsHandle {
+  /** the host element */
   readonly root: HTMLElement;
+  /** draws a new state; rows rebuild only when the keys change */
   update(state: DrivesBarsState): void;
+  /** empties the host */
   dispose(): void;
 }
 
+/** The note under the utility rows while no switch is pending. */
 export const DRIVES_NOTE = "each act scores by how much it would ease what it needs. it usually picks the best one and sticks with what it is doing.";
 
 interface Rows {

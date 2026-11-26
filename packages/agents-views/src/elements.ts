@@ -4,6 +4,7 @@ import { type AssociationsHandle, type AssociationsState, associationsTable } fr
 import { type DrivesBarsHandle, type DrivesBarsState, drivesBars } from "./drives-bars.js";
 import { type EyeInsetHandle, type EyeInsetOptions, eyeInset } from "./eye-inset.js";
 
+/** The tag names `defineViews` registers. */
 export const ELEMENT_NAMES = { drivesBars: "hb-drives-bars", associationsTable: "hb-associations-table", eyeInset: "hb-eye-inset" } as const;
 
 /** `<hb-drives-bars>`: set `.state` to a DrivesBarsState. */
