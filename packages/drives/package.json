@@ -29,6 +29,7 @@
   "files": [
     "dist",
     "README.md",
+    "llms.md",
     "LICENSE",
     "THIRD-PARTY-NOTICES.txt",
     "how.ts"

@@ -1,0 +1,5 @@
+- Await `load()` before constructing `Drives`, `Chooser`, `CueLearner`, `Sleep` or `MemoryStream` or calling `bodyClock`; each throws `wasm not loaded. call load() first.` otherwise. `bodyClockJs`, `seededRng`, `GoalBoost`, `Completion`, `LayerGate`, `InferenceScheduler` and `settled` are plain TypeScript and need no load.
+- Pass an `Rng` (`seededRng(seed)` or your own `() => number`) to every class that takes `rng`; never `Math.random`. The class seeds its wasm stream from one draw of it, so the same seed replays the same choices.
+- Option and action names are fixed at construction: `update`, `set`, `markDone` and `respond` throw on a name that was not in `options` or `actions`. Utilities you leave out score 0, and negative or non finite ones are clamped to 0.
+- Call `chooser.markDone()` when the executor finishes the act. Without it the chooser treats the act as still running: it keeps the commitment bonus and samples again only when the dwell runs out.
+- Call `free()` on wasm backed objects you drop in a long running page; the memory lives in the wasm heap until then.

@@ -1,11 +1,12 @@
-// Scheduling heavy inference, from lessons of earlier builds: GPU contention is
+// Scheduling heavy inference: GPU contention is
 // invisible to JS profiling, so a model call runs only after a minimum
 // interval, optionally only while the agent is idle, and only while recent
 // frames are inside a budget; one call at a time, with a busy state the UI
 // can show.
 
+/** Options of an `InferenceScheduler`. */
 export interface ScheduleOptions {
-  /** seconds between the starts of two calls (legacy cortex: 25) */
+  /** seconds between the starts of two calls (the dog simulator uses 25) */
   minInterval: number;
   /** only start while the caller says the agent is idle */
   idleOnly?: boolean;
@@ -15,8 +16,10 @@ export interface ScheduleOptions {
   smoothing?: number;
 }
 
+/** Why a call may not start now, or ready. */
 export type ScheduleState = "busy" | "cooling down" | "waiting for idle" | "over frame budget" | "ready";
 
+/** Starts a heavy model call only after a minimum interval, optionally only while idle and inside a frame budget, one at a time. */
 export class InferenceScheduler {
   private lastStart = Number.NEGATIVE_INFINITY;
   private running = false;

@@ -25,19 +25,23 @@ export function seededRng(seed: number): Rng {
   };
 }
 
+/** A 32 bit seed for a wasm stream, drawn from an injected `Rng`. */
 export const seedFrom = (rng: Rng): number => Math.floor(rng() * 4294967296) >>> 0;
 
 const PKG = "@hackbuild/drives";
 const opt = (v: number | boolean | undefined) => (v === undefined ? Number.NaN : typeof v === "boolean" ? (v ? 1 : 0) : v);
 
+/** Loads the wasm core once; call and await it before any class. Pass a URL, a Response, bytes or a compiled module, or nothing to decode the inlined copy. */
 export async function load(source?: WasmSource): Promise<void> {
   await loadWasm(source);
 }
 
+/** Loads the wasm core synchronously from bytes or a compiled module. */
 export function loadSync(source: ArrayBuffer | ArrayBufferView | WebAssembly.Module): void {
   loadWasmSync(source);
 }
 
+/** A fixed trace of 175 core values for one seed, used to check that two builds of the core agree bit for bit. */
 export function goldenTrace(seed: number): Float64Array {
   assertReady(PKG);
   return w.goldenTrace(seed);
@@ -88,9 +92,11 @@ export class Drives<K extends string> {
   }
 }
 
+/** Why a decision went the way it did: held the current act, took the top score, sampled, switched reactively, forced, argmax, or a pending switch fired. */
 export type Reason = "hold" | "top" | "sampled" | "reactive" | "forced" | "argmax" | "fired";
 const REASONS: Reason[] = ["hold", "top", "sampled", "reactive", "forced", "argmax", "fired"];
 
+/** One option with its utility, for callers that keep options as a list. */
 export interface Option<B extends string = string> {
   id: B;
   utility: number;
@@ -98,6 +104,7 @@ export interface Option<B extends string = string> {
   reactive?: boolean;
 }
 
+/** The result of one `Chooser.update`: the current act, any pending switch, the reason and a why sentence. */
 export interface Decision<B extends string = string> {
   current: B;
   switched: boolean;
@@ -115,6 +122,7 @@ export interface Decision<B extends string = string> {
   utilities: Record<B, number>;
 }
 
+/** Options of a `Chooser`: the injected rng, the option names, and the softmax, commitment and latency settings. */
 export interface ChooserOptions<B extends string> {
   rng: Rng;
   options: readonly B[];
@@ -213,8 +221,10 @@ export class Chooser<B extends string> {
   }
 }
 
+/** What a `CueLearner` did on a cue: ignored it, did nothing it knows, or did an act (offered or cued) after a latency. */
 export type CueResponse<A extends string> = { kind: "ignored"; latency: number } | { kind: "none"; latency: number } | { kind: "act"; action: A; offered: boolean; latency: number };
 
+/** Options of a `CueLearner`: the injected rng, the action names, learning rates and the non compliance settings. */
 export interface LearnerOptions<A extends string> {
   rng: Rng;
   actions: readonly A[];
@@ -231,6 +241,7 @@ export interface LearnerOptions<A extends string> {
   noise?: boolean;
 }
 
+/** The versioned learner state that `CueLearner.toJSON` writes and `CueLearner.load` reads. */
 export interface LearnerState<A extends string> {
   ver: 1;
   cues: Record<string, { w: Record<A, number>; n: Record<A, number>; associability: number }>;
@@ -325,6 +336,7 @@ export class CueLearner<A extends string> {
   }
 }
 
+/** The stage of the sleep machine. */
 export type SleepStage = "awake" | "onset" | "nrem" | "rem" | "wake";
 const STAGES: SleepStage[] = ["awake", "onset", "nrem", "rem", "wake"];
 
