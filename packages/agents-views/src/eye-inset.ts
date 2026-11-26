@@ -38,6 +38,8 @@ export interface EyeInsetOptions {
   height?: number;
   /** the canvas, when a renderer owns it already (a three WebGLRenderer's) */
   canvas?: HTMLCanvasElement;
+  /** the head title (default "eye") */
+  title?: string;
   /** the user picked another who */
   onWho?: (id: string) => void;
 }
@@ -73,7 +75,7 @@ export function eyeInset(host: HTMLElement, o: EyeInsetOptions): EyeInsetHandle 
 
   // the head as hackbuild-ui's HbInset with who: title, the who switch (.hb-inset-who), the mode line
   const hd = el(doc, "div", "hb-inset-hd");
-  const title = el(doc, "span", "hb-inset-title", "eye");
+  const title = el(doc, "span", "hb-inset-title", o.title ?? "eye");
   const aux = el(doc, "span", "hb-hd-aux");
   const whoGroup = el(doc, "span", "hb-inset-who");
   whoGroup.setAttribute("role", "group");

@@ -145,3 +145,126 @@ const EyeInset: DefineComponent<ExtractPropTypes<{
 
 The eye card. `draw` paints a frame of the selected who; call the exposed
 `frame()` each frame (a template ref). v-model:who is the selected id.
+
+***
+
+### MapInset
+
+```ts
+const MapInset: DefineComponent<ExtractPropTypes<{
+  map: {
+     required: true;
+     type: PropType<() => MapState>;
+  };
+  size: {
+     default: number;
+     type: NumberConstructor;
+  };
+}>, () => VNode<RendererNode, RendererElement, {
+[key: string]: any;
+}>, {
+}, {
+}, {
+}, ComponentOptionsMixin, ComponentOptionsMixin, {
+}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{
+  map: {
+     required: true;
+     type: PropType<() => MapState>;
+  };
+  size: {
+     default: number;
+     type: NumberConstructor;
+  };
+}>, {
+}>, {
+  size: number;
+}, {
+}, {
+}, {
+}, string, ComponentProvideOptions, true, {
+}, any>;
+```
+
+The map card. `map` returns the map; call the exposed `frame()` to draw it (a template ref).
+
+***
+
+### PlanLog
+
+```ts
+const PlanLog: DefineComponent<ExtractPropTypes<{
+  state: {
+     required: true;
+     type: PropType<PlanLogState>;
+  };
+  steps: {
+     default: boolean;
+     type: BooleanConstructor;
+  };
+}>, () => VNode<RendererNode, RendererElement, {
+[key: string]: any;
+}>, {
+}, {
+}, {
+}, ComponentOptionsMixin, ComponentOptionsMixin, {
+}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{
+  state: {
+     required: true;
+     type: PropType<PlanLogState>;
+  };
+  steps: {
+     default: boolean;
+     type: BooleanConstructor;
+  };
+}>, {
+}>, {
+  steps: boolean;
+}, {
+}, {
+}, {
+}, string, ComponentProvideOptions, true, {
+}, any>;
+```
+
+The plan log: last plan, goals, thoughts and steps. `steps: false` leaves the step log out.
+
+***
+
+### StepLog
+
+```ts
+const StepLog: DefineComponent<ExtractPropTypes<{
+  empty: {
+     default: string;
+     type: StringConstructor;
+  };
+  steps: {
+     required: true;
+     type: PropType<readonly StepLine[]>;
+  };
+}>, () => VNode<RendererNode, RendererElement, {
+[key: string]: any;
+}>, {
+}, {
+}, {
+}, ComponentOptionsMixin, ComponentOptionsMixin, {
+}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{
+  empty: {
+     default: string;
+     type: StringConstructor;
+  };
+  steps: {
+     required: true;
+     type: PropType<readonly StepLine[]>;
+  };
+}>, {
+}>, {
+  empty: string;
+}, {
+}, {
+}, {
+}, string, ComponentProvideOptions, true, {
+}, any>;
+```
+
+The step log: one rack log row per tool call.

@@ -364,6 +364,7 @@ Options of `eyeInset`.
 | <a id="property-height"></a> `height?` | `number` | canvas height in pixels (default 160) |
 | <a id="property-onwho"></a> `onWho?` | (`id`) => `void` | the user picked another who |
 | <a id="property-selected"></a> `selected?` | `string` | the selected id; the first by default |
+| <a id="property-title"></a> `title?` | `string` | the head title (default "eye") |
 | <a id="property-who-1"></a> `who` | readonly [`EyeWho`](#eyewho)[] | the who switch, at least one |
 | <a id="property-width"></a> `width?` | `number` | canvas width in pixels (default 320) |
 
@@ -404,7 +405,7 @@ One choice of the who switch: whose eyes the card draws.
 | <a id="property-eye"></a> `eye?` | [`EyeLike`](#eyelike) | the eye whose render wraps the draw, so its own head is hidden |
 | <a id="property-id"></a> `id` | `string` | the id `select` and `onWho` use |
 | <a id="property-label"></a> `label` | `string` | the switch label, as "dog eye" |
-| <a id="property-title"></a> `title?` | `string` | a longer name for assistive tech, as "what the dog sees" |
+| <a id="property-title-1"></a> `title?` | `string` | a longer name for assistive tech, as "what the dog sees" |
 
 ***
 
@@ -442,6 +443,202 @@ The @hackbuild/drives LearnerState shape (CueLearner.toJSON()).
 | ------ | ------ |
 | <a id="property-cues-1"></a> `cues` | `Record`\<`string`, \{ `associability`: `number`; `n`: `Record`\<`string`, `number`\>; `w`: `Record`\<`string`, `number`\>; \}\> |
 
+***
+
+### LogHandle
+
+What `stepLog` and `planLog` return.
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| <a id="type-parameter-s"></a> `S` |
+
+#### Methods
+
+##### dispose()
+
+```ts
+dispose(): void;
+```
+
+###### Returns
+
+`void`
+
+##### update()
+
+```ts
+update(state): void;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `state` | `S` |
+
+###### Returns
+
+`void`
+
+***
+
+### MapInsetOptions
+
+Options of `mapInset`.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-label-1"></a> `label?` | `string` | the head title (default "map") |
+| <a id="property-map"></a> `map` | () => [`MapState`](#mapstate) | the map now; read on every `frame()` |
+| <a id="property-size"></a> `size?` | `number` | canvas side in pixels (default 160) |
+
+***
+
+### MapState
+
+The map as the view reads it.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-at"></a> `at` | `object` | where the body is |
+| `at.x` | `number` | - |
+| `at.z` | `number` | - |
+| <a id="property-cells"></a> `cells` | `ArrayLike`\<`number`\> | row major, 0 unknown, 1 free, 2 blocked |
+| <a id="property-cols"></a> `cols` | `number` | cells across and down |
+| <a id="property-half"></a> `half` | `number` | half the floor's side in metres; the map spans x and z from -half to half |
+| <a id="property-rows"></a> `rows` | `number` | - |
+| <a id="property-trail"></a> `trail` | readonly `object`[] | points walked, in metres |
+
+***
+
+### PlanBook
+
+The book behind PlanLog and StepLog: push agent events, thoughts and goals; read `state()`.
+
+#### Methods
+
+##### clear()
+
+```ts
+clear(): void;
+```
+
+###### Returns
+
+`void`
+
+##### push()
+
+```ts
+push(e): boolean;
+```
+
+Takes a plan or a step event; true when the state changed.
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `e` | [`PlanEventLike`](#planeventlike) |
+
+###### Returns
+
+`boolean`
+
+##### setGoals()
+
+```ts
+setGoals(lines): void;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `lines` | readonly `string`[] |
+
+###### Returns
+
+`void`
+
+##### state()
+
+```ts
+state(): PlanLogState;
+```
+
+###### Returns
+
+[`PlanLogState`](#planlogstate)
+
+##### think()
+
+```ts
+think(kind, line): void;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `kind` | `string` |
+| `line` | `string` |
+
+###### Returns
+
+`void`
+
+***
+
+### PlanLogState
+
+What PlanLog draws. Built with `planBook`, or by hand.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-goals"></a> `goals` | readonly `string`[] | - |
+| <a id="property-plan"></a> `plan` | `string` | the last plan in one line, "" for none |
+| <a id="property-steps"></a> `steps` | readonly [`StepLine`](#stepline)[] | - |
+| <a id="property-thoughts"></a> `thoughts` | readonly [`ThoughtLine`](#thoughtline)[] | - |
+| <a id="property-via"></a> `via` | `string` | who made it: rules, reused, model |
+
+***
+
+### StepLine
+
+One step as the log shows it.
+
+#### Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+| <a id="property-line"></a> `line` | `string` | - |
+| <a id="property-ok"></a> `ok` | `boolean` | - |
+| <a id="property-t"></a> `t` | `number` | ms since epoch |
+
+***
+
+### ThoughtLine
+
+A thought it had with no order: a mutter, or a reflection on what it attends to.
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-kind"></a> `kind` | `string` |
+| <a id="property-line-1"></a> `line` | `string` |
+| <a id="property-t-1"></a> `t` | `number` |
+
 ## Type Aliases
 
 ### DrivesLike
@@ -455,6 +652,38 @@ type DrivesLike =
 ```
 
 Drives values, or a @hackbuild/drives Drives object.
+
+***
+
+### PlanEventLike
+
+```ts
+type PlanEventLike = 
+  | {
+  plan: {
+     do: readonly object[];
+     think?: string;
+  };
+  type: "plan";
+  via: string;
+}
+  | {
+  result: {
+     ok: boolean;
+     step: {
+        args: readonly unknown[];
+        tool: string;
+     };
+     text: string;
+  };
+  type: "step";
+}
+  | {
+  type: string;
+};
+```
+
+The parts of a @hackbuild/agent event the book reads.
 
 ## Variables
 
@@ -560,6 +789,27 @@ Defines the three elements once; safe to call again.
 
 ***
 
+### drawMap()
+
+```ts
+function drawMap(canvas, m): string;
+```
+
+Draws one frame of the map; returns the mode line, as "212 cells seen".
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `canvas` | `HTMLCanvasElement` |
+| `m` | [`MapState`](#mapstate) |
+
+#### Returns
+
+`string`
+
+***
+
 ### drivesBars()
 
 ```ts
@@ -625,3 +875,92 @@ Makes `host` the eye card: head with the mode line, the who switch, the canvas.
 #### Returns
 
 [`EyeInsetHandle`](#eyeinsethandle)
+
+***
+
+### mapInset()
+
+```ts
+function mapInset(host, o): EyeInsetHandle;
+```
+
+Makes `host` the map card; call `frame()` to draw.
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `host` | `HTMLElement` |
+| `o` | [`MapInsetOptions`](#mapinsetoptions) |
+
+#### Returns
+
+[`EyeInsetHandle`](#eyeinsethandle)
+
+***
+
+### planBook()
+
+```ts
+function planBook(o?): PlanBook;
+```
+
+A plan book keeping at most `max` steps and thoughts (default 200).
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `o?` | \{ `max?`: `number`; `now?`: () => `number`; \} |
+| `o.max?` | `number` |
+| `o.now?` | () => `number` |
+
+#### Returns
+
+[`PlanBook`](#planbook)
+
+***
+
+### planLog()
+
+```ts
+function planLog(host, o?): LogHandle<PlanLogState>;
+```
+
+The plan log: last plan with who made it, goals, thoughts, and the step log under them.
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `host` | `HTMLElement` |
+| `o?` | \{ `empty?`: `string`; `steps?`: `boolean`; \} |
+| `o.empty?` | `string` |
+| `o.steps?` | `boolean` |
+
+#### Returns
+
+[`LogHandle`](#loghandle)\<[`PlanLogState`](#planlogstate)\>
+
+***
+
+### stepLog()
+
+```ts
+function stepLog(host, o?): LogHandle<readonly StepLine[]>;
+```
+
+The step log: one rack log row per tool call.
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `host` | `HTMLElement` |
+| `o?` | \{ `empty?`: `string`; `label?`: `string`; \} |
+| `o.empty?` | `string` |
+| `o.label?` | `string` |
+
+#### Returns
+
+[`LogHandle`](#loghandle)\<readonly [`StepLine`](#stepline)[]\>

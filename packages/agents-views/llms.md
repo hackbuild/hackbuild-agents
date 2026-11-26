@@ -110,6 +110,12 @@ function defineViews(registry?: CustomElementRegistry): void
 Defines the three elements once; safe to call again.
 
 ```ts
+function drawMap(canvas: HTMLCanvasElement, m: MapState): string
+```
+
+Draws one frame of the map; returns the mode line, as "212 cells seen".
+
+```ts
 const DRIVES_NOTE: "each act scores by how much it would ease what it needs. it usually picks the best one and sticks with what it is doing."
 ```
 
@@ -232,6 +238,7 @@ interface EyeInsetOptions {
   height?: number;
   onWho?: (id: string) => void;
   selected?: string;
+  title?: string;
   who: readonly EyeWho[];
   width?: number;
 }
@@ -275,6 +282,112 @@ interface LearnerStateLike {
 
 The @hackbuild/drives LearnerState shape (CueLearner.toJSON()).
 
+```ts
+interface LogHandle<S> {
+  dispose(): void;
+  update(state: S): void;
+}
+```
+
+What `stepLog` and `planLog` return.
+
+```ts
+function mapInset(host: HTMLElement, o: MapInsetOptions): EyeInsetHandle
+```
+
+Makes `host` the map card; call `frame()` to draw.
+
+```ts
+interface MapInsetOptions {
+  label?: string;
+  map: () => MapState;
+  size?: number;
+}
+```
+
+Options of `mapInset`.
+
+```ts
+interface MapState {
+  at: { x: number; z: number };
+  cells: ArrayLike<number>;
+  cols: number;
+  half: number;
+  rows: number;
+  trail: readonly { x: number; z: number }[];
+}
+```
+
+The map as the view reads it.
+
+```ts
+function planBook(o?: { max?: number; now?: () => number }): PlanBook
+```
+
+A plan book keeping at most `max` steps and thoughts (default 200).
+
+```ts
+interface PlanBook {
+  clear(): void;
+  push(e: PlanEventLike): boolean;
+  setGoals(lines: readonly string[]): void;
+  state(): PlanLogState;
+  think(kind: string, line: string): void;
+}
+```
+
+The book behind PlanLog and StepLog: push agent events, thoughts and goals; read `state()`.
+
+```ts
+type PlanEventLike = { plan: { do: readonly { args: readonly unknown[]; tool: string }[]; think?: string }; type: "plan"; via: string } | { result: { ok: boolean; step: { args: readonly unknown[]; tool: string }; text: string }; type: "step" } | { type: string }
+```
+
+The parts of a @hackbuild/agent event the book reads.
+
+```ts
+function planLog(host: HTMLElement, o?: { empty?: string; steps?: boolean }): LogHandle<PlanLogState>
+```
+
+The plan log: last plan with who made it, goals, thoughts, and the step log under them.
+
+```ts
+interface PlanLogState {
+  goals: readonly string[];
+  plan: string;
+  steps: readonly StepLine[];
+  thoughts: readonly ThoughtLine[];
+  via: string;
+}
+```
+
+What PlanLog draws.
+
+```ts
+interface StepLine {
+  line: string;
+  ok: boolean;
+  t: number;
+}
+```
+
+One step as the log shows it.
+
+```ts
+function stepLog(host: HTMLElement, o?: { empty?: string; label?: string }): LogHandle<readonly StepLine[]>
+```
+
+The step log: one rack log row per tool call.
+
+```ts
+interface ThoughtLine {
+  kind: string;
+  line: string;
+  t: number;
+}
+```
+
+A thought it had with no order: a mutter, or a reflection on what it attends to.
+
 ### @hackbuild/agents-views/vue
 
 ```ts
@@ -294,6 +407,24 @@ const EyeInset: DefineComponent<ExtractPropTypes<{ draw: { required: true; type:
 ```
 
 The eye card.
+
+```ts
+const MapInset: DefineComponent<ExtractPropTypes<{ map: { required: true; type: PropType<() => MapState> }; size: { default: number; type: NumberConstructor } }>, () => VNode<RendererNode, RendererElement, { [key: string]: any }>, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{ map: { required: true; type: PropType<() => MapState> }; size: { default: number; type: NumberConstructor } }>, {}>, { size: number }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>
+```
+
+The map card.
+
+```ts
+const PlanLog: DefineComponent<ExtractPropTypes<{ state: { required: true; type: PropType<PlanLogState> }; steps: { default: boolean; type: BooleanConstructor } }>, () => VNode<RendererNode, RendererElement, { [key: string]: any }>, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{ state: { required: true; type: PropType<PlanLogState> }; steps: { default: boolean; type: BooleanConstructor } }>, {}>, { steps: boolean }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>
+```
+
+The plan log: last plan, goals, thoughts and steps.
+
+```ts
+const StepLog: DefineComponent<ExtractPropTypes<{ empty: { default: string; type: StringConstructor }; steps: { required: true; type: PropType<readonly StepLine[]> } }>, () => VNode<RendererNode, RendererElement, { [key: string]: any }>, {}, {}, {}, ComponentOptionsMixin, ComponentOptionsMixin, {}, string, PublicProps, ToResolvedProps<ExtractPropTypes<{ empty: { default: string; type: StringConstructor }; steps: { required: true; type: PropType<readonly StepLine[]> } }>, {}>, { empty: string }, {}, {}, {}, string, ComponentProvideOptions, true, {}, any>
+```
+
+The step log: one rack log row per tool call.
 
 ## Examples
 

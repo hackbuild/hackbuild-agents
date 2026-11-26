@@ -4,6 +4,8 @@ import { defineComponent, h, onBeforeUnmount, onMounted, type PropType, ref, wat
 import { type AssociationsHandle, type AssociationsState, associationsTable } from "./associations-table.js";
 import { type DrivesBarsHandle, type DrivesBarsState, drivesBars } from "./drives-bars.js";
 import { type EyeInsetHandle, type EyeWho, eyeInset } from "./eye-inset.js";
+import { type MapState, mapInset } from "./map-inset.js";
+import { type LogHandle, type PlanLogState, type StepLine, planLog, stepLog } from "./plan-log.js";
 
 /** The behavior block, utility rows (current in pink) and drive rows. */
 export const DrivesBars = defineComponent({
@@ -80,6 +82,65 @@ export const EyeInset = defineComponent({
       mode: (t: string) => view?.mode(t),
       canvas: () => view?.canvas ?? null,
     });
+    return () => h("figure", { ref: root });
+  },
+});
+
+/** The plan log: last plan, goals, thoughts and steps. `steps: false` leaves the step log out. */
+export const PlanLog = defineComponent({
+  name: "PlanLog",
+  props: {
+    state: { type: Object as PropType<PlanLogState>, required: true },
+    steps: { type: Boolean, default: true },
+  },
+  setup(props) {
+    const root = ref<HTMLElement | null>(null);
+    let view: LogHandle<PlanLogState> | null = null;
+    onMounted(() => {
+      view = planLog(root.value as HTMLElement, { steps: props.steps });
+      view.update(props.state);
+    });
+    watch(() => props.state, (s) => view?.update(s));
+    onBeforeUnmount(() => view?.dispose());
+    return () => h("div", { ref: root });
+  },
+});
+
+/** The step log: one rack log row per tool call. */
+export const StepLog = defineComponent({
+  name: "StepLog",
+  props: {
+    steps: { type: Array as PropType<readonly StepLine[]>, required: true },
+    empty: { type: String, default: "no steps yet." },
+  },
+  setup(props) {
+    const root = ref<HTMLElement | null>(null);
+    let view: LogHandle<readonly StepLine[]> | null = null;
+    onMounted(() => {
+      view = stepLog(root.value as HTMLElement, { empty: props.empty });
+      view.update(props.steps);
+    });
+    watch(() => props.steps, (s) => view?.update(s));
+    onBeforeUnmount(() => view?.dispose());
+    return () => h("div", { ref: root });
+  },
+});
+
+/** The map card. `map` returns the map; call the exposed `frame()` to draw it (a template ref). */
+export const MapInset = defineComponent({
+  name: "MapInset",
+  props: {
+    map: { type: Function as PropType<() => MapState>, required: true },
+    size: { type: Number, default: 160 },
+  },
+  setup(props, { expose }) {
+    const root = ref<HTMLElement | null>(null);
+    let view: EyeInsetHandle | null = null;
+    onMounted(() => {
+      view = mapInset(root.value as HTMLElement, { map: () => props.map(), size: props.size });
+    });
+    onBeforeUnmount(() => view?.dispose());
+    expose({ frame: () => view?.frame() });
     return () => h("figure", { ref: root });
   },
 });

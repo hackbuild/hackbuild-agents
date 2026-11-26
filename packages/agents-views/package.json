@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/agents-views",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Views that bind the agents packages to the hackbuild-ui class layer: the behaviour, utility and drive bars, the cues by acts associations table, and the eye inset. Each ships as a Vue component and as a custom element.",
   "type": "module",
   "license": "MIT",
