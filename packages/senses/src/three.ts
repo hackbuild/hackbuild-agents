@@ -21,27 +21,30 @@ export function cameraFromThree(cam: THREE.PerspectiveCamera, out: CameraArray =
   return out;
 }
 
+/** Options of {@link Eye}; every field has a default. */
 export interface EyeOptions {
-  /** vertical field of view in degrees (prototype 74) */
+  /** vertical field of view in degrees (default 74) */
   fov?: number;
-  /** ID buffer size (prototype 192 by 108) */
+  /** ID buffer size (default 192 by 108) */
   width?: number;
   height?: number;
-  /** depth buffer size (prototype 96 by 54) */
+  /** depth buffer size (default 96 by 54) */
   depthWidth?: number;
   depthHeight?: number;
-  /** depth range in metres (prototype 12) */
+  /** depth range in metres (default 12) */
   far?: number;
   near?: number;
 }
 
+/** An object the eye counts pixels for, with its label. */
 export interface Tracked {
   object: THREE.Object3D;
   label: string;
-  /** pixels needed to count as seen (prototype: 2 for props, 60 for furniture) */
+  /** pixels needed to count as seen (default 2; about 60 suits furniture) */
   minPixels?: number;
 }
 
+/** A tracked object the eye saw: pixels, centroid and distance. */
 export interface Seen {
   label: string;
   pixels: number;
@@ -52,6 +55,7 @@ export interface Seen {
   dist: number;
 }
 
+/** The result of one eye pass: what was seen and the depth buffer in metres. */
 export interface EyePass {
   visible: Seen[];
   /** metres along the view ray, row 0 at the top */
@@ -108,6 +112,7 @@ export function countIds(px: Uint8Array, w: number, h: number, n: number): { cou
   return { count, sx, sy };
 }
 
+/** An eye on an agent's head that renders an object ID buffer and a depth buffer and reads them back. */
 export class Eye {
   readonly camera: THREE.PerspectiveCamera;
   readonly opts: Required<EyeOptions>;

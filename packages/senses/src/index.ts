@@ -27,6 +27,7 @@ export function goldenTrace(seed: number): Float64Array {
   return w.goldenTrace(seed);
 }
 
+/** A point or velocity in metres, y up. */
 export type Vec3 = { x: number; y: number; z: number };
 const opt = (v: number | undefined) => (v === undefined ? Number.NaN : v);
 
@@ -43,6 +44,7 @@ export function cameraLook(pos: Vec3, yaw: number, pitch: number, fov: number, a
   return w.cameraLook(pos.x, pos.y, pos.z, yaw, pitch, fov, aspect, near, far);
 }
 
+/** Options of {@link Saliency}; only `rng` is required. */
 export interface SaliencyOptions {
   rng: Rng;
   /** feature grid the frame is sampled to (default 80 by 40) */
@@ -62,6 +64,7 @@ export interface SaliencyOptions {
   channels?: { intensity?: number; blueYellow?: number; edges?: number; motion?: number };
 }
 
+/** Where the eye goes next: the winning map cell, its world point and the object it snapped to. */
 export interface Fixation {
   /** cell in the saliency map */
   x: number;
@@ -130,6 +133,7 @@ export class Saliency {
   }
 }
 
+/** Options of {@link Looming}; every field has a default. */
 export interface LoomOptions {
   /** startle under this tau in seconds (default 0.6) */
   tau?: number;
@@ -158,6 +162,7 @@ export class Looming {
   }
 }
 
+/** Options of {@link OdourField}; only `rng` is required. */
 export interface OdourOptions {
   rng: Rng;
   /** side of the square world in metres, centred on the origin (default 34) */
@@ -174,6 +179,7 @@ export interface OdourOptions {
   windHeading?: number;
 }
 
+/** One odour source for a step of {@link OdourField}. */
 export interface OdourSource {
   /** a small integer per source */
   id: number;
@@ -268,9 +274,11 @@ export class Sniffer {
   }
 }
 
+/** The mode of a {@link Tracker}: decide over a trail, follow it, surge upwind or cast crosswind. */
 export type TrackMode = "decide" | "trail" | "surge" | "cast";
 const MODES: TrackMode[] = ["decide", "trail", "surge", "cast"];
 
+/** One tracker step: the mode, the waypoint to walk to, its speed and stop distance. */
 export interface TrackStep {
   mode: TrackMode;
   waypoint: { x: number; z: number } | null;
@@ -302,6 +310,7 @@ export class Tracker {
   }
 }
 
+/** Options of {@link PerceptMemory}; only `rng` is required. */
 export interface VisionOptions {
   rng: Rng;
   /** half the horizontal field of view in rad (default 2.09, a 240 degree field) */
@@ -314,6 +323,7 @@ export interface VisionOptions {
   drift?: number;
 }
 
+/** What the caller knows of one object this frame; occlusion is answered by the caller. */
 export interface Sighting {
   pos: Vec3;
   vel?: Vec3;
@@ -323,6 +333,7 @@ export interface Sighting {
   fixed?: boolean;
 }
 
+/** What {@link PerceptMemory.sense} returns for one object. */
 export interface Percept {
   visible: boolean;
   seen: number | null;
@@ -361,10 +372,14 @@ export class PerceptMemory {
   }
 }
 
+/** Grid cell never observed. */
 export const UNKNOWN = 0;
+/** Grid cell seen free. */
 export const FREE = 1;
+/** Grid cell marked occupied. */
 export const OCCUPIED = 2;
 
+/** Options of {@link OccupancyGrid}; every field has a default. */
 export interface GridOptions {
   /** cells per side (default 220) */
   cells?: number;
@@ -380,6 +395,7 @@ export interface GridOptions {
   center?: { x: number; z: number };
 }
 
+/** A frontier between free and unknown cells: its centre, distance and size in cells. */
 export interface Frontier {
   x: number;
   z: number;

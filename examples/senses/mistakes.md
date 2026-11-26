@@ -1,0 +1,5 @@
+- Constructing a class before `await load()`: every class wraps a wasm object and throws `@hackbuild/senses: wasm not loaded. call load() first.` With no argument `load()` uses the inlined copy, so no wasm URL is needed.
+- Passing `Math.random` as `rng`: each class seeds its wasm stream from one draw, so a seeded run replays only with `seededRng(seed)` or another seeded function.
+- Importing three for the main entry: only `@hackbuild/senses/three` (`Eye`, `cameraFromThree`) needs three. Saliency and the grid take a 16 number camera array; build it with `cameraLook` when there is no three camera.
+- Calling `Tracker.step` with `arrived` always false: the tracker keeps the same waypoint until you report arrival within `stopDist`.
+- Loading `senses-three.iife.js` from file:// with no `window.THREE`: it reads three from the page, so set `window.THREE` from a module first.
