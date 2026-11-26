@@ -2,12 +2,14 @@
 // system in the frame and read the average and worst ms per label. Runs
 // in a page or in Node; the clock is injected (performance.now).
 
+/** Total ms, worst ms and count for one profiled label. */
 export interface ProfileEntry {
   total: number;
   max: number;
   n: number;
 }
 
+/** Per system frame timing: begin, mark a label, report average and worst ms. */
 export interface Profiler {
   /** starts timing the next system */
   begin(): void;
@@ -19,6 +21,7 @@ export interface Profiler {
   entries: Record<string, ProfileEntry>;
 }
 
+/** A profiler over a clock in ms, such as `performance.now`. */
 export function createProfiler(clock: () => number): Profiler {
   const entries: Record<string, ProfileEntry> = {};
   let t = clock();

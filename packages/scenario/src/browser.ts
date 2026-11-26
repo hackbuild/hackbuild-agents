@@ -20,6 +20,7 @@ export interface Sim {
   render?(): unknown;
 }
 
+/** Options of a run in the page: the lockstep options, the handle actions see, yielding between chunks and a shot callback. */
 export interface BrowserRunOptions extends Omit<LockstepOptions, "api" | "handle"> {
   /** what `h` is bound to in actions and probes (default the sim) */
   handle?: unknown;
@@ -156,6 +157,7 @@ export function parseTrace(input: string | unknown): Trace {
   return t;
 }
 
+/** Options of `runScenarios`: the scenarios, a sim maker per seed, goldens to compare and a result callback. */
 export interface BrowserSuiteOptions extends BrowserRunOptions {
   scenarios: Scenario[];
   /** a fresh sim seeded for the scenario */

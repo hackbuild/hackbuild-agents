@@ -1,0 +1,5 @@
+- Give the page `window.__sim` with `step(n)` and `trace()`, and stop its own animation loop when the hash starts with `#test`. A page that keeps its requestAnimationFrame loop running advances between chunks, and the trace differs on every run.
+- Route every network request. A CDN import with no `npmCdn` or `pinned` route is blocked and fails the run; use `offline: true` only for a self contained build.
+- Pass `goldenDir` with `mode: "record"` or `"compare"`; `runSuite` throws without it. Use `mode: "check"` to run checks with no goldens.
+- Send page code as a string or as a function that closes over nothing. A function is sent by its source and runs in the page, where your Node variables do not exist.
+- Import `@hackbuild/scenario/browser` in a page, never the main entry: the main entry imports puppeteer-core and Node built ins. Use `gpu: "default"` when you measure frame rate, since the default swiftshader flags may run almost no frames.

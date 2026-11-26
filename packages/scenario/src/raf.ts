@@ -23,6 +23,7 @@ export async function installRafSampler(page: Page): Promise<void> {
   await page.evaluateOnNewDocument(SOURCE);
 }
 
+/** What `readRaf` returns: frame intervals in ms, the per frame samples and their stats. */
 export interface RafReading<T = unknown> {
   frames: number[];
   samples: T[];

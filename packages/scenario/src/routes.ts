@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join, relative, resolve, sep } from "node:path";
 
+/** How a routed request is answered: a local file with an optional SHA-256 pin, or a fixed body. */
 export interface RouteHit {
   /** a local file to serve */
   file?: string;
@@ -15,6 +16,7 @@ export interface RouteHit {
   sha256?: string;
 }
 
+/** A request router: returns how to answer a URL, or null to pass it to the next route. */
 export type Route = (url: URL) => RouteHit | null;
 
 const TYPES: Record<string, string> = {
@@ -33,9 +35,11 @@ const TYPES: Record<string, string> = {
   bin: "application/octet-stream",
 };
 
+/** The content type for a file path by its extension. */
 export const contentTypeOf = (path: string): string => TYPES[path.split(".").pop()?.toLowerCase() ?? ""] ?? "application/octet-stream";
 
 const verified = new Map<string, string>();
+/** The SHA-256 of a file in hex, cached per path. */
 export function sha256File(path: string): string {
   let h = verified.get(path);
   if (!h) {
@@ -87,6 +91,7 @@ export function npmCdn(nodeModules: string): Route {
   };
 }
 
+/** One pinned URL of an assets lock: the URL, the local file and its SHA-256. */
 export interface LockEntry {
   /** the remote URL the page asks for */
   url: string;

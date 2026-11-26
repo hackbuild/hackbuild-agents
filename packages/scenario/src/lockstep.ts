@@ -41,6 +41,7 @@ export function runLockstep(page: Page, sc: Scenario, o: LockstepOptions = {}): 
   return drive(pageDriver(page, o), sc, o);
 }
 
+/** Options of `runSuite`: the page file, the scenarios, the mode, goldens, routes, viewport and parallel browsers. */
 export interface SuiteOptions extends LockstepOptions {
   /** the built page */
   file: string;

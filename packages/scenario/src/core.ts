@@ -12,6 +12,7 @@ import type { Check } from "./report.js";
  */
 export type Code = string | ((h: any) => unknown);
 
+/** Something a scenario does to the sim, at a sim time or once a page condition holds. */
 export interface Action {
   /** sim seconds; or `when`, a page condition checked every `whenEvery` steps, fired once */
   at?: number;
@@ -19,18 +20,21 @@ export interface Action {
   js: Code;
 }
 
+/** An expression read from the sim every `every` sim seconds and kept in the trace. */
 export interface Probe {
   every: number;
   /** an expression returning JSON */
   js: Code;
 }
 
+/** A screenshot at a sim time, written to `path`, after optional code ran. */
 export interface Shot {
   at: number;
   path: string;
   js?: Code;
 }
 
+/** What a run recorded: the sim rows, probes, fired conditions and the wall time. */
 export interface Trace {
   rows: unknown[][];
   cols?: string[];
@@ -47,6 +51,7 @@ export interface SimTrace {
   hash?: string;
 }
 
+/** One scenario: a name, a seed, a length in sim seconds, actions, probes, shots and checks. */
 export interface Scenario {
   name: string;
   seed: number;
@@ -67,6 +72,7 @@ export type ScenarioEvent =
   | { type: "probe"; step: number; value: unknown }
   | { type: "shot"; step: number; path: string };
 
+/** Options of a lockstep run: steps per second, chunk size, the page API, `when` checks and progress callbacks. */
 export interface LockstepOptions {
   stepsPerSecond?: number;
   /** steps per call into the page (default 30) */
@@ -93,6 +99,7 @@ export interface Driver {
   shot?(path: string): unknown;
 }
 
+/** The source text of page code, a string as it is or a function by its source. */
 export const codeText = (c: Code): string => (typeof c === "string" ? c : c.toString());
 
 /** Steps a scenario through a driver; the scheduler both entries share. */
@@ -168,6 +175,7 @@ export async function drive(d: Driver, sc: Scenario, o: LockstepOptions = {}): P
 /** JSON with NaN and the infinities kept apart from null. */
 export const exact = (v: unknown): string => JSON.stringify(v, (_k, x) => (typeof x === "number" && !Number.isFinite(x) ? `${x}` : x)) ?? "undefined";
 
+/** The part of a trace two traces are compared on: rows and an optional hash. */
 export type TraceLike = { rows: unknown[][]; hash?: string | null };
 
 /** First differing row between two traces, or null when identical. NaN, Infinity and null all differ. */
@@ -182,6 +190,7 @@ export function diffTraces(a: TraceLike, b: TraceLike): { row: number; a: unknow
   return null;
 }
 
+/** One differing row of two traces, with the first differing column. */
 export interface RowDifference {
   row: number;
   /** the first differing column, or -1 when a row is missing */

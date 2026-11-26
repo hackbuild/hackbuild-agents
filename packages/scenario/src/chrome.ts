@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url";
 import puppeteer, { type Browser, type Page } from "puppeteer-core";
 import { type Route, serve } from "./routes.js";
 
+/** Where Chrome lives on macOS. */
 export const CHROME_MAC = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const CANDIDATES = [CHROME_MAC, "/usr/bin/google-chrome", "/usr/bin/google-chrome-stable", "/usr/bin/chromium", "/usr/bin/chromium-browser"];
 
@@ -17,6 +18,7 @@ export function findChrome(): string | null {
   return CANDIDATES.find((p) => existsSync(p)) ?? null;
 }
 
+/** Options of `open`: the page, routes, offline mode, viewport, Chrome path, GPU flags and a hook before navigation. */
 export interface OpenOptions {
   /** a file path or URL */
   url: string;
@@ -37,6 +39,7 @@ export interface OpenOptions {
   beforeGoto?: (page: Page) => Promise<void>;
 }
 
+/** Errors, warnings, blocked and served requests a page made, and the Chrome version. */
 export interface PageLog {
   errors: string[];
   warnings: string[];
@@ -45,6 +48,7 @@ export interface PageLog {
   version: string;
 }
 
+/** What `open` returns: the browser, the page and the log of errors, warnings, blocked and served requests. */
 export interface Opened {
   browser: Browser;
   page: Page;
@@ -52,6 +56,7 @@ export interface Opened {
   close(): Promise<void>;
 }
 
+/** The Chrome flags every run gets: autoplay without a gesture, muted audio, file access from files. */
 export const DEFAULT_ARGS = ["--autoplay-policy=no-user-gesture-required", "--mute-audio", "--allow-file-access-from-files"];
 /**
  * Software GL, the same on every machine; for lockstep runs. Under these
@@ -60,6 +65,7 @@ export const DEFAULT_ARGS = ["--autoplay-policy=no-user-gesture-required", "--mu
  */
 export const SWIFTSHADER_ARGS = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--enable-unsafe-webgpu"];
 
+/** Launches the system Chrome with routing and opens a page; throws when no Chrome is found. */
 export async function open(o: OpenOptions): Promise<Opened> {
   const chrome = o.chrome ?? findChrome();
   if (!chrome) throw new Error("no chrome found. set HB_CHROME to the browser binary.");

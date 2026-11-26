@@ -2,6 +2,7 @@
 // measured, legal, constraint, then a fix. "stall 4.75 s, legal 0 to 1,
 // set by the passing rule. fix: check the side waypoint".
 
+/** One check of a run: what was measured, the legal range, the constraint that sets it and the fix. */
 export interface Check {
   /** what was checked, lowercase: "foot slide", "stall" */
   what: string;
@@ -19,8 +20,10 @@ export interface Check {
   optional?: boolean;
 }
 
+/** The verdict of a check: pass, fail, or not run when nothing was measured. */
 export type Verdict = "pass" | "fail" | "not run";
 
+/** Pass, fail or not run for one check. */
 export function verdict(c: Check): Verdict {
   if (c.measured === null || !Number.isFinite(c.measured)) return "not run";
   if (c.legal.min !== undefined && c.measured < c.legal.min) return "fail";
@@ -49,6 +52,7 @@ export function checkMessage(c: Check): string {
   return v === "fail" && c.fix ? `${base}. fix: ${c.fix}` : base;
 }
 
+/** The result of one scenario: its checks, the golden comparison, errors and blocked requests. */
 export interface ScenarioResult {
   name: string;
   seed: number;
@@ -59,6 +63,7 @@ export interface ScenarioResult {
   blocked: string[];
 }
 
+/** A suite report: the date, the Chrome version and a result per scenario. */
 export interface Report {
   date: string;
   chrome: string;

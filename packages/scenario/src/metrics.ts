@@ -1,6 +1,7 @@
 // Motion metrics from lessons of earlier builds: judge motion by numbers, not by
 // eye in a slow headless browser. All pure functions over sampled series.
 
+/** Count, mean, p50, p95 and max of a list of numbers. */
 export interface Stats {
   n: number;
   mean: number;
@@ -17,6 +18,7 @@ export function percentile(xs: readonly number[], p: number): number {
   return s[i] as number;
 }
 
+/** Count, mean, p50, p95 and max of a list; NaN for an empty list. */
 export function stats(xs: readonly number[]): Stats {
   if (!xs.length) return { n: 0, mean: Number.NaN, p50: Number.NaN, p95: Number.NaN, max: Number.NaN };
   let sum = 0;
@@ -33,6 +35,7 @@ export function frameStats(ms: readonly number[]): Stats {
   return stats(ms);
 }
 
+/** A 2D or 3D position as numbers. */
 export type Point = readonly number[];
 
 /**
@@ -58,6 +61,7 @@ export function jerk(points: readonly Point[], dt: number): number[] {
 
 const wrap = (a: number) => Math.atan2(Math.sin(a), Math.cos(a));
 
+/** What `sliding` returns: seconds and share of moving samples that slide. */
 export interface SlideResult {
   /** seconds where the body heading and the direction of motion differ by more than the threshold */
   seconds: number;
