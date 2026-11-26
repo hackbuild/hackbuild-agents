@@ -1,7 +1,7 @@
 {
   "name": "@hackbuild/agents-views",
-  "version": "0.1.2",
-  "description": "Views that bind the agents packages to the hackbuild-ui class layer: the behaviour, utility and drive bars, the cues by acts associations table, and the eye inset. Each ships as a Vue component and as a custom element.",
+  "version": "0.2.0",
+  "description": "Views that bind the agents packages to the hackbuild-ui class layer: the behaviour, utility and drive bars, the cues by acts associations table, the eye inset, and Yard, the dog simulator's stage and rack as one view. Each small view ships as a Vue component and as a custom element.",
   "type": "module",
   "license": "MIT",
   "author": "Moheeb Zara <hackbuildvideo@gmail.com>",
@@ -19,6 +19,10 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./yard": {
+      "types": "./dist/yard.d.ts",
+      "import": "./dist/yard.js"
+    },
     "./vue": {
       "types": "./dist/vue.d.ts",
       "import": "./dist/vue.js"
@@ -35,17 +39,49 @@
   "unpkg": "./dist/agents-views.iife.js",
   "jsdelivr": "./dist/agents-views.iife.js",
   "scripts": {
-    "build": "node ../../tools/build-package.mjs agents-views HackbuildAgentsViews"
+    "build": "node ../../tools/gen-yard.mjs && node ../../tools/build-package.mjs agents-views HackbuildAgentsViews && node ../../tools/gen-yard.mjs --dist"
   },
   "peerDependencies": {
     "@virgilvox/hackbuild-ui": ">=0.10.0 <0.12.0",
-    "vue": "^3.5.0"
+    "vue": "^3.5.0",
+    "three": ">=0.186.0 <0.188.0",
+    "@hackbuild/motion-net": "^0.2.0",
+    "@hackbuild/gait": "^0.1.0",
+    "@hackbuild/tunables": "^0.1.0",
+    "@hackbuild/senses": "^0.1.0",
+    "@hackbuild/drives": "^0.1.0",
+    "@hackbuild/cameras": "^0.1.0",
+    "@hackbuild/weights": "^0.1.0"
   },
   "peerDependenciesMeta": {
     "@virgilvox/hackbuild-ui": {
       "optional": true
     },
     "vue": {
+      "optional": true
+    },
+    "three": {
+      "optional": true
+    },
+    "@hackbuild/motion-net": {
+      "optional": true
+    },
+    "@hackbuild/gait": {
+      "optional": true
+    },
+    "@hackbuild/tunables": {
+      "optional": true
+    },
+    "@hackbuild/senses": {
+      "optional": true
+    },
+    "@hackbuild/drives": {
+      "optional": true
+    },
+    "@hackbuild/cameras": {
+      "optional": true
+    },
+    "@hackbuild/weights": {
       "optional": true
     }
   }

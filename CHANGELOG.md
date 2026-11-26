@@ -4,6 +4,19 @@ Versions follow semver per package. Nothing is published to npm yet.
 
 ## 0.1.0 (unreleased)
 
+### @hackbuild/agents-views 0.2.0, 2026-11-26
+
+- agents-views: `@hackbuild/agents-views/yard`, `mountYard(host, options)`,
+  the dog simulator's stage and rack as one view (the dog and his person,
+  the verb row, the eye inset, the seven tabs with the drives bars and the
+  associations table, the tune rack, the cortex model select, the setup
+  panel and the command palette). The host passes the physics core, the
+  dog and person models, the clip pack, the voice reference and a model
+  hub; `dispose()` stops the loop, workers, voice and microphone. Its
+  modules live in packages/agents-views/yard and are joined by
+  tools/gen-yard.mjs; three.js and the @hackbuild packages it runs on are
+  optional peers.
+
 ### Patch releases, 2026-11-24
 
 - every package one patch up (0.1.0 to 0.1.1, mover and scenario 0.2.0

@@ -28,7 +28,10 @@ this one, this one wins.
   dash. Use commas, periods, or "to" for ranges, in code too.
 - Never use the "it is not x, it is y" construction or its variants. State
   what the thing is.
-- No exclamation marks, in UI copy, docs and character dialogue alike.
+- No exclamation marks in UI copy or docs. The yard's human may use them in
+  his in-world dialogue, as the original did (owner decision 2026-11-25); only
+  his line file (packages/agents-views/yard/human/lines.js) is exempt from
+  lint-voice.
 - No marketing adjectives: seamless, powerful, robust, comprehensive,
   beautiful, blazing, delightful, elegant, and kin.
 - No filler vocabulary: delve, tapestry, crucial, vital, leverage,

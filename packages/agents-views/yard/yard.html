@@ -1,0 +1,348 @@
+<div id="work">
+<section id="stage" class="hb-ctx-area" data-ux="subject" aria-haspopup="menu" aria-label="3d yard. tap the dog to pet it, tap the ground to point. hold, right click or the menu key for more." tabindex="0">
+  <div id="load"><div><p class="big">waking the dog<b>...</b></p><p class="note" id="loadNote">loading model</p></div></div>
+  <figure id="eyecard" data-ux="inset" style="margin:0">
+    <div class="bh"><span class="eyewho"><button type="button" id="eyeWhoDog" class="on" title="what the dog sees">dog eye</button><button type="button" id="eyeWhoHis" title="what moheeb sees">his eyes</button></span><span id="eyeMode">dichromat</span><button type="button" id="eyeFold" aria-expanded="true" aria-controls="eyewrap" aria-label="fold the eye view">-</button></div>
+    <div id="eyewrap"><canvas id="eye" width="320" height="160" role="img" aria-label="what the dog sees"></canvas><canvas id="eyeBoxes" width="320" height="160" aria-hidden="true"></canvas><canvas id="eyeSal" width="320" height="160" aria-hidden="true"></canvas></div>
+  </figure>
+  <div id="hint">click the ground to point. shift and click: he throws there. click the dog to pet it. drag to orbit; right drag, two fingers or w a s d move the camera, q and e for height, f follows the dog again.</div>
+  <div id="bubble" aria-hidden="true">...</div>
+  <div id="hbubble" style="display:none" aria-hidden="true"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="drop">show the dog this photo</div>
+  <div class="hb-ctx" id="yardMenu" aria-label="yard actions" hidden><div class="hb-ctx-title" id="yardMenuT" aria-hidden="true">yard</div></div>
+  <div class="hb-ov-pad" id="padRow" hidden>
+    <div class="hb-pad">
+      <div class="hb-pad-base" id="pad" role="group" tabindex="0" aria-label="drive the dog: drag, or hold the arrow keys"><span class="hb-pad-arrow hb-pad-n" aria-hidden="true"></span><span class="hb-pad-arrow hb-pad-s" aria-hidden="true"></span><span class="hb-pad-arrow hb-pad-w" aria-hidden="true"></span><span class="hb-pad-arrow hb-pad-e" aria-hidden="true"></span><span class="hb-pad-knob" aria-hidden="true"></span></div>
+      <button type="button" class="hb-pad-act" id="padRun" aria-pressed="false">run</button>
+    </div>
+  </div>
+  <div id="tool" data-ux="verbs">
+    <button class="hb-btn hb-btn-go" id="bThrow" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 5c3 1 7 1 10 0M3 11c3-1 7-1 10 0" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>Throw ball</button>
+    <button class="hb-btn" id="bTreat" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="5" width="10" height="6" rx="1" fill="currentColor"/></svg>Treat</button>
+    <button class="hb-btn" id="bGood" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 9l4 4 8-10" fill="none" stroke="currentColor" stroke-width="2"/></svg>Good dog</button>
+    <button class="hb-btn" id="bNo" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" stroke="currentColor" stroke-width="2"/></svg>No</button>
+    <button class="hb-btn" id="bFill" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h12l-2 5H4z" fill="currentColor"/></svg>Fill bowl</button>
+    <button class="hb-btn" id="bSquirrel" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="6" cy="10" r="3" fill="currentColor"/><path d="M9 11c4 0 5-4 3-7-2-2-5 0-3 3" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Squirrel</button>
+    <button class="hb-btn" id="bCam" type="button" aria-label="camera: follow. press for the next view" title="follow, free, dog eye, side, his eyes"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 5h4l1-2h4l1 2h4v8H1z" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="9" r="2.4" fill="currentColor"/></svg><span id="camLab">follow</span></button>
+    <button class="hb-btn" id="bMic" type="button" aria-pressed="false" aria-describedby="micNote"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="6" y="1" width="4" height="9" rx="2" fill="currentColor"/><path d="M3 8a5 5 0 0010 0M8 13v2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span id="micLab">talk</span></button>
+  </div>
+</section>
+<aside id="side" data-ux="rack">
+  <div class="hb-tabs" role="tablist" aria-label="panels" id="tabs">
+    <button class="hb-tab" role="tab" type="button" id="tab-brain" aria-controls="pBrain" aria-selected="true" tabindex="0" data-p="pBrain">brain</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-body" aria-controls="pBody" aria-selected="false" tabindex="-1" data-p="pBody">body</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-sense" aria-controls="pSense" aria-selected="false" tabindex="-1" data-p="pSense">sense</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-train" aria-controls="pTrain" aria-selected="false" tabindex="-1" data-p="pTrain">train</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-human" aria-controls="pHuman" aria-selected="false" tabindex="-1" data-p="pHuman">human</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-tune" aria-controls="pTune" aria-selected="false" tabindex="-1" data-p="pTune">tune</button>
+    <button class="hb-tab" role="tab" type="button" id="tab-how" aria-controls="pAbout" aria-selected="false" tabindex="-1" data-p="pAbout">how</button>
+  </div>
+  <div id="panes">
+
+  <section class="pane on" id="pBrain" role="tabpanel" aria-labelledby="tab-brain" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>behavior</span><span class="hb-hd-aux" id="behT">0.0 s</span></h3>
+      <p class="big" id="behName">idle</p>
+      <p class="note" id="behWhy">standing around</p>
+      <p class="sub" id="behKind"></p>
+      <p class="sub" id="goalNote"></p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>utility</span><span class="hb-hd-aux" id="utilMode">sampled</span></h3>
+      <div id="utilRows" aria-label="what each act is worth to the dog now"></div>
+      <p class="note" id="pendNote">each act scores by how much it would ease what the dog needs. it usually picks the best one and sticks with what it is doing.</p>
+      <details class="hb-fold" data-ux="detail"><summary>how it chooses</summary><div><p class="sub" id="choiceMeta"></p><ul class="lines" id="choiceFeed"></ul>
+        <p class="note">drive reduction: each act scores by how much it would lower the dog's needs (keramati and gutkin 2011). the dog acts on the best option most of the time (softmax with a commitment bonus, temperature in tune).</p></div></details>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>drives</span><span class="hb-hd-aux">need 0 to 1</span></h3>
+      <div id="driveRows" aria-label="the dog's drives"></div>
+      <div class="row"><label class="lab" for="tempo">tempo</label><input type="range" id="tempo" min="0.25" max="8" step="0.25" value="1"><output class="v" id="tempoV" for="tempo">1x</output></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>affect</span><span class="hb-hd-aux" id="affectAux">valence x arousal</span></h3>
+      <canvas class="inst" id="affect" width="340" height="120" role="img" aria-label="affect"></canvas>
+      <p class="sub" id="affectTxt"></p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>sleep and clock</span><span class="hb-hd-aux" id="slpStage">awake</span></h3>
+      <canvas class="inst" id="hyp" width="340" height="64" role="img" aria-label="sleep stages over the last 80 s"></canvas>
+      <div class="kv"><b>time</b><span id="kClock">10:00</span><b>sleep pressure</b><span id="kSp">0</span><b>body clock</b><span id="kCirc">0</span><b>bond</b><span id="kBond">0.5</span><b>wag mode</b><span id="kWag">-</span></div>
+      <p class="note">sleep pressure builds while awake and drains asleep; the body clock peaks near 7 and 19 with a midday dip. sleep runs onset, nrem, short rem with paddling paws, and often a wake after rem. pet dogs sleep about 11 hours a day.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>cortex</span><span class="hb-hd-aux" id="cortexSt">off</span></h3>
+      <p class="note">a vision language model on your gpu looks through the dog eye, reads its drives and memories, and returns what it saw, a thought and a goal. nothing leaves the browser; the weights download once and stay stored.</p>
+      <div class="field"><label for="vlmSel">model</label><select class="hb-select" id="vlmSel"><option value="lfm">lfm2-vl 450m, about 320 mb</option><option value="gemma">gemma 4 e2b, about 3.3 gb</option></select></div>
+      <p class="licence" id="vlmLic">weights lfm open license 1.0, commercial use limited.</p>
+      <div class="btns"><button class="hb-btn" id="bVlmLoad" type="button">Load, about 320 MB</button><button class="hb-btn" id="bThink" type="button" hidden>Look and think</button></div>
+      <p class="reason" id="cortexWhy"></p>
+      <p class="sub" id="cortexSched"></p>
+      <label class="hb-check is-disabled" id="autoThinkL" hidden><input type="checkbox" id="autoThink" disabled>think on its own when something happens, at most every 25 s</label>
+      <div class="field" id="askRow" hidden><label for="askIn">ask the dog</label><input class="hb-input" type="text" id="askIn" disabled placeholder="what do you see? enter" enterkeyhint="send" autocomplete="off"></div>
+      <div class="hb-heard" id="cortexOut" data-empty="no thoughts yet"></div>
+      <details class="hb-fold" data-ux="detail"><summary>model calls <span class="aux" id="dogCallsN">0</span></summary><div><ol class="calls" id="dogCalls" data-empty="no calls yet"></ol></div></details>
+      <details class="hb-fold" id="pinspFold" data-ux="detail"><summary>prompt inspector <span class="aux" id="pinspN">no calls</span></summary>
+        <div class="hb-pinsp" id="pinsp">
+          <section class="hb-pinsp-card"><h3 class="hb-pinsp-hd">cost <small id="pinspWho">this session</small></h3><dl class="hb-pinsp-kv" id="pinspKv" hidden></dl><p class="hb-pinsp-empty" id="pinspKvEmpty">no calls yet</p></section>
+          <section class="hb-pinsp-card"><h3 class="hb-pinsp-hd">tools it sees <small id="pinspToolsN"></small></h3><ul class="hb-pinsp-tools is-empty" id="pinspTools" aria-label="tools it sees"><li class="hb-pinsp-tool-none">none yet</li></ul></section>
+          <section class="hb-pinsp-card"><h3 class="hb-pinsp-hd">last plan</h3><pre class="hb-pinsp-pre is-empty" id="pinspPlan">none yet</pre></section>
+          <section class="hb-pinsp-card"><h3 class="hb-pinsp-hd">last prompt and reply <button type="button" class="hb-pinsp-copy" id="pinspCopy" hidden>copy</button></h3><pre class="hb-pinsp-pre is-empty" id="pinspRaw" aria-label="last prompt and reply">no language model has been asked yet</pre></section>
+        </div>
+      </details>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>memory</span><span class="hb-hd-aux" id="memN">0 memories</span></h3>
+      <div class="meterrow"><span>importance</span><div class="hb-meter" role="progressbar" aria-label="importance toward the next cortex thought" aria-valuemin="0" aria-valuemax="100" id="impMeter"><i style="width:0%"></i></div><b id="impV">0</b></div>
+      <details class="hb-fold" id="memFold" data-ux="detail"><summary>memory stream <span class="aux">newest first</span></summary><div>
+        <section class="hb-mempanel" aria-label="the dog's memory">
+          <div class="hb-mempanel-sec"><p class="hb-mempanel-counts" id="memCounts">0 memories</p><div class="hb-mempanel-store"><p class="hb-mempanel-line">kept in this tab only. a reload starts a new day; export keeps a copy.</p></div></div>
+          <div class="hb-mempanel-sec"><h3 class="hb-mempanel-hd" id="memSearchH">search</h3><input class="hb-input" type="search" id="memSearch" placeholder="try ball or human" aria-labelledby="memSearchH" aria-describedby="memSearchM" autocomplete="off"><p class="hb-mempanel-line" id="memSearchM">search: keyword overlap. with no words the order is the cortex ranking.</p></div>
+          <div class="hb-mempanel-sec"><h3 class="hb-mempanel-hd" id="memAddH">add a memory</h3><textarea class="hb-textarea" id="memNote" rows="2" placeholder="the ball went over the fence" aria-labelledby="memAddH"></textarea><div class="hb-mempanel-row"><button type="button" class="hb-btn hb-btn-sm" id="memAdd" disabled>Add</button></div></div>
+          <div class="hb-mempanel-sec"><h3 class="hb-mempanel-hd" id="memListH">memories (0)</h3><p class="hb-mempanel-empty" id="memEmpty">nothing remembered yet. play with the dog and it fills.</p><div class="hb-mempanel-list" id="memList" aria-labelledby="memListH"></div></div>
+          <div class="hb-mempanel-foot"><button type="button" class="hb-btn hb-btn-sm" id="memExport">Export</button><button type="button" class="hb-btn hb-btn-sm hb-mempanel-wipe" id="memWipe">Erase all</button></div>
+        </section>
+        <p class="note">scored as the cortex ranks them: recency 0.995 per game hour, importance over 6, plus 0.5 when it names what is in view (park 2023). marked rows went into the last thought.</p></div></details>
+    </div>
+    <div class="hb-panel" id="timelinePanel">
+      <h3 class="hb-panel-hd-inst"><span>timeline</span><span class="hb-hd-aux">the dog and moheeb</span></h3>
+      <details class="hb-fold" data-ux="detail"><summary>sense, choice and act, newest first</summary><div>
+      <div class="hb-causal">
+        <div class="hb-causal-filters" role="group" aria-label="show agents" id="tlAgents"><span class="hb-causal-flabel" aria-hidden="true">who</span><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-agent="dog">dog</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-agent="human">moheeb</button></div>
+        <div class="hb-causal-filters" role="group" aria-label="show kinds" id="tlKinds"><span class="hb-causal-flabel" aria-hidden="true">kinds</span><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="sense">sense</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="choice">choice</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="act">act</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="cue">cue</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="reward">reward</button><button class="hb-chip is-toggle is-on" type="button" aria-pressed="true" data-kind="model">model</button></div>
+        <div class="hb-causal-list" role="region" aria-label="cause timeline, newest first" tabindex="0" id="tlList"><ol id="tlEvents"></ol></div>
+      </div></div></details>
+    </div>
+  </section>
+
+  <section class="pane" id="pBody" role="tabpanel" aria-labelledby="tab-body" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>gait</span><span class="hb-hd-aux" id="gaitName">stand</span></h3>
+      <div class="hb-seg is-toggle" id="gaitSeg" role="group" aria-label="what drives the legs" style="display:flex;box-shadow:none;margin-bottom:8px"><button type="button" class="is-on" aria-pressed="true" data-gait="cpg" style="flex:1">pattern generator</button><button type="button" aria-pressed="false" data-gait="nn" style="flex:1">neural gait</button></div>
+      <canvas class="inst" id="cpg" width="340" height="150" role="img" aria-label="leg phases and gait mix"></canvas>
+      <div class="kv"><b>speed</b><span id="kSpeed">0</span><b>stride frequency</b><span id="kFreq">0</span><b>duty</b><span id="kDuty">0</span><b>turn rate</b><span id="kTurn">0</span><b>posture</b><span id="kPost">stand</span><b>froude</b><span id="kFr">0</span><b>body source</b><span id="kSrc">cpg</span></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>neural gait</span><span class="hb-hd-aux" id="nnSt">off</span></h3>
+      <p class="note">a codebook matching network trained on real dog motion capture (ai4animationpy, paul and sebastian starke) predicts the next half second of a 27 bone dog: walk, pace, trot, canter, sit, lie. it runs in a worker, on webgpu when there is an adapter, retargeted onto this rig. bows, paw lifts and shakes hand back to the pattern generator with an inertialized blend.</p>
+      <div class="btns"><button class="hb-btn" id="bNnLoad" type="button">Load neural gait, 17.7 MB</button></div>
+      <p class="licence">model and mocap cc by-nc 4.0, no commercial use. fetched when you press load from github, sweriko/ai4anim-webgpu at b539455, checked by sha-256, never bundled.</p>
+      <div class="kv"><b>guidance</b><span id="kGuide">-</span><b>inference</b><span id="kNnMs">-</span><b>contacts</b><span id="kCont">-</span></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>footfalls</span><span class="hb-hd-aux">lf rf lh rh</span></h3>
+      <canvas class="inst" id="foot" width="340" height="96" role="img" aria-label="footfall plot of the last 4 s"></canvas>
+      <p class="note">hildebrand plot of the last 4 s: dark is stance. a walk shows a four beat lateral sequence, a trot pairs the diagonals, a gallop goes rotary.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>control</span><span class="hb-hd-aux">drive it</span></h3>
+      <label class="tog"><input type="checkbox" id="manual">manual drive: w a s d or arrows with the yard focused, shift to run</label>
+      <label class="tog"><input type="checkbox" id="xray">x-ray: skeleton, ik targets, contacts</label>
+      <label class="tog"><input type="checkbox" id="prints" checked>footprints</label>
+      <label class="tog"><input type="checkbox" id="ikOn" checked>leg ik and terrain adaptation</label>
+      <label class="tog"><input type="checkbox" id="sound" checked>sound</label>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>model</span><span class="hb-hd-aux" id="mdlName">dog.glb</span></h3>
+      <div id="mdlInfo"></div>
+      <p class="note">drop another quadruped glb on the yard to swap bodies.</p>
+    </div>
+  </section>
+
+  <section class="pane" id="pSense" role="tabpanel" aria-labelledby="tab-sense" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>vision</span><span class="hb-hd-aux" id="netSt">detector off</span></h3>
+      <label class="tog"><input type="checkbox" id="dogColor" checked>dichromat color and 20/75 acuity</label>
+      <label class="tog"><input type="checkbox" id="netOn" aria-describedby="netNote">yolov8n on the eye feed, 12.8 mb</label>
+      <p class="licence" id="netNote">weights agpl 3.0 (ultralytics). fetched when you turn it on from github, hyuto/yolov8-onnxruntime-web at fc4a52c, checked by sha-256, never bundled.</p>
+      <label class="tog"><input type="checkbox" id="showSal">show saliency and the current fixation on the eye</label>
+      <div class="kv"><b>looking at</b><span id="kFocus">-</span></div>
+      <div class="lst" id="detList"></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>in mind</span><span class="hb-hd-aux" id="kFocusMind">-</span></h3>
+      <ul class="lines" id="dogSenses"></ul>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>percepts</span><span class="hb-hd-aux">field of view 240</span></h3>
+      <div class="lst" id="perList"></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>show it</span><span class="hb-hd-aux">photo or webcam</span></h3>
+      <div class="btns"><label class="hb-btn" for="photoIn" tabindex="0" id="photoPick">Pick a photo</label><input type="file" id="photoIn" accept="image/*" hidden><button class="hb-btn" id="bWebcam" type="button" aria-pressed="false">Webcam</button><button class="hb-btn" id="bClap" type="button" aria-pressed="false">Clap detection</button></div>
+      <p class="note">the dog runs the same detector on whatever you show it: cats get barked at, food gets begged for, balls get a play bow. the webcam asks for the camera and downloads two gesture and face models, 27.3 mb, apache 2.0. clap detection asks for the microphone. with a cortex model loaded the dog also says what it thinks of a photo.</p>
+      <div class="hb-callout is-warn" id="photoAsk" hidden role="alert"><p class="sub" style="margin:0">to label photos the dog needs the object detector: 12.8 mb, weights agpl 3.0. load it?</p><div class="btns"><button class="hb-btn" type="button" id="bPhotoYes">Load it and label the photo</button><button class="hb-btn" type="button" id="bPhotoNo">Not now</button></div></div>
+      <div id="photoView"><canvas id="photo" width="320" height="240" role="img" aria-label="the photo you showed it"></canvas></div>
+      <video id="cam" playsinline muted aria-label="your webcam"></video>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>nose and ears</span><span class="hb-hd-aux" id="sniffSt">-</span></h3>
+      <label class="tog"><input type="checkbox" id="showPuffs">show scent puffs in the yard</label>
+      <div class="kv"><b>wind</b><span id="kWind">-</span><b>puffs</b><span id="kPuffs">0</span><b>left / right</b><span id="kLR">-</span></div>
+      <div class="row"><span class="lab">scent</span><div class="bar p"><i id="scentBar"></i></div><span class="v" id="scentV">0</span></div>
+      <div class="row"><span class="lab">sound</span><div class="bar"><i id="hearBar"></i></div><span class="v" id="hearV">0</span></div>
+    </div>
+  </section>
+
+  <section class="pane" id="pTrain" role="tabpanel" aria-labelledby="tab-train" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>cues</span><span class="hb-hd-aux">say or click</span></h3>
+      <div class="chiprow" id="cueBtns"></div>
+      <div class="hb-heard" id="heard" aria-live="polite" data-empty="say sit, spin or any new word"></div>
+      <div class="field"><label for="dogName">dog name</label><input class="hb-input" type="text" id="dogName" value="Pixel" autocomplete="off"></div>
+      <div class="field"><label for="cueIn">type a cue</label><input class="hb-input" type="text" id="cueIn" placeholder="then enter" enterkeyhint="send" autocomplete="off" autocapitalize="none"></div>
+      <p class="note" id="micNote">talk is on the yard. in chrome your voice goes to the browser's speech service to become text; nothing else leaves the page. to teach a new word, say it, wait for whatever the dog does, then praise it.</p>
+    </div>
+    <div class="hb-panel" id="assocPanel">
+      <h3 class="hb-panel-hd-inst"><span>associations</span><span class="hb-hd-aux">rw + pearce kaye hall</span></h3>
+      <div class="scrollx"><table class="heat" id="heat"></table></div>
+      <p class="sub" id="lastTrial"></p>
+      <p class="note">rows are cues, columns are acts. cells show net strength, excitation minus a separate inhibition that fades faster, so an extinguished cue partly comes back after a break. the attn column is each cue's associability: it rises after surprises and falls as the outcome becomes predictable. credit fades with delay, so a slow treat can reward whatever the dog is doing when it lands. if nothing is strong the dog offers tricks it was rewarded for before; teach a new word by praising whatever it does.</p>
+      <div class="btns"><button class="hb-btn" id="bReset" type="button">Reset learning</button><button class="hb-btn" id="bResetKeep" type="button" hidden>Keep them</button></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>what it knows</span><span class="hb-hd-aux" id="knownN">0 words</span></h3>
+      <ul class="lines" id="knownList"></ul>
+    </div>
+  </section>
+
+  <section class="pane" id="pHuman" role="tabpanel" aria-labelledby="tab-human" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>moheeb</span><span class="hb-hd-aux" id="humMode">runs his day</span></h3>
+      <p class="big" id="humTask">idle</p>
+      <p class="note" id="humWhy">standing on the porch</p>
+      <p class="sub" id="humSrc"></p><p class="sub" id="humT"></p>
+      <label class="tog"><input type="checkbox" id="humAI" checked>he runs his own day. off: you drive him with these buttons.</label>
+      <label class="hb-check is-disabled" id="humMindOnL"><input type="checkbox" id="humMindOn" disabled>the cortex model picks what he does, at most every 25 s</label>
+      <p class="reason" id="humMindWhy"></p>
+      <div class="btns"><button class="hb-btn" id="bCall" type="button">Call the dog</button><button class="hb-btn" id="bPet" type="button">Pet the dog</button><button class="hb-btn" id="bTrainNow" type="button">Train a new word</button></div>
+      <div class="hb-heard" id="humMind" data-empty="his own mind is off"></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>voice</span><span class="hb-hd-aux">pocket tts</span></h3>
+      <p class="note" id="voiceNote">starts with the browser voice. load pocket tts to speak in his cloned voice, from the clip in this page; the engine downloads once from hugging face.</p>
+      <div class="btns"><button class="hb-btn" id="bVoiceLoad" type="button">Load his voice</button><label class="tog"><input type="checkbox" id="humVoiceOn" checked>speak out loud</label></div>
+      <p class="licence">engine apache 2.0, models cc by-nc 4.0, no commercial use. kevinahm/pocket-tts-web on hugging face, pinned to one commit.</p>
+      <div class="hb-heard" id="voiceSt">browser voice</div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>training</span><span class="hb-hd-aux">he teaches</span></h3>
+      <div id="humTrain"></div>
+      <p class="note">he says a cue, waits for what the dog does, then praises a match (sometimes with a treat) or says no. those are the same rewards train learns from, so the dog picks up his words too, made up ones like boop included.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>said</span><span class="hb-hd-aux">latest first</span></h3>
+      <div class="lst" id="humSaid"></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>needs</span><span class="hb-hd-aux">last 2 minutes</span></h3>
+      <ul class="hb-sparks" id="humSparks" aria-label="moheeb's needs"></ul>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>plan</span><span class="hb-hd-aux" id="humPlanAux">routine</span></h3>
+      <div class="hb-choice is-quiet" id="humChoice">
+        <p class="hb-choice-why" id="humPlanWhy"></p>
+        <ol class="hb-choice-list" id="humPlan" aria-label="moheeb's options"></ol>
+        <p class="hb-choice-meta" id="humPlanMeta"></p>
+      </div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>mood and senses</span><span class="hb-hd-aux" id="humMindSt">off</span></h3>
+      <div id="humMood"></div>
+      <details class="hb-fold" data-ux="detail"><summary>model calls <span class="aux" id="humCallsN">0</span></summary><div><ol class="calls" id="humCalls" data-empty="no calls yet"></ol></div></details>
+    </div>
+  </section>
+
+  <section class="pane" id="pTune" role="tabpanel" aria-labelledby="tab-tune" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>turn on more</span><span class="hb-hd-aux" id="capsCount">checking</span></h3>
+      <p class="note">every optional model, download and permission in one list, with its size, licence and what it needs.</p>
+      <div class="btns"><button class="hb-btn" type="button" id="bCaps" data-caps="">Open the list</button></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>layers and personality</span><span class="hb-hd-aux">every number</span></h3>
+      <p class="note">turn parts of the model off to compare, or move any number. changes save in this browser.</p>
+      <div id="pTuneBody"></div>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>seeds and scenarios</span></h3>
+      <p class="note">open the yard with a fixed seed: the same seed and settings give the same day, frame for frame in lockstep.</p>
+      <div class="field"><label for="seedIn">seed</label><input class="hb-input" type="number" inputmode="numeric" id="seedIn" min="1" step="1" value="7"></div>
+      <div class="field"><label for="speedIn">sim speed</label><select class="hb-select" id="speedIn"><option value="1">1x</option><option value="2">2x</option><option value="4">4x</option></select></div>
+      <label class="tog"><input type="checkbox" id="seedNn">start with the neural gait on</label>
+      <div class="btns"><button class="hb-btn" type="button" id="bSeedGo">Reopen with this seed</button></div>
+      <p class="sub" id="seedNow"></p>
+      <p class="note">the hash takes <code>#seed=7&amp;speed=1&amp;on=L.neural&amp;off=L.day</code>. lockstep runs use <code>#test&amp;seed=7</code>. the scenario runner: <code>node scenarios/run.mjs compare</code>, see scenarios/README.md.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>events</span><span class="hb-hd-aux">notes, loads, failures</span></h3>
+      <section class="hb-evlog" id="evlog">
+        <div class="hb-evlog-head"><span class="hb-evlog-label">events</span><span class="hb-evlog-count" id="evlogN" aria-label="rows">0</span></div>
+        <div class="hb-evlog-box"><div class="hb-evlog-rows" role="log" aria-label="events" tabindex="0" id="evlogRows"><p class="hb-evlog-empty" id="evlogEmpty">nothing logged yet</p></div></div>
+      </section>
+    </div>
+  </section>
+
+  <section class="pane about" id="pAbout" role="tabpanel" aria-labelledby="tab-how" tabindex="0">
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>stack</span><span class="hb-hd-aux">all local</span></h3>
+      <p>body: the owner's dog model, drawn by three.js on webgpu with a webgl2 fallback. two motion sources share the rig, a central pattern generator (walk, pace, trot, canter, gallop picked by froude number, raibert foot placement, two bone ik) and the neural gait (paws pinned by predicted contacts, retargeted as paw targets). switches between them are inertialized so nothing snaps. springs drive posture, gaze, ears and a tail with eight wag modes.</p>
+      <p>brain: each act scores by how much it would reduce the dog's needs (keramati and gutkin 2011). the choice is sampled from a softmax with a commitment bonus; urgent acts start after a short heavy tailed latency while the head turns first. sleep pressure and a two peak body clock run onset, nrem, rem and wake. learning is rescorla wagner with pearce kaye hall associability, a faster fading inhibition and eligibility traces.</p>
+      <p>senses: itti koch saliency on the dog eye frame with top down drive bias and inhibition of return, looming startle from time to contact, per dog sound direction error, a scent plume sampled in sniff bouts and tracked upwind. yolov8n labels the eye feed when you turn it on.</p>
+      <p>human: moheeb with retargeted quaternius clips (cc0), a gaze model, velocity springs, planted feet and a phased throw. his day runs on needs and an hourly routine; the top three options are drawn at random, weighted.</p>
+      <p>cortex: gemma 4 e2b or lfm2-vl 450m on webgpu sets goals on events, from a memory stream ranked by recency, importance and relevance (park 2023). reflexes and timing stay in code.</p>
+      <p>packages: <code>@hackbuild/gait</code>, <code>@hackbuild/motion-net</code>, <code>@hackbuild/senses</code>, <code>@hackbuild/drives</code>, <code>@hackbuild/cameras</code>, <code>@hackbuild/tunables</code>, all mit. physics is rapier.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>licences</span><span class="hb-hd-aux">in this page</span></h3>
+      <p>app code mit. the dog, his model and his voice clip are the owner's own. three.js mit, rapier apache 2.0, fonts apache 2.0 and ofl 1.1, animation clips cc0. fetched only when you ask: the neural gait model and mocap cc by-nc 4.0, yolov8n agpl 3.0, pocket tts engine apache 2.0 with cc by-nc 4.0 models, the cortex and mediapipe models under their own licences. LICENCES.md in the repository has the full list.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>elsewhere</span><span class="hb-hd-aux">the parts on their own</span></h3>
+      <p>each package has a page with a small live stage: <a class="hb-link" href="https://hackbuild.github.io/hackbuild-motion/gait/">gait</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-motion/motion-net/">motion-net</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-agents/senses/">senses</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-agents/drives/">drives</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-agents/cameras/">cameras</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-agents/tunables/">tunables</a>, <a class="hb-link" href="https://hackbuild.github.io/hackbuild-browser-ai/weights/">weights</a>.</p>
+      <p data-suite-only hidden>the suite has each as a tool: <a class="hb-link" data-suite="#/motion/gait">gait</a>, <a class="hb-link" data-suite="#/motion/motion-net">motion-net</a>, <a class="hb-link" data-suite="#/agents/senses">senses</a>, <a class="hb-link" data-suite="#/agents/drives">drives</a>, <a class="hb-link" data-suite="#/voice/speak">speech</a>, <a class="hb-link" data-suite="#/rooms">rooms</a>. a model fetched there is stored for this page too, and the other way round.</p>
+    </div>
+    <div class="hb-panel">
+      <h3 class="hb-panel-hd-inst"><span>keys</span></h3>
+      <p>with the yard focused: w a s d or arrows move the free camera, q and e lower and raise it, f follows the dog again. ctrl k or / opens every command by name. tab moves between controls; the arrow keys move between tabs.</p>
+    </div>
+  </section>
+  </div>
+</aside>
+</div>
+<p class="hb-sr" id="live" role="status" aria-live="polite"></p>
+<div class="hb-drawer" id="caps" hidden>
+  <div class="hb-drawer-panel" role="dialog" aria-modal="true" aria-labelledby="capsTitle">
+    <div class="caps-hd"><h2 id="capsTitle">turn on more</h2><button class="hb-btn hb-btn-sm" type="button" id="capsClose">close</button></div>
+    <div id="capsBody"></div>
+  </div>
+</div>
+
+<div class="setup-scrim" id="setup" hidden>
+  <div class="setup-card" role="dialog" aria-modal="true" aria-labelledby="setupH" data-ux="setup" tabindex="-1">
+    <div class="setup-head"><span>HACKLE // setup</span><button type="button" id="setupClose" aria-label="close setup">x</button></div>
+    <div class="setup-body">
+      <div class="setup-top"><h2 id="setupH">this is <span id="setupName">pixel</span><b>.</b></h2>
+      <div class="field"><label for="setupNameIn">name</label><input class="hb-input" type="text" id="setupNameIn" autocomplete="off"></div></div>
+      <p class="setup-line">a dog and its person in a yard. everything runs in this tab; nothing downloads until you pick it.</p>
+      <div class="setup-modes" id="setupModes" role="radiogroup" aria-label="how to start">
+        <button type="button" role="radio" aria-checked="true" data-mode="play"><b>just play</b><em>nothing to download</em><span>yard, ball, treats, training, both minds by rule</span><i class="badge"></i></button>
+        <button type="button" role="radio" aria-checked="false" data-mode="eyes"><b>eyes and legs</b><em></em><span>a neural gait from dog motion capture and a detector on the dog eye</span><i class="badge"></i></button>
+        <button type="button" role="radio" aria-checked="false" data-mode="think"><b>thinking dog</b><em></em><span>both, plus a cortex model that sets goals, and his voice</span><i class="badge"></i></button>
+      </div>
+      <p class="setup-gpu" id="setupGpu" hidden>no webgpu here, the yard draws on webgl2</p>
+      <ul class="setup-list" id="setupList" data-ux="detail" aria-label="everything you can turn on"></ul>
+    </div>
+    <div class="setup-foot"><button class="hb-btn hb-btn-go" type="button" id="setupStart">start, nothing to download</button><button class="hb-btn" type="button" id="setupLook">just look around</button></div>
+  </div>
+</div>
+
+<div class="hb-modal hb-palette" id="palette" role="dialog" aria-modal="true" aria-label="commands" hidden>
+  <div class="hb-panel" tabindex="-1">
+    <div class="hb-palette-field"><span class="hb-palette-prompt" aria-hidden="true">&gt;</span><input class="hb-palette-input" type="text" placeholder="type what to do: throw, minds, camera" aria-label="commands"></div>
+    <div class="hb-palette-list" id="paletteList" role="listbox" aria-label="commands"></div>
+    <p class="hb-palette-empty" hidden>nothing matches that.</p>
+    <p class="hb-palette-foot">up and down move, enter runs, esc closes.</p>
+  </div>
+</div>
