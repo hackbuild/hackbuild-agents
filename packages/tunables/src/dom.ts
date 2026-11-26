@@ -4,6 +4,7 @@
 // its source.
 import { formatValue, type Registry } from "./index.js";
 
+/** Group labels, open groups, class prefix, hash sync and export and import hooks of a panel. */
 export interface PanelOptions {
   /** display names per group; groups without one show their key */
   groupLabels?: Record<string, string>;
@@ -30,12 +31,14 @@ export interface PanelOptions {
   history?: { readonly state: unknown; replaceState(data: unknown, unused: string, url?: string): void };
 }
 
+/** A built panel: its root element, `refresh` to read the registry again and `dispose` to remove it. */
 export interface Panel {
   root: HTMLElement;
   refresh(): void;
   dispose(): void;
 }
 
+/** Builds a tune panel for a registry inside `host` with DOM calls only and keeps both in step. */
 export function bindPanel(host: HTMLElement, reg: Registry, opts: PanelOptions = {}): Panel {
   const doc = opts.document ?? host.ownerDocument;
   const px = opts.prefix ?? "tn";

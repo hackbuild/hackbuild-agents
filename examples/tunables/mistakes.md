@@ -1,0 +1,5 @@
+- Define every key before you `get`, `set`, apply a preset or read a hash: an unknown key throws `tunables: no parameter named <key>`. Call `restore()` and `fromUrlHash()` after the definitions, not before.
+- `layer(key)` is false whenever the master layer is off, whatever the layer's own value. Name the master in `createRegistry` and define it with `defineLayer`.
+- Never reuse a key with a new meaning: old saves and shared hashes would load the old number into it. Give the new meaning a new key and map the old one in `renames`, or drop it.
+- Saves hold only values that differ from their defaults; do not snapshot every value into storage yourself, or new defaults never reach saved sessions. A save of another version needs a `migrate` entry or nothing is kept.
+- The panel ships no styles. Put the `hb-tunables` class on the host and load the hackbuild-ui stylesheet; do not set `innerHTML` on labels, they are text by design.

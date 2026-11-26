@@ -6,6 +6,7 @@
 /** Where a default value comes from (RULES.md: every number says which). */
 export type Source = "measured" | "computed" | "vendor" | "inferred" | "unknown";
 
+/** One tunable number: key, group, label, default, range, step, unit and where the default comes from. */
 export interface ParamDef {
   key: string;
   group: string;
@@ -22,6 +23,7 @@ export interface ParamDef {
   cite?: string;
 }
 
+/** A named set of values that `applyPreset` writes in one go. */
 export interface Preset {
   label: string;
   values: Record<string, number>;
@@ -33,6 +35,7 @@ export interface StorageLike {
   setItem(key: string, value: string): void;
 }
 
+/** Master layer, storage, schema version, migrations and key renames of a registry. */
 export interface RegistryOptions {
   /** the master layer: when it is 0 every `layer()` answers false */
   master?: string;
@@ -43,7 +46,7 @@ export interface RegistryOptions {
   /**
    * Explicit migrations by the saved version. A save of another version with
    * no migration keeps nothing: its values go back to the current defaults.
-   * Version 0 is a bare values object with no `ver` (the legacy export).
+   * Version 0 is a bare values object with no `ver` (the first export format).
    */
   migrate?: Record<number, (values: Record<string, number>) => Record<string, number>>;
   /**
@@ -54,6 +57,7 @@ export interface RegistryOptions {
   renames?: Record<string, string>;
 }
 
+/** Called with the key and the new value after any change. */
 export type ChangeListener = (key: string, value: number) => void;
 
 /** Saved form: the schema version and only the values that differ from their defaults. */
@@ -62,6 +66,7 @@ export interface Saved {
   d: Record<string, number>;
 }
 
+/** The parameters, layers and presets of one app, with clamped set, saves, URL hash sharing and change events. */
 export interface Registry {
   define(def: ParamDef): void;
   /** a layer switch: 1 on, 0 off, in group `layers` unless another is named */
@@ -69,7 +74,6 @@ export interface Registry {
   has(key: string): boolean;
   def(key: string): ParamDef;
   get(key: string): number;
-  /** clamps into the defined range; unknown keys throw */
   /** clamps into the defined range; unknown keys throw; NaN and the infinities are ignored */
   set(key: string, value: number): void;
   /** master switch and layer switch both on */
@@ -108,6 +112,7 @@ const num = (v: unknown): number | null => {
 /** Shortest decimal text that reads back to the same number. */
 const fmt = (v: number): string => String(v);
 
+/** Makes an empty registry; define parameters and layers on it, then `restore` and `fromUrlHash`. */
 export function createRegistry(opts: RegistryOptions = {}): Registry {
   const defs = new Map<string, ParamDef>();
   const values = new Map<string, number>();
@@ -307,6 +312,7 @@ export function decimalsFor(step: number): number {
   return Math.min(6, Math.max(2, Math.ceil(-Math.log10(step) - 1e-9)));
 }
 
+/** A value as text with the decimal places its step calls for. */
 export function formatValue(def: ParamDef, v: number): string {
   return v.toFixed(decimalsFor(def.step));
 }
