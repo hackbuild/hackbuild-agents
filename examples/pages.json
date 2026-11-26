@@ -5,12 +5,9 @@
   "source": "https://github.com/hackbuild/hackbuild-agents",
   "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\"><circle cx=\"8\" cy=\"8\" r=\"6\" fill=\"#1a1a1a\"/></svg>",
   "suite": {
-    "senses": "#/agents/senses",
-    "drives": "#/agents/drives",
-    "cameras": "#/agents/cameras",
-    "mover": "#/agents/mover",
-    "scenario": "#/agents/scenario",
-    "tunables": "#/motion/avatar"
+    "drives": "#/examples/think/drives",
+    "agents-views": "#/examples/think/drives",
+    "cameras": "#/examples/think/cameras"
   },
   "pages": [
     {
