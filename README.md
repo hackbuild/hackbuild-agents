@@ -6,8 +6,7 @@ Live examples: <https://hackbuild.github.io/hackbuild-agents/>
 
 Every tool in one app: the suite, <https://hackbuild.github.io/hackbuild-suite/> (source <https://github.com/hackbuild/hackbuild-suite>).
 
-Status: phase A, 2026-11-22. Packages land in `packages/` as they pass
-their tests; the table below grows with them.
+Published to npm under @hackbuild. Each package's README has its quick start; the llms.txt at the site root lists every package for coding agents.
 
 | package | lang | what | tests |
 |---|---|---|---|
@@ -25,7 +24,9 @@ and the package metadata.
 
 ## Install
 
-Not on npm yet. From a clone, with Node 22.18 and the Rust toolchain in
+    npm install @hackbuild/drives
+
+Each package lists its own peers in its README. From a clone, with Node 22.18 and the Rust toolchain in
 CONTRIBUTING.md:
 
     npm ci && npm run build
