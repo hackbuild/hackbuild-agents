@@ -2,7 +2,7 @@
 
 Drives, choice with a reason, cue learning, sleep and a memory stream for simulated animals, on a Rust core in wasm.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/drives)](https://www.npmjs.com/package/@hackbuild/drives) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 76.1 kB measured](https://img.shields.io/badge/gzip-76.1%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/drives)](https://www.npmjs.com/package/@hackbuild/drives) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 76.3 kB measured](https://img.shields.io/badge/gzip-76.3%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -178,9 +178,9 @@ The body clock goes through libm `exp`, so native and wasm agree with each other
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 76,054 bytes | 79,856 bytes |
+| `dist/index.js` (main entry, imports external) | 76,285 bytes | 80,099 bytes |
 | `dist/wasm/drives_bg.wasm` | 48,773 bytes | 51,211 bytes |
-| `dist/drives.iife.js` (single file build) | 76,176 bytes | 79,984 bytes |
+| `dist/drives.iife.js` (single file build) | 76,410 bytes | 80,230 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

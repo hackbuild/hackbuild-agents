@@ -2,7 +2,7 @@
 
 Perception for simulated animals: saliency, looming, an odour plume and scent tracking, hearing error, field of view vision and an occupancy grid from eye depth, on a Rust core in wasm.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/senses)](https://www.npmjs.com/package/@hackbuild/senses) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 71.6 kB measured](https://img.shields.io/badge/gzip-71.6%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/senses)](https://www.npmjs.com/package/@hackbuild/senses) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 71.7 kB measured](https://img.shields.io/badge/gzip-71.7%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -181,9 +181,9 @@ The attention, nose and hearing follow the public [dog-simulator legacy](https:/
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 71,634 bytes | 75,215 bytes |
+| `dist/index.js` (main entry, imports external) | 71,667 bytes | 75,250 bytes |
 | `dist/wasm/senses_bg.wasm` | 46,483 bytes | 48,807 bytes |
-| `dist/senses.iife.js` (single file build) | 71,763 bytes | 75,351 bytes |
+| `dist/senses.iife.js` (single file build) | 71,794 bytes | 75,383 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

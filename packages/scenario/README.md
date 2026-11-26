@@ -2,7 +2,7 @@
 
 Run a built browser sim in the system Chrome in whole fixed steps, record or compare its trace against a golden file, and report motion checks with their legal ranges.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/scenario)](https://www.npmjs.com/package/@hackbuild/scenario) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 8.6 kB measured](https://img.shields.io/badge/gzip-8.6%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/scenario)](https://www.npmjs.com/package/@hackbuild/scenario) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 8.8 kB measured](https://img.shields.io/badge/gzip-8.8%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -172,7 +172,7 @@ Changes are in the repository [CHANGELOG](../../CHANGELOG.md). Code is MIT ([LIC
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 8,597 bytes | 9,026 bytes |
+| `dist/index.js` (main entry, imports external) | 8,840 bytes | 9,282 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

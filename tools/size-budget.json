@@ -4,33 +4,33 @@
   "margin": 0.05,
   "packages": {
     "@hackbuild/cameras": {
-      "main: dist/index.js bundled": 3265,
-      "dist/cameras.iife.js": 3378
+      "main: dist/index.js bundled": 3251,
+      "dist/cameras.iife.js": 3366
     },
     "@hackbuild/drives": {
-      "main: dist/index.js bundled": 76054,
+      "main: dist/index.js bundled": 76285,
       "dist/wasm/drives_bg.wasm": 48773,
-      "dist/drives.iife.js": 76176
+      "dist/drives.iife.js": 76410
     },
     "@hackbuild/mover": {
-      "main: dist/index.js bundled": 7098,
-      "dist/mover.iife.js": 7238
+      "main: dist/index.js bundled": 7317,
+      "dist/mover.iife.js": 7458
     },
     "@hackbuild/scenario": {
-      "main: dist/index.js bundled": 8597
+      "main: dist/index.js bundled": 8840
     },
     "@hackbuild/senses": {
-      "main: dist/index.js bundled": 71634,
+      "main: dist/index.js bundled": 71667,
       "dist/wasm/senses_bg.wasm": 46483,
-      "dist/senses.iife.js": 71763
+      "dist/senses.iife.js": 71794
     },
     "@hackbuild/tunables": {
-      "main: dist/index.js bundled": 2332,
-      "dist/tunables.iife.js": 3913
+      "main: dist/index.js bundled": 2402,
+      "dist/tunables.iife.js": 4031
     },
     "@hackbuild/agents-views": {
-      "main: dist/index.js bundled": 4350,
-      "dist/agents-views.iife.js": 4484
+      "main: dist/index.js bundled": 4420,
+      "dist/agents-views.iife.js": 4553
     }
   }
 }

@@ -2,7 +2,7 @@
 
 The brain bars, the associations table and the eye card of a simulated animal, as views you mount on any page with the hackbuild-ui look.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/agents-views)](https://www.npmjs.com/package/@hackbuild/agents-views) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 4.3 kB measured](https://img.shields.io/badge/gzip-4.3%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/agents-views)](https://www.npmjs.com/package/@hackbuild/agents-views) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 4.4 kB measured](https://img.shields.io/badge/gzip-4.4%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -146,8 +146,8 @@ Changes are in the repository [CHANGELOG](../../CHANGELOG.md). Code is MIT ([LIC
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 4,350 bytes | 4,567 bytes |
-| `dist/agents-views.iife.js` (single file build) | 4,484 bytes | 4,708 bytes |
+| `dist/index.js` (main entry, imports external) | 4,420 bytes | 4,641 bytes |
+| `dist/agents-views.iife.js` (single file build) | 4,553 bytes | 4,780 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

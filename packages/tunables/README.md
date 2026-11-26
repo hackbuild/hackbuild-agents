@@ -2,7 +2,7 @@
 
 A parameter registry with layer switches, presets and URL hash sharing for A/B work on agent behaviour.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/tunables)](https://www.npmjs.com/package/@hackbuild/tunables) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 2.3 kB measured](https://img.shields.io/badge/gzip-2.3%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/tunables)](https://www.npmjs.com/package/@hackbuild/tunables) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 2.4 kB measured](https://img.shields.io/badge/gzip-2.4%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -143,8 +143,8 @@ Changes are in the repository [CHANGELOG](../../CHANGELOG.md). Code is MIT ([LIC
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 2,332 bytes | 2,448 bytes |
-| `dist/tunables.iife.js` (single file build) | 3,913 bytes | 4,108 bytes |
+| `dist/index.js` (main entry, imports external) | 2,402 bytes | 2,522 bytes |
+| `dist/tunables.iife.js` (single file build) | 4,031 bytes | 4,232 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than

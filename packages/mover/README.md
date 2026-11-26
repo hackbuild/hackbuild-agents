@@ -2,7 +2,7 @@
 
 A kinematic capsule mover and steering for agents that share space, with a grid path planner over the world colliders.
 
-[![npm](https://img.shields.io/npm/v/@hackbuild/mover)](https://www.npmjs.com/package/@hackbuild/mover) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 7.1 kB measured](https://img.shields.io/badge/gzip-7.1%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
+[![npm](https://img.shields.io/npm/v/@hackbuild/mover)](https://www.npmjs.com/package/@hackbuild/mover) [![licence MIT](https://img.shields.io/badge/licence-MIT-blue)](../../LICENSE) ![gzip 7.3 kB measured](https://img.shields.io/badge/gzip-7.3%20kB-blue) ![types included](https://img.shields.io/badge/types-included-blue)
 
 ## What it does
 
@@ -164,8 +164,8 @@ Changes are in the repository [CHANGELOG](../../CHANGELOG.md). Code is MIT ([LIC
 
 | file | gzip (measured) | ceiling |
 |---|---|---|
-| `dist/index.js` (main entry, imports external) | 7,098 bytes | 7,452 bytes |
-| `dist/mover.iife.js` (single file build) | 7,238 bytes | 7,599 bytes |
+| `dist/index.js` (main entry, imports external) | 7,317 bytes | 7,682 bytes |
+| `dist/mover.iife.js` (single file build) | 7,458 bytes | 7,830 bytes |
 
 Measured 2026-11-25 by `node tools/lint-packages.mjs` (gzip level 9) from the packed
 tarball. Generated from `tools/size-budget.json`; CI fails when a file moves more than
