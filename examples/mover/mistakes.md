@@ -1,0 +1,5 @@
+- The steerer does not move anything. Apply `out.vx` and `out.vz` to your body (a `World` actor or your own), then write the new position and velocity back into the `AgentState` it reads next step; a state left stale makes every neighbour test wrong.
+- Pass the same `now` clock in seconds to every steerer and the full list of agent states, the agent itself included. Hold sides, yields and the stall window all run on that clock.
+- With moving platforms, call `moveCollider` before stepping and `world.endFrame()` once after every actor has stepped; skipping `endFrame` carries actors again next frame.
+- The steerer alone does not get round a wall across the line to the goal. Call `planPath` and hand its waypoints to `setPath`, and plan again after colliders move; check `ok` and `reason` before using the waypoints.
+- A goal inside a grown collider gives `goal-blocked`, and a gap within one cell of `2 * (radius + margin)` may read as shut; use a smaller `cell` instead of shrinking the radius.

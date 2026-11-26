@@ -3,8 +3,10 @@
 // platform carry. Written for this library from the character physics of
 // crownfall (https://github.com/virgilvox/crownfall, MIT, same author).
 
+/** Default step height in metres: tops up to this far above the feet are walked onto. */
 export const STEP_UP = 0.36;
 
+/** A point or velocity with x, y and z, such as a three Vector3. */
 export interface Vec3Like {
   x: number;
   y: number;
@@ -23,6 +25,7 @@ interface Base {
   maxY: number;
   id?: string;
 }
+/** An axis aligned box collider, made by `box` or `wallBox`. */
 export interface BoxCollider extends Base {
   kind: "box";
   minX: number;
@@ -30,26 +33,31 @@ export interface BoxCollider extends Base {
   minZ: number;
   maxZ: number;
 }
+/** A vertical cylinder collider, made by `cyl` or `wallCyl`. */
 export interface CylCollider extends Base {
   kind: "cyl";
   x: number;
   z: number;
   r: number;
 }
+/** A box or cylinder the world moves actors against. */
 export type Collider = BoxCollider | CylCollider;
 
 /** A box with its top at `topY`, `w` wide on x and `d` deep on z. */
 export function box(cx: number, topY: number, cz: number, w: number, d: number, thick = 3): BoxCollider {
   return { kind: "box", enabled: true, minX: cx - w / 2, maxX: cx + w / 2, minZ: cz - d / 2, maxZ: cz + d / 2, minY: topY - thick, maxY: topY, dx: 0, dy: 0, dz: 0 };
 }
+/** A cylinder with its top at `topY` and radius `r`, `thick` metres tall. */
 export function cyl(x: number, topY: number, z: number, r: number, thick = 3): CylCollider {
   return { kind: "cyl", enabled: true, x, z, r, minY: topY - thick, maxY: topY, dx: 0, dy: 0, dz: 0 };
 }
+/** A box from `y0` to `y1` that only pushes sideways and is never stood on. */
 export function wallBox(cx: number, cz: number, w: number, d: number, y0: number, y1 = y0 + 40): BoxCollider {
   const c = box(cx, y1, cz, w, d, y1 - y0);
   c.wall = true;
   return c;
 }
+/** A cylinder from `y0` to `y1` that only pushes sideways and is never stood on. */
 export function wallCyl(x: number, z: number, r: number, y0: number, y1 = y0 + 40): CylCollider {
   const c = cyl(x, y1, z, r, y1 - y0);
   c.wall = true;
@@ -93,6 +101,7 @@ function contains(c: Collider, x: number, z: number): boolean {
   return dx * dx + dz * dz <= c.r * c.r;
 }
 
+/** A capsule the world moves: feet position, velocity, radius and height, with ground and contact flags it writes back. */
 export interface Actor {
   /** feet position */
   pos: Vec3Like;
@@ -106,13 +115,15 @@ export interface Actor {
   hitWall?: boolean;
 }
 
+/** Step height and substep limits of a `World`. */
 export interface WorldOptions {
   stepUp?: number;
   maxSubsteps?: number;
-  /** metres per substep at most (crownfall 0.3) */
+  /** metres per substep at most (default 0.3) */
   substepLength?: number;
 }
 
+/** Moves capsule actors against box and cylinder colliders with step up, ceilings, wall sliding and platform carry. */
 export class World {
   readonly stepUp: number;
   readonly maxSubsteps: number;

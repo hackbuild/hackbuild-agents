@@ -9,11 +9,13 @@
 
 import type { Collider, World } from "./world.js";
 
+/** A point on the ground plane. */
 export interface Spot {
   x: number;
   z: number;
 }
 
+/** Grid, actor size and search area for `planPath`. */
 export interface PlanOptions {
   /** grid cell, metres (0.2) */
   cell?: number;
@@ -33,6 +35,7 @@ export interface PlanOptions {
   maxCells?: number;
 }
 
+/** The waypoints of a plan, or why there is none: `goal-blocked`, `no-way` or `too-large`. */
 export type PlanResult =
   | { ok: true; waypoints: Spot[]; cells: number; why: string }
   | { ok: false; reason: "goal-blocked" | "no-way" | "too-large"; waypoints: []; cells: number; why: string };

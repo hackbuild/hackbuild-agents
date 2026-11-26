@@ -23,11 +23,13 @@
 // ends, a long table), with per agent filters (the goal object, its own
 // body). Deterministic: no random draws; ties break by id.
 
+/** A circle part of a footprint, centre and radius in metres. */
 export interface Circle {
   x: number;
   z: number;
   r: number;
 }
+/** A capsule part of a footprint: a segment from a to b grown by radius `r`. */
 export interface Capsule {
   ax: number;
   az: number;
@@ -35,6 +37,7 @@ export interface Capsule {
   bz: number;
   r: number;
 }
+/** An obstacle on the ground as circles and capsules, such as a bench with two ends. */
 export interface Footprint {
   id: string;
   parts: (Circle | Capsule)[];
@@ -68,6 +71,7 @@ export function nearest(fp: Footprint, x: number, z: number): { dist: number; nx
   return best;
 }
 
+/** The flat state of one agent that every steerer reads: position, velocity, radius and priority. */
 export interface AgentState {
   id: string;
   x: number;
@@ -81,6 +85,7 @@ export interface AgentState {
   moving?: boolean;
 }
 
+/** Speed, clearance, passing side, stall and yield settings of a `Steerer`. */
 export interface SteerOptions {
   /** cruise speed m/s */
   speed?: number;
@@ -108,6 +113,7 @@ export interface SteerOptions {
   yieldCooldown?: number;
 }
 
+/** One steering step: the velocity to apply, the mode, a stall side waypoint if one was set, and why. */
 export interface SteerOut {
   vx: number;
   vz: number;
@@ -132,6 +138,7 @@ const D = {
   yieldCooldown: 2,
 };
 
+/** Steering for one agent among others: a held passing side per neighbour, contact constraints, timed yields and a stall detector. */
 export class Steerer {
   readonly o: Required<Omit<SteerOptions, "follow">> & { follow?: string };
   private goal: { x: number; z: number } | null = null;
