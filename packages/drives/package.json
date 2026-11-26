@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/drives",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Homeostatic drives, softmax choice with commitment and a why for every choice, cue learning with associability and eligibility traces, sleep pressure and body clock, a memory stream, task gating and inference scheduling. Rust core in wasm.",
   "type": "module",
   "license": "MIT",

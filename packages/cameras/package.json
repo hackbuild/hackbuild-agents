@@ -1,6 +1,6 @@
 {
   "name": "@hackbuild/cameras",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Follow, group framing, free orbit, first person eye and split view cameras with shared damping, seeded shake and occlusion backoff. Drives a three camera without importing three.",
   "type": "module",
   "license": "MIT",
